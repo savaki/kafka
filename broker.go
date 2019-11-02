@@ -54,8 +54,8 @@ func buildConfig(opts []Option) config {
 	return c
 }
 
-// New a new Kafka Broker
-func New(addr string, opts ...Option) (*Broker, error) {
+// NewBroker a new Kafka Broker
+func NewBroker(addr string, opts ...Option) (*Broker, error) {
 	config := buildConfig(opts)
 	conn, err := protocol.Connect(addr)
 	if err != nil {
