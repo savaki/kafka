@@ -31,6 +31,15 @@ type config struct {
 
 type Option func(*config)
 
+func WithDialer(dialFunc func(network, addr string) (net.Conn, error)) Option {
+	return func(c *config) {
+		c.dialFunc = dialFunc
+		if c.dialFunc == nil {
+			c.dialFunc = net.Dial
+		}
+	}
+}
+
 func buildConfig(opts []Option) config {
 	c := config{
 		dialFunc: net.Dial,
