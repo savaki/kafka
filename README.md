@@ -23,7 +23,7 @@ garbage collections.
 * [confluent-kafka-go](https://github.com/confluentinc/confluent-kafka-go) - Another excellent
 Kafka library by Confluent itself.  Like `sarama`, `confluent-kafka-go` does not support the
 full Kafka protocol.  In addition, `confluent-kafka-go` is a wrapper based around 
-(librdkafka)https://github.com/edenhill/librdkafka which means it uses cgo.  And to quote
+[librdkafka](https://github.com/edenhill/librdkafka) which means it uses cgo.  And to quote
 Dave Cheney, [cgo is not Go](https://dave.cheney.net/2016/01/18/cgo-is-not-go)
 
 * [kafka-go](https://github.com/segmentio/kafka-go) - To round out the set of libraries we
