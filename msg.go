@@ -16,57 +16,10 @@
 
 package kafka
 
-import "fmt"
+import (
+	"fmt"
 
-const (
-	keyProduce                     = 0
-	keyFetch                       = 1
-	keyListOffset                  = 2
-	keyMetadata                    = 3
-	keyLeaderAndIsr                = 4
-	keyStopReplica                 = 5
-	keyUpdateMetadata              = 6
-	keyControlledShutdown          = 7
-	keyOffsetCommit                = 8
-	keyOffsetFetch                 = 9
-	keyFindCoordinator             = 10
-	keyJoinGroup                   = 11
-	keyHeartbeat                   = 12
-	keyLeaveGroup                  = 13
-	keySyncGroup                   = 14
-	keyDescribeGroups              = 15
-	keyListGroups                  = 16
-	keySaslHandshake               = 17
-	keyApiVersions                 = 18
-	keyCreateTopics                = 19
-	keyDeleteTopics                = 20
-	keyDeleteRecords               = 21
-	keyInitProducerId              = 22
-	keyOffsetForLeaderEpoch        = 23
-	keyAddPartitionsToTxn          = 24
-	keyAddOffsetsToTxn             = 25
-	keyEndTxn                      = 26
-	keyWriteTxnMarkers             = 27
-	keyTxnOffsetCommit             = 28
-	keyDescribeAcls                = 29
-	keyCreateAcls                  = 30
-	keyDeleteAcls                  = 31
-	keyDescribeConfigs             = 32
-	keyAlterConfigs                = 33
-	keyAlterReplicaLogDirs         = 34
-	keyDescribeLogDirs             = 35
-	keySaslAuthenticate            = 36
-	keyCreatePartitions            = 37
-	keyCreateDelegationToken       = 38
-	keyRenewDelegationToken        = 39
-	keyExpireDelegationToken       = 40
-	keyDescribeDelegationToken     = 41
-	keyDeleteGroups                = 42
-	keyElectLeaders                = 43
-	keyIncrementalAlterConfigs     = 44
-	keyAlterPartitionReassignments = 45
-	keyListPartitionReassignments  = 46
-	keyOffsetDelete                = 47
+	"github.com/savaki/kafka/protocol/apikey"
 )
 
 // apiVersion contains the negotiated versions for each api key
@@ -131,242 +84,242 @@ func negotiateApiVersions(apiKeys []ApiVersionsResponseKey18) (apiVersion, error
 	var err error
 	for _, apiKey := range apiKeys {
 		switch apiKey.ApiKey {
-		case keyProduce:
+		case apikey.Produce:
 			av.Produce, err = matchVersion(apiKey, 0, 8)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyFetch:
+		case apikey.Fetch:
 			av.Fetch, err = matchVersion(apiKey, 0, 11)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyListOffset:
+		case apikey.ListOffset:
 			av.ListOffset, err = matchVersion(apiKey, 0, 5)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyMetadata:
+		case apikey.Metadata:
 			av.Metadata, err = matchVersion(apiKey, 0, 9)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyLeaderAndIsr:
+		case apikey.LeaderAndIsr:
 			av.LeaderAndIsr, err = matchVersion(apiKey, 0, 4)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyStopReplica:
+		case apikey.StopReplica:
 			av.StopReplica, err = matchVersion(apiKey, 0, 2)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyUpdateMetadata:
+		case apikey.UpdateMetadata:
 			av.UpdateMetadata, err = matchVersion(apiKey, 0, 6)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyControlledShutdown:
+		case apikey.ControlledShutdown:
 			av.ControlledShutdown, err = matchVersion(apiKey, 0, 3)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyOffsetCommit:
+		case apikey.OffsetCommit:
 			av.OffsetCommit, err = matchVersion(apiKey, 0, 8)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyOffsetFetch:
+		case apikey.OffsetFetch:
 			av.OffsetFetch, err = matchVersion(apiKey, 0, 6)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyFindCoordinator:
+		case apikey.FindCoordinator:
 			av.FindCoordinator, err = matchVersion(apiKey, 0, 3)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyJoinGroup:
+		case apikey.JoinGroup:
 			av.JoinGroup, err = matchVersion(apiKey, 0, 6)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyHeartbeat:
+		case apikey.Heartbeat:
 			av.Heartbeat, err = matchVersion(apiKey, 0, 4)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyLeaveGroup:
+		case apikey.LeaveGroup:
 			av.LeaveGroup, err = matchVersion(apiKey, 0, 4)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keySyncGroup:
+		case apikey.SyncGroup:
 			av.SyncGroup, err = matchVersion(apiKey, 0, 4)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyDescribeGroups:
+		case apikey.DescribeGroups:
 			av.DescribeGroups, err = matchVersion(apiKey, 0, 5)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyListGroups:
+		case apikey.ListGroups:
 			av.ListGroups, err = matchVersion(apiKey, 0, 3)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keySaslHandshake:
+		case apikey.SaslHandshake:
 			av.SaslHandshake, err = matchVersion(apiKey, 0, 1)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyApiVersions:
+		case apikey.ApiVersions:
 			av.ApiVersions, err = matchVersion(apiKey, 0, 3)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyCreateTopics:
+		case apikey.CreateTopics:
 			av.CreateTopics, err = matchVersion(apiKey, 0, 5)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyDeleteTopics:
+		case apikey.DeleteTopics:
 			av.DeleteTopics, err = matchVersion(apiKey, 0, 4)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyDeleteRecords:
+		case apikey.DeleteRecords:
 			av.DeleteRecords, err = matchVersion(apiKey, 0, 1)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyInitProducerId:
+		case apikey.InitProducerId:
 			av.InitProducerId, err = matchVersion(apiKey, 0, 2)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyOffsetForLeaderEpoch:
+		case apikey.OffsetForLeaderEpoch:
 			av.OffsetForLeaderEpoch, err = matchVersion(apiKey, 0, 3)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyAddPartitionsToTxn:
+		case apikey.AddPartitionsToTxn:
 			av.AddPartitionsToTxn, err = matchVersion(apiKey, 0, 1)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyAddOffsetsToTxn:
+		case apikey.AddOffsetsToTxn:
 			av.AddOffsetsToTxn, err = matchVersion(apiKey, 0, 1)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyEndTxn:
+		case apikey.EndTxn:
 			av.EndTxn, err = matchVersion(apiKey, 0, 1)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyWriteTxnMarkers:
+		case apikey.WriteTxnMarkers:
 			av.WriteTxnMarkers, err = matchVersion(apiKey, 0, 0)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyTxnOffsetCommit:
+		case apikey.TxnOffsetCommit:
 			av.TxnOffsetCommit, err = matchVersion(apiKey, 0, 2)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyDescribeAcls:
+		case apikey.DescribeAcls:
 			av.DescribeAcls, err = matchVersion(apiKey, 0, 1)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyCreateAcls:
+		case apikey.CreateAcls:
 			av.CreateAcls, err = matchVersion(apiKey, 0, 1)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyDeleteAcls:
+		case apikey.DeleteAcls:
 			av.DeleteAcls, err = matchVersion(apiKey, 0, 1)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyDescribeConfigs:
+		case apikey.DescribeConfigs:
 			av.DescribeConfigs, err = matchVersion(apiKey, 0, 2)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyAlterConfigs:
+		case apikey.AlterConfigs:
 			av.AlterConfigs, err = matchVersion(apiKey, 0, 1)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyAlterReplicaLogDirs:
+		case apikey.AlterReplicaLogDirs:
 			av.AlterReplicaLogDirs, err = matchVersion(apiKey, 0, 1)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyDescribeLogDirs:
+		case apikey.DescribeLogDirs:
 			av.DescribeLogDirs, err = matchVersion(apiKey, 0, 1)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keySaslAuthenticate:
+		case apikey.SaslAuthenticate:
 			av.SaslAuthenticate, err = matchVersion(apiKey, 0, 1)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyCreatePartitions:
+		case apikey.CreatePartitions:
 			av.CreatePartitions, err = matchVersion(apiKey, 0, 1)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyCreateDelegationToken:
+		case apikey.CreateDelegationToken:
 			av.CreateDelegationToken, err = matchVersion(apiKey, 0, 2)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyRenewDelegationToken:
+		case apikey.RenewDelegationToken:
 			av.RenewDelegationToken, err = matchVersion(apiKey, 0, 1)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyExpireDelegationToken:
+		case apikey.ExpireDelegationToken:
 			av.ExpireDelegationToken, err = matchVersion(apiKey, 0, 1)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyDescribeDelegationToken:
+		case apikey.DescribeDelegationToken:
 			av.DescribeDelegationToken, err = matchVersion(apiKey, 0, 1)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyDeleteGroups:
+		case apikey.DeleteGroups:
 			av.DeleteGroups, err = matchVersion(apiKey, 0, 2)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyElectLeaders:
+		case apikey.ElectLeaders:
 			av.ElectLeaders, err = matchVersion(apiKey, 0, 2)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyIncrementalAlterConfigs:
+		case apikey.IncrementalAlterConfigs:
 			av.IncrementalAlterConfigs, err = matchVersion(apiKey, 0, 1)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyAlterPartitionReassignments:
+		case apikey.AlterPartitionReassignments:
 			av.AlterPartitionReassignments, err = matchVersion(apiKey, 0, 0)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyListPartitionReassignments:
+		case apikey.ListPartitionReassignments:
 			av.ListPartitionReassignments, err = matchVersion(apiKey, 0, 0)
 			if err != nil {
 				return apiVersion{}, err
 			}
-		case keyOffsetDelete:
+		case apikey.OffsetDelete:
 			av.OffsetDelete, err = matchVersion(apiKey, 0, 0)
 			if err != nil {
 				return apiVersion{}, err
