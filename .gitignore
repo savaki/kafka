@@ -1,0 +1,12 @@
+# ignore intellij
+#
+.idea
+*.iml
+*.ipr
+*.iws
+
+# ignore generated files
+#
+go.sum
+target
+gin-bin
