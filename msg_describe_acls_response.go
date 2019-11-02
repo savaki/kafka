@@ -43,7 +43,7 @@ func (t DescribeAclsResponse) size(version int16) int32 {
 }
 
 // encode DescribeAclsResponse; Versions: 0-1
-func (t DescribeAclsResponse) encode(e *protocol.Encoder, version int16) {
+func (t DescribeAclsResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	e.PutString(t.ErrorMessage)  // ErrorMessage
@@ -51,12 +51,12 @@ func (t DescribeAclsResponse) encode(e *protocol.Encoder, version int16) {
 	len3 := len(t.Resources)
 	e.PutArrayLength(len3)
 	for i := 0; i < len3; i++ {
-		t.Resources[i].encode(e, version)
+		t.Resources[i].Encode(e, version)
 	}
 }
 
 // decode DescribeAclsResponse; Versions: 0-1
-func (t *DescribeAclsResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeAclsResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -77,7 +77,7 @@ func (t *DescribeAclsResponse) decode(d *protocol.Decoder, version int16) error 
 		t.Resources = make([]DescribeAclsResource29, n)
 		for i := 0; i < n; i++ {
 			var item DescribeAclsResource29
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Resources[i] = item
@@ -109,7 +109,7 @@ func (t DescribeAclsResource29) size(version int16) int32 {
 }
 
 // encode DescribeAclsResource29; Versions: 0-1
-func (t DescribeAclsResource29) encode(e *protocol.Encoder, version int16) {
+func (t DescribeAclsResource29) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt8(t.Type)   // Type
 	e.PutString(t.Name) // Name
 	if version >= 1 {
@@ -119,12 +119,12 @@ func (t DescribeAclsResource29) encode(e *protocol.Encoder, version int16) {
 	len3 := len(t.Acls)
 	e.PutArrayLength(len3)
 	for i := 0; i < len3; i++ {
-		t.Acls[i].encode(e, version)
+		t.Acls[i].Encode(e, version)
 	}
 }
 
 // decode DescribeAclsResource29; Versions: 0-1
-func (t *DescribeAclsResource29) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeAclsResource29) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Type, err = d.Int8()
 	if err != nil {
@@ -147,7 +147,7 @@ func (t *DescribeAclsResource29) decode(d *protocol.Decoder, version int16) erro
 		t.Acls = make([]AclDescription29, n)
 		for i := 0; i < n; i++ {
 			var item AclDescription29
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Acls[i] = item
@@ -174,7 +174,7 @@ func (t AclDescription29) size(version int16) int32 {
 }
 
 // encode AclDescription29; Versions: 0-1
-func (t AclDescription29) encode(e *protocol.Encoder, version int16) {
+func (t AclDescription29) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Principal)    // Principal
 	e.PutString(t.Host)         // Host
 	e.PutInt8(t.Operation)      // Operation
@@ -182,7 +182,7 @@ func (t AclDescription29) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode AclDescription29; Versions: 0-1
-func (t *AclDescription29) decode(d *protocol.Decoder, version int16) error {
+func (t *AclDescription29) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Principal, err = d.String()
 	if err != nil {

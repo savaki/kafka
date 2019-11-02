@@ -38,14 +38,14 @@ func (t RenewDelegationTokenResponse) size(version int16) int32 {
 }
 
 // encode RenewDelegationTokenResponse; Versions: 0-1
-func (t RenewDelegationTokenResponse) encode(e *protocol.Encoder, version int16) {
+func (t RenewDelegationTokenResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)         // ErrorCode
 	e.PutInt64(t.ExpiryTimestampMs) // ExpiryTimestampMs
 	e.PutInt32(t.ThrottleTimeMs)    // ThrottleTimeMs
 }
 
 // decode RenewDelegationTokenResponse; Versions: 0-1
-func (t *RenewDelegationTokenResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *RenewDelegationTokenResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {

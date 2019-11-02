@@ -37,17 +37,17 @@ func (t DescribeLogDirsRequest) size(version int16) int32 {
 }
 
 // encode DescribeLogDirsRequest; Versions: 0-1
-func (t DescribeLogDirsRequest) encode(e *protocol.Encoder, version int16) {
+func (t DescribeLogDirsRequest) Encode(e *protocol.Encoder, version int16) {
 	// Topics
 	len0 := len(t.Topics)
 	e.PutArrayLength(len0)
 	for i := 0; i < len0; i++ {
-		t.Topics[i].encode(e, version)
+		t.Topics[i].Encode(e, version)
 	}
 }
 
 // decode DescribeLogDirsRequest; Versions: 0-1
-func (t *DescribeLogDirsRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeLogDirsRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	// Topics
 	if n, err := d.ArrayLength(); err != nil {
@@ -56,7 +56,7 @@ func (t *DescribeLogDirsRequest) decode(d *protocol.Decoder, version int16) erro
 		t.Topics = make([]DescribableLogDirTopic35, n)
 		for i := 0; i < n; i++ {
 			var item DescribableLogDirTopic35
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Topics[i] = item
@@ -79,13 +79,13 @@ func (t DescribableLogDirTopic35) size(version int16) int32 {
 }
 
 // encode DescribableLogDirTopic35; Versions: 0-1
-func (t DescribableLogDirTopic35) encode(e *protocol.Encoder, version int16) {
+func (t DescribableLogDirTopic35) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Topic)              // Topic
 	e.PutInt32Array(t.PartitionIndex) // PartitionIndex
 }
 
 // decode DescribableLogDirTopic35; Versions: 0-1
-func (t *DescribableLogDirTopic35) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribableLogDirTopic35) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Topic, err = d.String()
 	if err != nil {

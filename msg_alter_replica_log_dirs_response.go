@@ -39,18 +39,18 @@ func (t AlterReplicaLogDirsResponse) size(version int16) int32 {
 }
 
 // encode AlterReplicaLogDirsResponse; Versions: 0-1
-func (t AlterReplicaLogDirsResponse) encode(e *protocol.Encoder, version int16) {
+func (t AlterReplicaLogDirsResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Results
 	len1 := len(t.Results)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Results[i].encode(e, version)
+		t.Results[i].Encode(e, version)
 	}
 }
 
 // decode AlterReplicaLogDirsResponse; Versions: 0-1
-func (t *AlterReplicaLogDirsResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *AlterReplicaLogDirsResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -63,7 +63,7 @@ func (t *AlterReplicaLogDirsResponse) decode(d *protocol.Decoder, version int16)
 		t.Results = make([]AlterReplicaLogDirTopicResult34, n)
 		for i := 0; i < n; i++ {
 			var item AlterReplicaLogDirTopicResult34
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Results[i] = item
@@ -89,18 +89,18 @@ func (t AlterReplicaLogDirTopicResult34) size(version int16) int32 {
 }
 
 // encode AlterReplicaLogDirTopicResult34; Versions: 0-1
-func (t AlterReplicaLogDirTopicResult34) encode(e *protocol.Encoder, version int16) {
+func (t AlterReplicaLogDirTopicResult34) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.TopicName) // TopicName
 	// Partitions
 	len1 := len(t.Partitions)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Partitions[i].encode(e, version)
+		t.Partitions[i].Encode(e, version)
 	}
 }
 
 // decode AlterReplicaLogDirTopicResult34; Versions: 0-1
-func (t *AlterReplicaLogDirTopicResult34) decode(d *protocol.Decoder, version int16) error {
+func (t *AlterReplicaLogDirTopicResult34) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.TopicName, err = d.String()
 	if err != nil {
@@ -113,7 +113,7 @@ func (t *AlterReplicaLogDirTopicResult34) decode(d *protocol.Decoder, version in
 		t.Partitions = make([]AlterReplicaLogDirPartitionResult34, n)
 		for i := 0; i < n; i++ {
 			var item AlterReplicaLogDirPartitionResult34
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Partitions[i] = item
@@ -136,13 +136,13 @@ func (t AlterReplicaLogDirPartitionResult34) size(version int16) int32 {
 }
 
 // encode AlterReplicaLogDirPartitionResult34; Versions: 0-1
-func (t AlterReplicaLogDirPartitionResult34) encode(e *protocol.Encoder, version int16) {
+func (t AlterReplicaLogDirPartitionResult34) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 }
 
 // decode AlterReplicaLogDirPartitionResult34; Versions: 0-1
-func (t *AlterReplicaLogDirPartitionResult34) decode(d *protocol.Decoder, version int16) error {
+func (t *AlterReplicaLogDirPartitionResult34) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {

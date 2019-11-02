@@ -37,17 +37,17 @@ func (t AlterReplicaLogDirsRequest) size(version int16) int32 {
 }
 
 // encode AlterReplicaLogDirsRequest; Versions: 0-1
-func (t AlterReplicaLogDirsRequest) encode(e *protocol.Encoder, version int16) {
+func (t AlterReplicaLogDirsRequest) Encode(e *protocol.Encoder, version int16) {
 	// Dirs
 	len0 := len(t.Dirs)
 	e.PutArrayLength(len0)
 	for i := 0; i < len0; i++ {
-		t.Dirs[i].encode(e, version)
+		t.Dirs[i].Encode(e, version)
 	}
 }
 
 // decode AlterReplicaLogDirsRequest; Versions: 0-1
-func (t *AlterReplicaLogDirsRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *AlterReplicaLogDirsRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	// Dirs
 	if n, err := d.ArrayLength(); err != nil {
@@ -56,7 +56,7 @@ func (t *AlterReplicaLogDirsRequest) decode(d *protocol.Decoder, version int16) 
 		t.Dirs = make([]AlterReplicaLogDir34, n)
 		for i := 0; i < n; i++ {
 			var item AlterReplicaLogDir34
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Dirs[i] = item
@@ -82,18 +82,18 @@ func (t AlterReplicaLogDir34) size(version int16) int32 {
 }
 
 // encode AlterReplicaLogDir34; Versions: 0-1
-func (t AlterReplicaLogDir34) encode(e *protocol.Encoder, version int16) {
+func (t AlterReplicaLogDir34) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Path) // Path
 	// Topics
 	len1 := len(t.Topics)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Topics[i].encode(e, version)
+		t.Topics[i].Encode(e, version)
 	}
 }
 
 // decode AlterReplicaLogDir34; Versions: 0-1
-func (t *AlterReplicaLogDir34) decode(d *protocol.Decoder, version int16) error {
+func (t *AlterReplicaLogDir34) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Path, err = d.String()
 	if err != nil {
@@ -106,7 +106,7 @@ func (t *AlterReplicaLogDir34) decode(d *protocol.Decoder, version int16) error 
 		t.Topics = make([]AlterReplicaLogDirTopic34, n)
 		for i := 0; i < n; i++ {
 			var item AlterReplicaLogDirTopic34
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Topics[i] = item
@@ -129,13 +129,13 @@ func (t AlterReplicaLogDirTopic34) size(version int16) int32 {
 }
 
 // encode AlterReplicaLogDirTopic34; Versions: 0-1
-func (t AlterReplicaLogDirTopic34) encode(e *protocol.Encoder, version int16) {
+func (t AlterReplicaLogDirTopic34) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name)           // Name
 	e.PutInt32Array(t.Partitions) // Partitions
 }
 
 // decode AlterReplicaLogDirTopic34; Versions: 0-1
-func (t *AlterReplicaLogDirTopic34) decode(d *protocol.Decoder, version int16) error {
+func (t *AlterReplicaLogDirTopic34) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {

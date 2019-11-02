@@ -40,7 +40,7 @@ func (t SyncGroupResponse) size(version int16) int32 {
 }
 
 // encode SyncGroupResponse; Versions: 0-4
-func (t SyncGroupResponse) encode(e *protocol.Encoder, version int16) {
+func (t SyncGroupResponse) Encode(e *protocol.Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -49,7 +49,7 @@ func (t SyncGroupResponse) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode SyncGroupResponse; Versions: 0-4
-func (t *SyncGroupResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *SyncGroupResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.ThrottleTimeMs, err = d.Int32()

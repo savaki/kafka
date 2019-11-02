@@ -34,12 +34,12 @@ func (t ResponseHeader) size(version int16) int32 {
 }
 
 // encode ResponseHeader; Versions: 0-1
-func (t ResponseHeader) encode(e *protocol.Encoder, version int16) {
+func (t ResponseHeader) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.CorrelationId) // CorrelationId
 }
 
 // decode ResponseHeader; Versions: 0-1
-func (t *ResponseHeader) decode(d *protocol.Decoder, version int16) error {
+func (t *ResponseHeader) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.CorrelationId, err = d.Int32()
 	if err != nil {

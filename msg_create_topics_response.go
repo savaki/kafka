@@ -41,7 +41,7 @@ func (t CreateTopicsResponse) size(version int16) int32 {
 }
 
 // encode CreateTopicsResponse; Versions: 0-5
-func (t CreateTopicsResponse) encode(e *protocol.Encoder, version int16) {
+func (t CreateTopicsResponse) Encode(e *protocol.Encoder, version int16) {
 	if version >= 2 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -49,12 +49,12 @@ func (t CreateTopicsResponse) encode(e *protocol.Encoder, version int16) {
 	len1 := len(t.Topics)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Topics[i].encode(e, version)
+		t.Topics[i].Encode(e, version)
 	}
 }
 
 // decode CreateTopicsResponse; Versions: 0-5
-func (t *CreateTopicsResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *CreateTopicsResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 2 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -69,7 +69,7 @@ func (t *CreateTopicsResponse) decode(d *protocol.Decoder, version int16) error 
 		t.Topics = make([]CreatableTopicResult19, n)
 		for i := 0; i < n; i++ {
 			var item CreatableTopicResult19
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Topics[i] = item
@@ -115,7 +115,7 @@ func (t CreatableTopicResult19) size(version int16) int32 {
 }
 
 // encode CreatableTopicResult19; Versions: 0-5
-func (t CreatableTopicResult19) encode(e *protocol.Encoder, version int16) {
+func (t CreatableTopicResult19) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name)     // Name
 	e.PutInt16(t.ErrorCode) // ErrorCode
 	if version >= 1 {
@@ -135,13 +135,13 @@ func (t CreatableTopicResult19) encode(e *protocol.Encoder, version int16) {
 		len6 := len(t.Configs)
 		e.PutArrayLength(len6)
 		for i := 0; i < len6; i++ {
-			t.Configs[i].encode(e, version)
+			t.Configs[i].Encode(e, version)
 		}
 	}
 }
 
 // decode CreatableTopicResult19; Versions: 0-5
-func (t *CreatableTopicResult19) decode(d *protocol.Decoder, version int16) error {
+func (t *CreatableTopicResult19) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -183,7 +183,7 @@ func (t *CreatableTopicResult19) decode(d *protocol.Decoder, version int16) erro
 			t.Configs = make([]CreatableTopicConfigs19, n)
 			for i := 0; i < n; i++ {
 				var item CreatableTopicConfigs19
-				if err := (&item).decode(d, version); err != nil {
+				if err := (&item).Decode(d, version); err != nil {
 					return err
 				}
 				t.Configs[i] = item
@@ -223,7 +223,7 @@ func (t CreatableTopicConfigs19) size(version int16) int32 {
 }
 
 // encode CreatableTopicConfigs19; Versions: 0-5
-func (t CreatableTopicConfigs19) encode(e *protocol.Encoder, version int16) {
+func (t CreatableTopicConfigs19) Encode(e *protocol.Encoder, version int16) {
 	if version >= 5 {
 		e.PutString(t.Name) // Name
 	}
@@ -242,7 +242,7 @@ func (t CreatableTopicConfigs19) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode CreatableTopicConfigs19; Versions: 0-5
-func (t *CreatableTopicConfigs19) decode(d *protocol.Decoder, version int16) error {
+func (t *CreatableTopicConfigs19) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 5 {
 		t.Name, err = d.String()

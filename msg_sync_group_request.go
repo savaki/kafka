@@ -47,7 +47,7 @@ func (t SyncGroupRequest) size(version int16) int32 {
 }
 
 // encode SyncGroupRequest; Versions: 0-4
-func (t SyncGroupRequest) encode(e *protocol.Encoder, version int16) {
+func (t SyncGroupRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.GroupId)     // GroupId
 	e.PutInt32(t.GenerationId) // GenerationId
 	e.PutString(t.MemberId)    // MemberId
@@ -58,12 +58,12 @@ func (t SyncGroupRequest) encode(e *protocol.Encoder, version int16) {
 	len4 := len(t.Assignments)
 	e.PutArrayLength(len4)
 	for i := 0; i < len4; i++ {
-		t.Assignments[i].encode(e, version)
+		t.Assignments[i].Encode(e, version)
 	}
 }
 
 // decode SyncGroupRequest; Versions: 0-4
-func (t *SyncGroupRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *SyncGroupRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.GroupId, err = d.String()
 	if err != nil {
@@ -90,7 +90,7 @@ func (t *SyncGroupRequest) decode(d *protocol.Decoder, version int16) error {
 		t.Assignments = make([]SyncGroupRequestAssignment14, n)
 		for i := 0; i < n; i++ {
 			var item SyncGroupRequestAssignment14
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Assignments[i] = item
@@ -113,13 +113,13 @@ func (t SyncGroupRequestAssignment14) size(version int16) int32 {
 }
 
 // encode SyncGroupRequestAssignment14; Versions: 0-4
-func (t SyncGroupRequestAssignment14) encode(e *protocol.Encoder, version int16) {
+func (t SyncGroupRequestAssignment14) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.MemberId)  // MemberId
 	e.PutBytes(t.Assignment) // Assignment
 }
 
 // decode SyncGroupRequestAssignment14; Versions: 0-4
-func (t *SyncGroupRequestAssignment14) decode(d *protocol.Decoder, version int16) error {
+func (t *SyncGroupRequestAssignment14) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.MemberId, err = d.String()
 	if err != nil {

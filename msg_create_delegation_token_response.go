@@ -50,7 +50,7 @@ func (t CreateDelegationTokenResponse) size(version int16) int32 {
 }
 
 // encode CreateDelegationTokenResponse; Versions: 0-2
-func (t CreateDelegationTokenResponse) encode(e *protocol.Encoder, version int16) {
+func (t CreateDelegationTokenResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)         // ErrorCode
 	e.PutString(t.PrincipalType)    // PrincipalType
 	e.PutString(t.PrincipalName)    // PrincipalName
@@ -63,7 +63,7 @@ func (t CreateDelegationTokenResponse) encode(e *protocol.Encoder, version int16
 }
 
 // decode CreateDelegationTokenResponse; Versions: 0-2
-func (t *CreateDelegationTokenResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *CreateDelegationTokenResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {

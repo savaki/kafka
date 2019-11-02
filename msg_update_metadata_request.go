@@ -59,7 +59,7 @@ func (t UpdateMetadataRequest) size(version int16) int32 {
 }
 
 // encode UpdateMetadataRequest; Versions: 0-6
-func (t UpdateMetadataRequest) encode(e *protocol.Encoder, version int16) {
+func (t UpdateMetadataRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.ControllerId)    // ControllerId
 	e.PutInt32(t.ControllerEpoch) // ControllerEpoch
 	if version >= 5 {
@@ -70,7 +70,7 @@ func (t UpdateMetadataRequest) encode(e *protocol.Encoder, version int16) {
 		len3 := len(t.UngroupedPartitionStates)
 		e.PutArrayLength(len3)
 		for i := 0; i < len3; i++ {
-			t.UngroupedPartitionStates[i].encode(e, version)
+			t.UngroupedPartitionStates[i].Encode(e, version)
 		}
 	}
 	if version >= 5 {
@@ -78,19 +78,19 @@ func (t UpdateMetadataRequest) encode(e *protocol.Encoder, version int16) {
 		len4 := len(t.TopicStates)
 		e.PutArrayLength(len4)
 		for i := 0; i < len4; i++ {
-			t.TopicStates[i].encode(e, version)
+			t.TopicStates[i].Encode(e, version)
 		}
 	}
 	// LiveBrokers
 	len5 := len(t.LiveBrokers)
 	e.PutArrayLength(len5)
 	for i := 0; i < len5; i++ {
-		t.LiveBrokers[i].encode(e, version)
+		t.LiveBrokers[i].Encode(e, version)
 	}
 }
 
 // decode UpdateMetadataRequest; Versions: 0-6
-func (t *UpdateMetadataRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *UpdateMetadataRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ControllerId, err = d.Int32()
 	if err != nil {
@@ -114,7 +114,7 @@ func (t *UpdateMetadataRequest) decode(d *protocol.Decoder, version int16) error
 			t.UngroupedPartitionStates = make([]UpdateMetadataPartitionState6, n)
 			for i := 0; i < n; i++ {
 				var item UpdateMetadataPartitionState6
-				if err := (&item).decode(d, version); err != nil {
+				if err := (&item).Decode(d, version); err != nil {
 					return err
 				}
 				t.UngroupedPartitionStates[i] = item
@@ -129,7 +129,7 @@ func (t *UpdateMetadataRequest) decode(d *protocol.Decoder, version int16) error
 			t.TopicStates = make([]UpdateMetadataTopicState6, n)
 			for i := 0; i < n; i++ {
 				var item UpdateMetadataTopicState6
-				if err := (&item).decode(d, version); err != nil {
+				if err := (&item).Decode(d, version); err != nil {
 					return err
 				}
 				t.TopicStates[i] = item
@@ -143,7 +143,7 @@ func (t *UpdateMetadataRequest) decode(d *protocol.Decoder, version int16) error
 		t.LiveBrokers = make([]UpdateMetadataBroker6, n)
 		for i := 0; i < n; i++ {
 			var item UpdateMetadataBroker6
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.LiveBrokers[i] = item
@@ -173,7 +173,7 @@ func (t UpdateMetadataTopicState6) size(version int16) int32 {
 }
 
 // encode UpdateMetadataTopicState6; Versions: 0-6
-func (t UpdateMetadataTopicState6) encode(e *protocol.Encoder, version int16) {
+func (t UpdateMetadataTopicState6) Encode(e *protocol.Encoder, version int16) {
 	if version >= 5 {
 		e.PutString(t.TopicName) // TopicName
 	}
@@ -182,13 +182,13 @@ func (t UpdateMetadataTopicState6) encode(e *protocol.Encoder, version int16) {
 		len1 := len(t.PartitionStates)
 		e.PutArrayLength(len1)
 		for i := 0; i < len1; i++ {
-			t.PartitionStates[i].encode(e, version)
+			t.PartitionStates[i].Encode(e, version)
 		}
 	}
 }
 
 // decode UpdateMetadataTopicState6; Versions: 0-6
-func (t *UpdateMetadataTopicState6) decode(d *protocol.Decoder, version int16) error {
+func (t *UpdateMetadataTopicState6) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 5 {
 		t.TopicName, err = d.String()
@@ -204,7 +204,7 @@ func (t *UpdateMetadataTopicState6) decode(d *protocol.Decoder, version int16) e
 			t.PartitionStates = make([]UpdateMetadataPartitionState6, n)
 			for i := 0; i < n; i++ {
 				var item UpdateMetadataPartitionState6
-				if err := (&item).decode(d, version); err != nil {
+				if err := (&item).Decode(d, version); err != nil {
 					return err
 				}
 				t.PartitionStates[i] = item
@@ -245,7 +245,7 @@ func (t UpdateMetadataBroker6) size(version int16) int32 {
 }
 
 // encode UpdateMetadataBroker6; Versions: 0-6
-func (t UpdateMetadataBroker6) encode(e *protocol.Encoder, version int16) {
+func (t UpdateMetadataBroker6) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.Id) // Id
 	if version >= 0 && version <= 0 {
 		e.PutString(t.V0Host) // V0Host
@@ -258,7 +258,7 @@ func (t UpdateMetadataBroker6) encode(e *protocol.Encoder, version int16) {
 		len3 := len(t.Endpoints)
 		e.PutArrayLength(len3)
 		for i := 0; i < len3; i++ {
-			t.Endpoints[i].encode(e, version)
+			t.Endpoints[i].Encode(e, version)
 		}
 	}
 	if version >= 2 {
@@ -267,7 +267,7 @@ func (t UpdateMetadataBroker6) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode UpdateMetadataBroker6; Versions: 0-6
-func (t *UpdateMetadataBroker6) decode(d *protocol.Decoder, version int16) error {
+func (t *UpdateMetadataBroker6) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Id, err = d.Int32()
 	if err != nil {
@@ -293,7 +293,7 @@ func (t *UpdateMetadataBroker6) decode(d *protocol.Decoder, version int16) error
 			t.Endpoints = make([]UpdateMetadataEndpoint6, n)
 			for i := 0; i < n; i++ {
 				var item UpdateMetadataEndpoint6
-				if err := (&item).decode(d, version); err != nil {
+				if err := (&item).Decode(d, version); err != nil {
 					return err
 				}
 				t.Endpoints[i] = item
@@ -335,7 +335,7 @@ func (t UpdateMetadataEndpoint6) size(version int16) int32 {
 }
 
 // encode UpdateMetadataEndpoint6; Versions: 0-6
-func (t UpdateMetadataEndpoint6) encode(e *protocol.Encoder, version int16) {
+func (t UpdateMetadataEndpoint6) Encode(e *protocol.Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt32(t.Port) // Port
 	}
@@ -351,7 +351,7 @@ func (t UpdateMetadataEndpoint6) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode UpdateMetadataEndpoint6; Versions: 0-6
-func (t *UpdateMetadataEndpoint6) decode(d *protocol.Decoder, version int16) error {
+func (t *UpdateMetadataEndpoint6) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.Port, err = d.Int32()
@@ -412,7 +412,7 @@ func (t UpdateMetadataPartitionState6) size(version int16) int32 {
 }
 
 // encode UpdateMetadataPartitionState6; Versions: 0-6
-func (t UpdateMetadataPartitionState6) encode(e *protocol.Encoder, version int16) {
+func (t UpdateMetadataPartitionState6) Encode(e *protocol.Encoder, version int16) {
 	if version >= 0 && version <= 4 {
 		e.PutString(t.TopicName) // TopicName
 	}
@@ -429,7 +429,7 @@ func (t UpdateMetadataPartitionState6) encode(e *protocol.Encoder, version int16
 }
 
 // decode UpdateMetadataPartitionState6; Versions: 0-6
-func (t *UpdateMetadataPartitionState6) decode(d *protocol.Decoder, version int16) error {
+func (t *UpdateMetadataPartitionState6) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 0 && version <= 4 {
 		t.TopicName, err = d.String()

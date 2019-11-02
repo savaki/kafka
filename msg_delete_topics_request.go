@@ -36,13 +36,13 @@ func (t DeleteTopicsRequest) size(version int16) int32 {
 }
 
 // encode DeleteTopicsRequest; Versions: 0-4
-func (t DeleteTopicsRequest) encode(e *protocol.Encoder, version int16) {
+func (t DeleteTopicsRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutStringArray(t.TopicNames) // TopicNames
 	e.PutInt32(t.TimeoutMs)        // TimeoutMs
 }
 
 // decode DeleteTopicsRequest; Versions: 0-4
-func (t *DeleteTopicsRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteTopicsRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.TopicNames, err = d.StringArray()
 	if err != nil {

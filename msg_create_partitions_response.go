@@ -39,18 +39,18 @@ func (t CreatePartitionsResponse) size(version int16) int32 {
 }
 
 // encode CreatePartitionsResponse; Versions: 0-1
-func (t CreatePartitionsResponse) encode(e *protocol.Encoder, version int16) {
+func (t CreatePartitionsResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Results
 	len1 := len(t.Results)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Results[i].encode(e, version)
+		t.Results[i].Encode(e, version)
 	}
 }
 
 // decode CreatePartitionsResponse; Versions: 0-1
-func (t *CreatePartitionsResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *CreatePartitionsResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -63,7 +63,7 @@ func (t *CreatePartitionsResponse) decode(d *protocol.Decoder, version int16) er
 		t.Results = make([]CreatePartitionsTopicResult37, n)
 		for i := 0; i < n; i++ {
 			var item CreatePartitionsTopicResult37
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Results[i] = item
@@ -88,14 +88,14 @@ func (t CreatePartitionsTopicResult37) size(version int16) int32 {
 }
 
 // encode CreatePartitionsTopicResult37; Versions: 0-1
-func (t CreatePartitionsTopicResult37) encode(e *protocol.Encoder, version int16) {
+func (t CreatePartitionsTopicResult37) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name)         // Name
 	e.PutInt16(t.ErrorCode)     // ErrorCode
 	e.PutString(t.ErrorMessage) // ErrorMessage
 }
 
 // decode CreatePartitionsTopicResult37; Versions: 0-1
-func (t *CreatePartitionsTopicResult37) decode(d *protocol.Decoder, version int16) error {
+func (t *CreatePartitionsTopicResult37) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {

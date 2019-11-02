@@ -36,13 +36,13 @@ func (t InitProducerIdRequest) size(version int16) int32 {
 }
 
 // encode InitProducerIdRequest; Versions: 0-2
-func (t InitProducerIdRequest) encode(e *protocol.Encoder, version int16) {
+func (t InitProducerIdRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.TransactionalId)     // TransactionalId
 	e.PutInt32(t.TransactionTimeoutMs) // TransactionTimeoutMs
 }
 
 // decode InitProducerIdRequest; Versions: 0-2
-func (t *InitProducerIdRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *InitProducerIdRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.TransactionalId, err = d.String()
 	if err != nil {

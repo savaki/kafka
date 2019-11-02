@@ -59,7 +59,7 @@ func (t LeaderAndIsrRequest) size(version int16) int32 {
 }
 
 // encode LeaderAndIsrRequest; Versions: 0-4
-func (t LeaderAndIsrRequest) encode(e *protocol.Encoder, version int16) {
+func (t LeaderAndIsrRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.ControllerId)    // ControllerId
 	e.PutInt32(t.ControllerEpoch) // ControllerEpoch
 	if version >= 2 {
@@ -70,7 +70,7 @@ func (t LeaderAndIsrRequest) encode(e *protocol.Encoder, version int16) {
 		len3 := len(t.UngroupedPartitionStates)
 		e.PutArrayLength(len3)
 		for i := 0; i < len3; i++ {
-			t.UngroupedPartitionStates[i].encode(e, version)
+			t.UngroupedPartitionStates[i].Encode(e, version)
 		}
 	}
 	if version >= 2 {
@@ -78,19 +78,19 @@ func (t LeaderAndIsrRequest) encode(e *protocol.Encoder, version int16) {
 		len4 := len(t.TopicStates)
 		e.PutArrayLength(len4)
 		for i := 0; i < len4; i++ {
-			t.TopicStates[i].encode(e, version)
+			t.TopicStates[i].Encode(e, version)
 		}
 	}
 	// LiveLeaders
 	len5 := len(t.LiveLeaders)
 	e.PutArrayLength(len5)
 	for i := 0; i < len5; i++ {
-		t.LiveLeaders[i].encode(e, version)
+		t.LiveLeaders[i].Encode(e, version)
 	}
 }
 
 // decode LeaderAndIsrRequest; Versions: 0-4
-func (t *LeaderAndIsrRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *LeaderAndIsrRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ControllerId, err = d.Int32()
 	if err != nil {
@@ -114,7 +114,7 @@ func (t *LeaderAndIsrRequest) decode(d *protocol.Decoder, version int16) error {
 			t.UngroupedPartitionStates = make([]LeaderAndIsrPartitionState4, n)
 			for i := 0; i < n; i++ {
 				var item LeaderAndIsrPartitionState4
-				if err := (&item).decode(d, version); err != nil {
+				if err := (&item).Decode(d, version); err != nil {
 					return err
 				}
 				t.UngroupedPartitionStates[i] = item
@@ -129,7 +129,7 @@ func (t *LeaderAndIsrRequest) decode(d *protocol.Decoder, version int16) error {
 			t.TopicStates = make([]LeaderAndIsrTopicState4, n)
 			for i := 0; i < n; i++ {
 				var item LeaderAndIsrTopicState4
-				if err := (&item).decode(d, version); err != nil {
+				if err := (&item).Decode(d, version); err != nil {
 					return err
 				}
 				t.TopicStates[i] = item
@@ -143,7 +143,7 @@ func (t *LeaderAndIsrRequest) decode(d *protocol.Decoder, version int16) error {
 		t.LiveLeaders = make([]LeaderAndIsrLiveLeader4, n)
 		for i := 0; i < n; i++ {
 			var item LeaderAndIsrLiveLeader4
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.LiveLeaders[i] = item
@@ -173,7 +173,7 @@ func (t LeaderAndIsrTopicState4) size(version int16) int32 {
 }
 
 // encode LeaderAndIsrTopicState4; Versions: 0-4
-func (t LeaderAndIsrTopicState4) encode(e *protocol.Encoder, version int16) {
+func (t LeaderAndIsrTopicState4) Encode(e *protocol.Encoder, version int16) {
 	if version >= 2 {
 		e.PutString(t.TopicName) // TopicName
 	}
@@ -182,13 +182,13 @@ func (t LeaderAndIsrTopicState4) encode(e *protocol.Encoder, version int16) {
 		len1 := len(t.PartitionStates)
 		e.PutArrayLength(len1)
 		for i := 0; i < len1; i++ {
-			t.PartitionStates[i].encode(e, version)
+			t.PartitionStates[i].Encode(e, version)
 		}
 	}
 }
 
 // decode LeaderAndIsrTopicState4; Versions: 0-4
-func (t *LeaderAndIsrTopicState4) decode(d *protocol.Decoder, version int16) error {
+func (t *LeaderAndIsrTopicState4) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 2 {
 		t.TopicName, err = d.String()
@@ -204,7 +204,7 @@ func (t *LeaderAndIsrTopicState4) decode(d *protocol.Decoder, version int16) err
 			t.PartitionStates = make([]LeaderAndIsrPartitionState4, n)
 			for i := 0; i < n; i++ {
 				var item LeaderAndIsrPartitionState4
-				if err := (&item).decode(d, version); err != nil {
+				if err := (&item).Decode(d, version); err != nil {
 					return err
 				}
 				t.PartitionStates[i] = item
@@ -230,14 +230,14 @@ func (t LeaderAndIsrLiveLeader4) size(version int16) int32 {
 }
 
 // encode LeaderAndIsrLiveLeader4; Versions: 0-4
-func (t LeaderAndIsrLiveLeader4) encode(e *protocol.Encoder, version int16) {
+func (t LeaderAndIsrLiveLeader4) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.BrokerId)  // BrokerId
 	e.PutString(t.HostName) // HostName
 	e.PutInt32(t.Port)      // Port
 }
 
 // decode LeaderAndIsrLiveLeader4; Versions: 0-4
-func (t *LeaderAndIsrLiveLeader4) decode(d *protocol.Decoder, version int16) error {
+func (t *LeaderAndIsrLiveLeader4) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.BrokerId, err = d.Int32()
 	if err != nil {
@@ -294,7 +294,7 @@ func (t LeaderAndIsrPartitionState4) size(version int16) int32 {
 }
 
 // encode LeaderAndIsrPartitionState4; Versions: 0-4
-func (t LeaderAndIsrPartitionState4) encode(e *protocol.Encoder, version int16) {
+func (t LeaderAndIsrPartitionState4) Encode(e *protocol.Encoder, version int16) {
 	if version >= 0 && version <= 1 {
 		e.PutString(t.TopicName) // TopicName
 	}
@@ -317,7 +317,7 @@ func (t LeaderAndIsrPartitionState4) encode(e *protocol.Encoder, version int16) 
 }
 
 // decode LeaderAndIsrPartitionState4; Versions: 0-4
-func (t *LeaderAndIsrPartitionState4) decode(d *protocol.Decoder, version int16) error {
+func (t *LeaderAndIsrPartitionState4) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 0 && version <= 1 {
 		t.TopicName, err = d.String()

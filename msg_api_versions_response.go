@@ -43,13 +43,13 @@ func (t ApiVersionsResponse) size(version int16) int32 {
 }
 
 // encode ApiVersionsResponse; Versions: 0-3
-func (t ApiVersionsResponse) encode(e *protocol.Encoder, version int16) {
+func (t ApiVersionsResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.ErrorCode) // ErrorCode
 	// ApiKeys
 	len1 := len(t.ApiKeys)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.ApiKeys[i].encode(e, version)
+		t.ApiKeys[i].Encode(e, version)
 	}
 	if version >= 1 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
@@ -57,7 +57,7 @@ func (t ApiVersionsResponse) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ApiVersionsResponse; Versions: 0-3
-func (t *ApiVersionsResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *ApiVersionsResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -70,7 +70,7 @@ func (t *ApiVersionsResponse) decode(d *protocol.Decoder, version int16) error {
 		t.ApiKeys = make([]ApiVersionsResponseKey18, n)
 		for i := 0; i < n; i++ {
 			var item ApiVersionsResponseKey18
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.ApiKeys[i] = item
@@ -101,14 +101,14 @@ func (t ApiVersionsResponseKey18) size(version int16) int32 {
 }
 
 // encode ApiVersionsResponseKey18; Versions: 0-3
-func (t ApiVersionsResponseKey18) encode(e *protocol.Encoder, version int16) {
+func (t ApiVersionsResponseKey18) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.ApiKey)     // ApiKey
 	e.PutInt16(t.MinVersion) // MinVersion
 	e.PutInt16(t.MaxVersion) // MaxVersion
 }
 
 // decode ApiVersionsResponseKey18; Versions: 0-3
-func (t *ApiVersionsResponseKey18) decode(d *protocol.Decoder, version int16) error {
+func (t *ApiVersionsResponseKey18) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ApiKey, err = d.Int16()
 	if err != nil {

@@ -43,7 +43,7 @@ func (t ListGroupsResponse) size(version int16) int32 {
 }
 
 // encode ListGroupsResponse; Versions: 0-3
-func (t ListGroupsResponse) encode(e *protocol.Encoder, version int16) {
+func (t ListGroupsResponse) Encode(e *protocol.Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -52,12 +52,12 @@ func (t ListGroupsResponse) encode(e *protocol.Encoder, version int16) {
 	len2 := len(t.Groups)
 	e.PutArrayLength(len2)
 	for i := 0; i < len2; i++ {
-		t.Groups[i].encode(e, version)
+		t.Groups[i].Encode(e, version)
 	}
 }
 
 // decode ListGroupsResponse; Versions: 0-3
-func (t *ListGroupsResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *ListGroupsResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -76,7 +76,7 @@ func (t *ListGroupsResponse) decode(d *protocol.Decoder, version int16) error {
 		t.Groups = make([]ListedGroup16, n)
 		for i := 0; i < n; i++ {
 			var item ListedGroup16
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Groups[i] = item
@@ -99,13 +99,13 @@ func (t ListedGroup16) size(version int16) int32 {
 }
 
 // encode ListedGroup16; Versions: 0-3
-func (t ListedGroup16) encode(e *protocol.Encoder, version int16) {
+func (t ListedGroup16) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.GroupId)      // GroupId
 	e.PutString(t.ProtocolType) // ProtocolType
 }
 
 // decode ListedGroup16; Versions: 0-3
-func (t *ListedGroup16) decode(d *protocol.Decoder, version int16) error {
+func (t *ListedGroup16) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.GroupId, err = d.String()
 	if err != nil {

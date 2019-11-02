@@ -40,7 +40,7 @@ func (t ApiVersionsRequest) size(version int16) int32 {
 }
 
 // encode ApiVersionsRequest; Versions: 0-3
-func (t ApiVersionsRequest) encode(e *protocol.Encoder, version int16) {
+func (t ApiVersionsRequest) Encode(e *protocol.Encoder, version int16) {
 	if version >= 3 {
 		e.PutString(t.ClientSoftwareName) // ClientSoftwareName
 	}
@@ -50,7 +50,7 @@ func (t ApiVersionsRequest) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ApiVersionsRequest; Versions: 0-3
-func (t *ApiVersionsRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *ApiVersionsRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 3 {
 		t.ClientSoftwareName, err = d.String()

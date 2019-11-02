@@ -39,18 +39,18 @@ func (t AlterConfigsRequest) size(version int16) int32 {
 }
 
 // encode AlterConfigsRequest; Versions: 0-1
-func (t AlterConfigsRequest) encode(e *protocol.Encoder, version int16) {
+func (t AlterConfigsRequest) Encode(e *protocol.Encoder, version int16) {
 	// Resources
 	len0 := len(t.Resources)
 	e.PutArrayLength(len0)
 	for i := 0; i < len0; i++ {
-		t.Resources[i].encode(e, version)
+		t.Resources[i].Encode(e, version)
 	}
 	e.PutBool(t.ValidateOnly) // ValidateOnly
 }
 
 // decode AlterConfigsRequest; Versions: 0-1
-func (t *AlterConfigsRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *AlterConfigsRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	// Resources
 	if n, err := d.ArrayLength(); err != nil {
@@ -59,7 +59,7 @@ func (t *AlterConfigsRequest) decode(d *protocol.Decoder, version int16) error {
 		t.Resources = make([]AlterConfigsResource33, n)
 		for i := 0; i < n; i++ {
 			var item AlterConfigsResource33
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Resources[i] = item
@@ -91,19 +91,19 @@ func (t AlterConfigsResource33) size(version int16) int32 {
 }
 
 // encode AlterConfigsResource33; Versions: 0-1
-func (t AlterConfigsResource33) encode(e *protocol.Encoder, version int16) {
+func (t AlterConfigsResource33) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt8(t.ResourceType)   // ResourceType
 	e.PutString(t.ResourceName) // ResourceName
 	// Configs
 	len2 := len(t.Configs)
 	e.PutArrayLength(len2)
 	for i := 0; i < len2; i++ {
-		t.Configs[i].encode(e, version)
+		t.Configs[i].Encode(e, version)
 	}
 }
 
 // decode AlterConfigsResource33; Versions: 0-1
-func (t *AlterConfigsResource33) decode(d *protocol.Decoder, version int16) error {
+func (t *AlterConfigsResource33) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ResourceType, err = d.Int8()
 	if err != nil {
@@ -120,7 +120,7 @@ func (t *AlterConfigsResource33) decode(d *protocol.Decoder, version int16) erro
 		t.Configs = make([]AlterableConfig33, n)
 		for i := 0; i < n; i++ {
 			var item AlterableConfig33
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Configs[i] = item
@@ -143,13 +143,13 @@ func (t AlterableConfig33) size(version int16) int32 {
 }
 
 // encode AlterableConfig33; Versions: 0-1
-func (t AlterableConfig33) encode(e *protocol.Encoder, version int16) {
+func (t AlterableConfig33) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name)  // Name
 	e.PutString(t.Value) // Value
 }
 
 // decode AlterableConfig33; Versions: 0-1
-func (t *AlterableConfig33) decode(d *protocol.Decoder, version int16) error {
+func (t *AlterableConfig33) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {

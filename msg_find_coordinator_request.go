@@ -38,7 +38,7 @@ func (t FindCoordinatorRequest) size(version int16) int32 {
 }
 
 // encode FindCoordinatorRequest; Versions: 0-3
-func (t FindCoordinatorRequest) encode(e *protocol.Encoder, version int16) {
+func (t FindCoordinatorRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Key) // Key
 	if version >= 1 {
 		e.PutInt8(t.KeyType) // KeyType
@@ -46,7 +46,7 @@ func (t FindCoordinatorRequest) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode FindCoordinatorRequest; Versions: 0-3
-func (t *FindCoordinatorRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *FindCoordinatorRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Key, err = d.String()
 	if err != nil {

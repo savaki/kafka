@@ -41,19 +41,19 @@ func (t DescribeDelegationTokenResponse) size(version int16) int32 {
 }
 
 // encode DescribeDelegationTokenResponse; Versions: 0-1
-func (t DescribeDelegationTokenResponse) encode(e *protocol.Encoder, version int16) {
+func (t DescribeDelegationTokenResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.ErrorCode) // ErrorCode
 	// Tokens
 	len1 := len(t.Tokens)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Tokens[i].encode(e, version)
+		t.Tokens[i].Encode(e, version)
 	}
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 }
 
 // decode DescribeDelegationTokenResponse; Versions: 0-1
-func (t *DescribeDelegationTokenResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeDelegationTokenResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -66,7 +66,7 @@ func (t *DescribeDelegationTokenResponse) decode(d *protocol.Decoder, version in
 		t.Tokens = make([]DescribedDelegationToken41, n)
 		for i := 0; i < n; i++ {
 			var item DescribedDelegationToken41
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Tokens[i] = item
@@ -108,7 +108,7 @@ func (t DescribedDelegationToken41) size(version int16) int32 {
 }
 
 // encode DescribedDelegationToken41; Versions: 0-1
-func (t DescribedDelegationToken41) encode(e *protocol.Encoder, version int16) {
+func (t DescribedDelegationToken41) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.PrincipalType)  // PrincipalType
 	e.PutString(t.PrincipalName)  // PrincipalName
 	e.PutInt64(t.IssueTimestamp)  // IssueTimestamp
@@ -120,12 +120,12 @@ func (t DescribedDelegationToken41) encode(e *protocol.Encoder, version int16) {
 	len7 := len(t.Renewers)
 	e.PutArrayLength(len7)
 	for i := 0; i < len7; i++ {
-		t.Renewers[i].encode(e, version)
+		t.Renewers[i].Encode(e, version)
 	}
 }
 
 // decode DescribedDelegationToken41; Versions: 0-1
-func (t *DescribedDelegationToken41) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribedDelegationToken41) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.PrincipalType, err = d.String()
 	if err != nil {
@@ -162,7 +162,7 @@ func (t *DescribedDelegationToken41) decode(d *protocol.Decoder, version int16) 
 		t.Renewers = make([]DescribedDelegationTokenRenewer41, n)
 		for i := 0; i < n; i++ {
 			var item DescribedDelegationTokenRenewer41
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Renewers[i] = item
@@ -185,13 +185,13 @@ func (t DescribedDelegationTokenRenewer41) size(version int16) int32 {
 }
 
 // encode DescribedDelegationTokenRenewer41; Versions: 0-1
-func (t DescribedDelegationTokenRenewer41) encode(e *protocol.Encoder, version int16) {
+func (t DescribedDelegationTokenRenewer41) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.PrincipalType) // PrincipalType
 	e.PutString(t.PrincipalName) // PrincipalName
 }
 
 // decode DescribedDelegationTokenRenewer41; Versions: 0-1
-func (t *DescribedDelegationTokenRenewer41) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribedDelegationTokenRenewer41) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.PrincipalType, err = d.String()
 	if err != nil {

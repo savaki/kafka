@@ -41,12 +41,12 @@ func (t DescribeConfigsRequest) size(version int16) int32 {
 }
 
 // encode DescribeConfigsRequest; Versions: 0-2
-func (t DescribeConfigsRequest) encode(e *protocol.Encoder, version int16) {
+func (t DescribeConfigsRequest) Encode(e *protocol.Encoder, version int16) {
 	// Resources
 	len0 := len(t.Resources)
 	e.PutArrayLength(len0)
 	for i := 0; i < len0; i++ {
-		t.Resources[i].encode(e, version)
+		t.Resources[i].Encode(e, version)
 	}
 	if version >= 1 {
 		e.PutBool(t.IncludeSynoyms) // IncludeSynoyms
@@ -54,7 +54,7 @@ func (t DescribeConfigsRequest) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeConfigsRequest; Versions: 0-2
-func (t *DescribeConfigsRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeConfigsRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	// Resources
 	if n, err := d.ArrayLength(); err != nil {
@@ -63,7 +63,7 @@ func (t *DescribeConfigsRequest) decode(d *protocol.Decoder, version int16) erro
 		t.Resources = make([]DescribeConfigsResource32, n)
 		for i := 0; i < n; i++ {
 			var item DescribeConfigsResource32
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Resources[i] = item
@@ -94,14 +94,14 @@ func (t DescribeConfigsResource32) size(version int16) int32 {
 }
 
 // encode DescribeConfigsResource32; Versions: 0-2
-func (t DescribeConfigsResource32) encode(e *protocol.Encoder, version int16) {
+func (t DescribeConfigsResource32) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt8(t.ResourceType)             // ResourceType
 	e.PutString(t.ResourceName)           // ResourceName
 	e.PutStringArray(t.ConfigurationKeys) // ConfigurationKeys
 }
 
 // decode DescribeConfigsResource32; Versions: 0-2
-func (t *DescribeConfigsResource32) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeConfigsResource32) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ResourceType, err = d.Int8()
 	if err != nil {

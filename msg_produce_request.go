@@ -45,7 +45,7 @@ func (t ProduceRequest) size(version int16) int32 {
 }
 
 // encode ProduceRequest; Versions: 0-8
-func (t ProduceRequest) encode(e *protocol.Encoder, version int16) {
+func (t ProduceRequest) Encode(e *protocol.Encoder, version int16) {
 	if version >= 3 {
 		e.PutString(t.TransactionalId) // TransactionalId
 	}
@@ -55,12 +55,12 @@ func (t ProduceRequest) encode(e *protocol.Encoder, version int16) {
 	len3 := len(t.Topics)
 	e.PutArrayLength(len3)
 	for i := 0; i < len3; i++ {
-		t.Topics[i].encode(e, version)
+		t.Topics[i].Encode(e, version)
 	}
 }
 
 // decode ProduceRequest; Versions: 0-8
-func (t *ProduceRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *ProduceRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 3 {
 		t.TransactionalId, err = d.String()
@@ -83,7 +83,7 @@ func (t *ProduceRequest) decode(d *protocol.Decoder, version int16) error {
 		t.Topics = make([]TopicProduceData0, n)
 		for i := 0; i < n; i++ {
 			var item TopicProduceData0
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Topics[i] = item
@@ -109,18 +109,18 @@ func (t TopicProduceData0) size(version int16) int32 {
 }
 
 // encode TopicProduceData0; Versions: 0-8
-func (t TopicProduceData0) encode(e *protocol.Encoder, version int16) {
+func (t TopicProduceData0) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Partitions[i].encode(e, version)
+		t.Partitions[i].Encode(e, version)
 	}
 }
 
 // decode TopicProduceData0; Versions: 0-8
-func (t *TopicProduceData0) decode(d *protocol.Decoder, version int16) error {
+func (t *TopicProduceData0) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -133,7 +133,7 @@ func (t *TopicProduceData0) decode(d *protocol.Decoder, version int16) error {
 		t.Partitions = make([]PartitionProduceData0, n)
 		for i := 0; i < n; i++ {
 			var item PartitionProduceData0
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Partitions[i] = item
@@ -156,13 +156,13 @@ func (t PartitionProduceData0) size(version int16) int32 {
 }
 
 // encode PartitionProduceData0; Versions: 0-8
-func (t PartitionProduceData0) encode(e *protocol.Encoder, version int16) {
+func (t PartitionProduceData0) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutBytes(t.Records)        // Records
 }
 
 // decode PartitionProduceData0; Versions: 0-8
-func (t *PartitionProduceData0) decode(d *protocol.Decoder, version int16) error {
+func (t *PartitionProduceData0) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {

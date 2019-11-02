@@ -45,7 +45,7 @@ func (t LeaveGroupRequest) size(version int16) int32 {
 }
 
 // encode LeaveGroupRequest; Versions: 0-4
-func (t LeaveGroupRequest) encode(e *protocol.Encoder, version int16) {
+func (t LeaveGroupRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.GroupId) // GroupId
 	if version >= 0 && version <= 2 {
 		e.PutString(t.MemberId) // MemberId
@@ -55,13 +55,13 @@ func (t LeaveGroupRequest) encode(e *protocol.Encoder, version int16) {
 		len2 := len(t.Members)
 		e.PutArrayLength(len2)
 		for i := 0; i < len2; i++ {
-			t.Members[i].encode(e, version)
+			t.Members[i].Encode(e, version)
 		}
 	}
 }
 
 // decode LeaveGroupRequest; Versions: 0-4
-func (t *LeaveGroupRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *LeaveGroupRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.GroupId, err = d.String()
 	if err != nil {
@@ -81,7 +81,7 @@ func (t *LeaveGroupRequest) decode(d *protocol.Decoder, version int16) error {
 			t.Members = make([]MemberIdentity13, n)
 			for i := 0; i < n; i++ {
 				var item MemberIdentity13
-				if err := (&item).decode(d, version); err != nil {
+				if err := (&item).Decode(d, version); err != nil {
 					return err
 				}
 				t.Members[i] = item
@@ -109,7 +109,7 @@ func (t MemberIdentity13) size(version int16) int32 {
 }
 
 // encode MemberIdentity13; Versions: 0-4
-func (t MemberIdentity13) encode(e *protocol.Encoder, version int16) {
+func (t MemberIdentity13) Encode(e *protocol.Encoder, version int16) {
 	if version >= 3 {
 		e.PutString(t.MemberId) // MemberId
 	}
@@ -119,7 +119,7 @@ func (t MemberIdentity13) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode MemberIdentity13; Versions: 0-4
-func (t *MemberIdentity13) decode(d *protocol.Decoder, version int16) error {
+func (t *MemberIdentity13) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 3 {
 		t.MemberId, err = d.String()

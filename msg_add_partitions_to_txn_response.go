@@ -39,18 +39,18 @@ func (t AddPartitionsToTxnResponse) size(version int16) int32 {
 }
 
 // encode AddPartitionsToTxnResponse; Versions: 0-1
-func (t AddPartitionsToTxnResponse) encode(e *protocol.Encoder, version int16) {
+func (t AddPartitionsToTxnResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Results
 	len1 := len(t.Results)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Results[i].encode(e, version)
+		t.Results[i].Encode(e, version)
 	}
 }
 
 // decode AddPartitionsToTxnResponse; Versions: 0-1
-func (t *AddPartitionsToTxnResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *AddPartitionsToTxnResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -63,7 +63,7 @@ func (t *AddPartitionsToTxnResponse) decode(d *protocol.Decoder, version int16) 
 		t.Results = make([]AddPartitionsToTxnTopicResult24, n)
 		for i := 0; i < n; i++ {
 			var item AddPartitionsToTxnTopicResult24
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Results[i] = item
@@ -89,18 +89,18 @@ func (t AddPartitionsToTxnTopicResult24) size(version int16) int32 {
 }
 
 // encode AddPartitionsToTxnTopicResult24; Versions: 0-1
-func (t AddPartitionsToTxnTopicResult24) encode(e *protocol.Encoder, version int16) {
+func (t AddPartitionsToTxnTopicResult24) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Results
 	len1 := len(t.Results)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Results[i].encode(e, version)
+		t.Results[i].Encode(e, version)
 	}
 }
 
 // decode AddPartitionsToTxnTopicResult24; Versions: 0-1
-func (t *AddPartitionsToTxnTopicResult24) decode(d *protocol.Decoder, version int16) error {
+func (t *AddPartitionsToTxnTopicResult24) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -113,7 +113,7 @@ func (t *AddPartitionsToTxnTopicResult24) decode(d *protocol.Decoder, version in
 		t.Results = make([]AddPartitionsToTxnPartitionResult24, n)
 		for i := 0; i < n; i++ {
 			var item AddPartitionsToTxnPartitionResult24
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Results[i] = item
@@ -136,13 +136,13 @@ func (t AddPartitionsToTxnPartitionResult24) size(version int16) int32 {
 }
 
 // encode AddPartitionsToTxnPartitionResult24; Versions: 0-1
-func (t AddPartitionsToTxnPartitionResult24) encode(e *protocol.Encoder, version int16) {
+func (t AddPartitionsToTxnPartitionResult24) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 }
 
 // decode AddPartitionsToTxnPartitionResult24; Versions: 0-1
-func (t *AddPartitionsToTxnPartitionResult24) decode(d *protocol.Decoder, version int16) error {
+func (t *AddPartitionsToTxnPartitionResult24) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {

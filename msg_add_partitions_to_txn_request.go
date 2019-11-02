@@ -43,7 +43,7 @@ func (t AddPartitionsToTxnRequest) size(version int16) int32 {
 }
 
 // encode AddPartitionsToTxnRequest; Versions: 0-1
-func (t AddPartitionsToTxnRequest) encode(e *protocol.Encoder, version int16) {
+func (t AddPartitionsToTxnRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.TransactionalId) // TransactionalId
 	e.PutInt64(t.ProducerId)       // ProducerId
 	e.PutInt16(t.ProducerEpoch)    // ProducerEpoch
@@ -51,12 +51,12 @@ func (t AddPartitionsToTxnRequest) encode(e *protocol.Encoder, version int16) {
 	len3 := len(t.Topics)
 	e.PutArrayLength(len3)
 	for i := 0; i < len3; i++ {
-		t.Topics[i].encode(e, version)
+		t.Topics[i].Encode(e, version)
 	}
 }
 
 // decode AddPartitionsToTxnRequest; Versions: 0-1
-func (t *AddPartitionsToTxnRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *AddPartitionsToTxnRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.TransactionalId, err = d.String()
 	if err != nil {
@@ -77,7 +77,7 @@ func (t *AddPartitionsToTxnRequest) decode(d *protocol.Decoder, version int16) e
 		t.Topics = make([]AddPartitionsToTxnTopic24, n)
 		for i := 0; i < n; i++ {
 			var item AddPartitionsToTxnTopic24
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Topics[i] = item
@@ -100,13 +100,13 @@ func (t AddPartitionsToTxnTopic24) size(version int16) int32 {
 }
 
 // encode AddPartitionsToTxnTopic24; Versions: 0-1
-func (t AddPartitionsToTxnTopic24) encode(e *protocol.Encoder, version int16) {
+func (t AddPartitionsToTxnTopic24) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name)           // Name
 	e.PutInt32Array(t.Partitions) // Partitions
 }
 
 // decode AddPartitionsToTxnTopic24; Versions: 0-1
-func (t *AddPartitionsToTxnTopic24) decode(d *protocol.Decoder, version int16) error {
+func (t *AddPartitionsToTxnTopic24) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {

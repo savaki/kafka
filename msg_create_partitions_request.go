@@ -41,19 +41,19 @@ func (t CreatePartitionsRequest) size(version int16) int32 {
 }
 
 // encode CreatePartitionsRequest; Versions: 0-1
-func (t CreatePartitionsRequest) encode(e *protocol.Encoder, version int16) {
+func (t CreatePartitionsRequest) Encode(e *protocol.Encoder, version int16) {
 	// Topics
 	len0 := len(t.Topics)
 	e.PutArrayLength(len0)
 	for i := 0; i < len0; i++ {
-		t.Topics[i].encode(e, version)
+		t.Topics[i].Encode(e, version)
 	}
 	e.PutInt32(t.TimeoutMs)   // TimeoutMs
 	e.PutBool(t.ValidateOnly) // ValidateOnly
 }
 
 // decode CreatePartitionsRequest; Versions: 0-1
-func (t *CreatePartitionsRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *CreatePartitionsRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	// Topics
 	if n, err := d.ArrayLength(); err != nil {
@@ -62,7 +62,7 @@ func (t *CreatePartitionsRequest) decode(d *protocol.Decoder, version int16) err
 		t.Topics = make([]CreatePartitionsTopic37, n)
 		for i := 0; i < n; i++ {
 			var item CreatePartitionsTopic37
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Topics[i] = item
@@ -98,19 +98,19 @@ func (t CreatePartitionsTopic37) size(version int16) int32 {
 }
 
 // encode CreatePartitionsTopic37; Versions: 0-1
-func (t CreatePartitionsTopic37) encode(e *protocol.Encoder, version int16) {
+func (t CreatePartitionsTopic37) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	e.PutInt32(t.Count) // Count
 	// Assignments
 	len2 := len(t.Assignments)
 	e.PutArrayLength(len2)
 	for i := 0; i < len2; i++ {
-		t.Assignments[i].encode(e, version)
+		t.Assignments[i].Encode(e, version)
 	}
 }
 
 // decode CreatePartitionsTopic37; Versions: 0-1
-func (t *CreatePartitionsTopic37) decode(d *protocol.Decoder, version int16) error {
+func (t *CreatePartitionsTopic37) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -127,7 +127,7 @@ func (t *CreatePartitionsTopic37) decode(d *protocol.Decoder, version int16) err
 		t.Assignments = make([]CreatePartitionsAssignment37, n)
 		for i := 0; i < n; i++ {
 			var item CreatePartitionsAssignment37
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Assignments[i] = item
@@ -148,12 +148,12 @@ func (t CreatePartitionsAssignment37) size(version int16) int32 {
 }
 
 // encode CreatePartitionsAssignment37; Versions: 0-1
-func (t CreatePartitionsAssignment37) encode(e *protocol.Encoder, version int16) {
+func (t CreatePartitionsAssignment37) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32Array(t.BrokerIds) // BrokerIds
 }
 
 // decode CreatePartitionsAssignment37; Versions: 0-1
-func (t *CreatePartitionsAssignment37) decode(d *protocol.Decoder, version int16) error {
+func (t *CreatePartitionsAssignment37) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.BrokerIds, err = d.Int32Array()
 	if err != nil {

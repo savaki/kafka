@@ -34,12 +34,12 @@ func (t UpdateMetadataResponse) size(version int16) int32 {
 }
 
 // encode UpdateMetadataResponse; Versions: 0-6
-func (t UpdateMetadataResponse) encode(e *protocol.Encoder, version int16) {
+func (t UpdateMetadataResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.ErrorCode) // ErrorCode
 }
 
 // decode UpdateMetadataResponse; Versions: 0-6
-func (t *UpdateMetadataResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *UpdateMetadataResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {

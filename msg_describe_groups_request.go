@@ -38,7 +38,7 @@ func (t DescribeGroupsRequest) size(version int16) int32 {
 }
 
 // encode DescribeGroupsRequest; Versions: 0-5
-func (t DescribeGroupsRequest) encode(e *protocol.Encoder, version int16) {
+func (t DescribeGroupsRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutStringArray(t.Groups) // Groups
 	if version >= 3 {
 		e.PutBool(t.IncludeAuthorizedOperations) // IncludeAuthorizedOperations
@@ -46,7 +46,7 @@ func (t DescribeGroupsRequest) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeGroupsRequest; Versions: 0-5
-func (t *DescribeGroupsRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeGroupsRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Groups, err = d.StringArray()
 	if err != nil {

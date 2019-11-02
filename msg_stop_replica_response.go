@@ -39,18 +39,18 @@ func (t StopReplicaResponse) size(version int16) int32 {
 }
 
 // encode StopReplicaResponse; Versions: 0-2
-func (t StopReplicaResponse) encode(e *protocol.Encoder, version int16) {
+func (t StopReplicaResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.ErrorCode) // ErrorCode
 	// PartitionErrors
 	len1 := len(t.PartitionErrors)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.PartitionErrors[i].encode(e, version)
+		t.PartitionErrors[i].Encode(e, version)
 	}
 }
 
 // decode StopReplicaResponse; Versions: 0-2
-func (t *StopReplicaResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *StopReplicaResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -63,7 +63,7 @@ func (t *StopReplicaResponse) decode(d *protocol.Decoder, version int16) error {
 		t.PartitionErrors = make([]StopReplicaPartitionError5, n)
 		for i := 0; i < n; i++ {
 			var item StopReplicaPartitionError5
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.PartitionErrors[i] = item
@@ -88,14 +88,14 @@ func (t StopReplicaPartitionError5) size(version int16) int32 {
 }
 
 // encode StopReplicaPartitionError5; Versions: 0-2
-func (t StopReplicaPartitionError5) encode(e *protocol.Encoder, version int16) {
+func (t StopReplicaPartitionError5) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.TopicName)     // TopicName
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 }
 
 // decode StopReplicaPartitionError5; Versions: 0-2
-func (t *StopReplicaPartitionError5) decode(d *protocol.Decoder, version int16) error {
+func (t *StopReplicaPartitionError5) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.TopicName, err = d.String()
 	if err != nil {

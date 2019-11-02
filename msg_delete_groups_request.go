@@ -34,12 +34,12 @@ func (t DeleteGroupsRequest) size(version int16) int32 {
 }
 
 // encode DeleteGroupsRequest; Versions: 0-2
-func (t DeleteGroupsRequest) encode(e *protocol.Encoder, version int16) {
+func (t DeleteGroupsRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutStringArray(t.GroupsNames) // GroupsNames
 }
 
 // decode DeleteGroupsRequest; Versions: 0-2
-func (t *DeleteGroupsRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteGroupsRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.GroupsNames, err = d.StringArray()
 	if err != nil {

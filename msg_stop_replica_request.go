@@ -56,7 +56,7 @@ func (t StopReplicaRequest) size(version int16) int32 {
 }
 
 // encode StopReplicaRequest; Versions: 0-2
-func (t StopReplicaRequest) encode(e *protocol.Encoder, version int16) {
+func (t StopReplicaRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.ControllerId)    // ControllerId
 	e.PutInt32(t.ControllerEpoch) // ControllerEpoch
 	if version >= 1 {
@@ -68,7 +68,7 @@ func (t StopReplicaRequest) encode(e *protocol.Encoder, version int16) {
 		len4 := len(t.UngroupedPartitions)
 		e.PutArrayLength(len4)
 		for i := 0; i < len4; i++ {
-			t.UngroupedPartitions[i].encode(e, version)
+			t.UngroupedPartitions[i].Encode(e, version)
 		}
 	}
 	if version >= 1 {
@@ -76,13 +76,13 @@ func (t StopReplicaRequest) encode(e *protocol.Encoder, version int16) {
 		len5 := len(t.Topics)
 		e.PutArrayLength(len5)
 		for i := 0; i < len5; i++ {
-			t.Topics[i].encode(e, version)
+			t.Topics[i].Encode(e, version)
 		}
 	}
 }
 
 // decode StopReplicaRequest; Versions: 0-2
-func (t *StopReplicaRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *StopReplicaRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ControllerId, err = d.Int32()
 	if err != nil {
@@ -110,7 +110,7 @@ func (t *StopReplicaRequest) decode(d *protocol.Decoder, version int16) error {
 			t.UngroupedPartitions = make([]StopReplicaPartitionV05, n)
 			for i := 0; i < n; i++ {
 				var item StopReplicaPartitionV05
-				if err := (&item).decode(d, version); err != nil {
+				if err := (&item).Decode(d, version); err != nil {
 					return err
 				}
 				t.UngroupedPartitions[i] = item
@@ -125,7 +125,7 @@ func (t *StopReplicaRequest) decode(d *protocol.Decoder, version int16) error {
 			t.Topics = make([]StopReplicaTopic5, n)
 			for i := 0; i < n; i++ {
 				var item StopReplicaTopic5
-				if err := (&item).decode(d, version); err != nil {
+				if err := (&item).Decode(d, version); err != nil {
 					return err
 				}
 				t.Topics[i] = item
@@ -153,7 +153,7 @@ func (t StopReplicaPartitionV05) size(version int16) int32 {
 }
 
 // encode StopReplicaPartitionV05; Versions: 0-2
-func (t StopReplicaPartitionV05) encode(e *protocol.Encoder, version int16) {
+func (t StopReplicaPartitionV05) Encode(e *protocol.Encoder, version int16) {
 	if version >= 0 && version <= 0 {
 		e.PutString(t.TopicName) // TopicName
 	}
@@ -163,7 +163,7 @@ func (t StopReplicaPartitionV05) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode StopReplicaPartitionV05; Versions: 0-2
-func (t *StopReplicaPartitionV05) decode(d *protocol.Decoder, version int16) error {
+func (t *StopReplicaPartitionV05) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 0 && version <= 0 {
 		t.TopicName, err = d.String()
@@ -198,7 +198,7 @@ func (t StopReplicaTopic5) size(version int16) int32 {
 }
 
 // encode StopReplicaTopic5; Versions: 0-2
-func (t StopReplicaTopic5) encode(e *protocol.Encoder, version int16) {
+func (t StopReplicaTopic5) Encode(e *protocol.Encoder, version int16) {
 	if version >= 1 {
 		e.PutString(t.Name) // Name
 	}
@@ -208,7 +208,7 @@ func (t StopReplicaTopic5) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode StopReplicaTopic5; Versions: 0-2
-func (t *StopReplicaTopic5) decode(d *protocol.Decoder, version int16) error {
+func (t *StopReplicaTopic5) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.Name, err = d.String()

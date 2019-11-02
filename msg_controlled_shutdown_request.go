@@ -38,7 +38,7 @@ func (t ControlledShutdownRequest) size(version int16) int32 {
 }
 
 // encode ControlledShutdownRequest; Versions: 0-3
-func (t ControlledShutdownRequest) encode(e *protocol.Encoder, version int16) {
+func (t ControlledShutdownRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.BrokerId) // BrokerId
 	if version >= 2 {
 		e.PutInt64(t.BrokerEpoch) // BrokerEpoch
@@ -46,7 +46,7 @@ func (t ControlledShutdownRequest) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ControlledShutdownRequest; Versions: 0-3
-func (t *ControlledShutdownRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *ControlledShutdownRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.BrokerId, err = d.Int32()
 	if err != nil {

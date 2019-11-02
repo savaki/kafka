@@ -39,18 +39,18 @@ func (t TxnOffsetCommitResponse) size(version int16) int32 {
 }
 
 // encode TxnOffsetCommitResponse; Versions: 0-2
-func (t TxnOffsetCommitResponse) encode(e *protocol.Encoder, version int16) {
+func (t TxnOffsetCommitResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Topics
 	len1 := len(t.Topics)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Topics[i].encode(e, version)
+		t.Topics[i].Encode(e, version)
 	}
 }
 
 // decode TxnOffsetCommitResponse; Versions: 0-2
-func (t *TxnOffsetCommitResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *TxnOffsetCommitResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -63,7 +63,7 @@ func (t *TxnOffsetCommitResponse) decode(d *protocol.Decoder, version int16) err
 		t.Topics = make([]TxnOffsetCommitResponseTopic28, n)
 		for i := 0; i < n; i++ {
 			var item TxnOffsetCommitResponseTopic28
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Topics[i] = item
@@ -89,18 +89,18 @@ func (t TxnOffsetCommitResponseTopic28) size(version int16) int32 {
 }
 
 // encode TxnOffsetCommitResponseTopic28; Versions: 0-2
-func (t TxnOffsetCommitResponseTopic28) encode(e *protocol.Encoder, version int16) {
+func (t TxnOffsetCommitResponseTopic28) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Partitions[i].encode(e, version)
+		t.Partitions[i].Encode(e, version)
 	}
 }
 
 // decode TxnOffsetCommitResponseTopic28; Versions: 0-2
-func (t *TxnOffsetCommitResponseTopic28) decode(d *protocol.Decoder, version int16) error {
+func (t *TxnOffsetCommitResponseTopic28) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -113,7 +113,7 @@ func (t *TxnOffsetCommitResponseTopic28) decode(d *protocol.Decoder, version int
 		t.Partitions = make([]TxnOffsetCommitResponsePartition28, n)
 		for i := 0; i < n; i++ {
 			var item TxnOffsetCommitResponsePartition28
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Partitions[i] = item
@@ -136,13 +136,13 @@ func (t TxnOffsetCommitResponsePartition28) size(version int16) int32 {
 }
 
 // encode TxnOffsetCommitResponsePartition28; Versions: 0-2
-func (t TxnOffsetCommitResponsePartition28) encode(e *protocol.Encoder, version int16) {
+func (t TxnOffsetCommitResponsePartition28) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 }
 
 // decode TxnOffsetCommitResponsePartition28; Versions: 0-2
-func (t *TxnOffsetCommitResponsePartition28) decode(d *protocol.Decoder, version int16) error {
+func (t *TxnOffsetCommitResponsePartition28) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {

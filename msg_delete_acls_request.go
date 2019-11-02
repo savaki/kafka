@@ -37,17 +37,17 @@ func (t DeleteAclsRequest) size(version int16) int32 {
 }
 
 // encode DeleteAclsRequest; Versions: 0-1
-func (t DeleteAclsRequest) encode(e *protocol.Encoder, version int16) {
+func (t DeleteAclsRequest) Encode(e *protocol.Encoder, version int16) {
 	// Filters
 	len0 := len(t.Filters)
 	e.PutArrayLength(len0)
 	for i := 0; i < len0; i++ {
-		t.Filters[i].encode(e, version)
+		t.Filters[i].Encode(e, version)
 	}
 }
 
 // decode DeleteAclsRequest; Versions: 0-1
-func (t *DeleteAclsRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteAclsRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	// Filters
 	if n, err := d.ArrayLength(); err != nil {
@@ -56,7 +56,7 @@ func (t *DeleteAclsRequest) decode(d *protocol.Decoder, version int16) error {
 		t.Filters = make([]DeleteAclsFilter31, n)
 		for i := 0; i < n; i++ {
 			var item DeleteAclsFilter31
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Filters[i] = item
@@ -91,7 +91,7 @@ func (t DeleteAclsFilter31) size(version int16) int32 {
 }
 
 // encode DeleteAclsFilter31; Versions: 0-1
-func (t DeleteAclsFilter31) encode(e *protocol.Encoder, version int16) {
+func (t DeleteAclsFilter31) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt8(t.ResourceTypeFilter)   // ResourceTypeFilter
 	e.PutString(t.ResourceNameFilter) // ResourceNameFilter
 	if version >= 1 {
@@ -104,7 +104,7 @@ func (t DeleteAclsFilter31) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DeleteAclsFilter31; Versions: 0-1
-func (t *DeleteAclsFilter31) decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteAclsFilter31) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ResourceTypeFilter, err = d.Int8()
 	if err != nil {

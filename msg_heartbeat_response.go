@@ -38,7 +38,7 @@ func (t HeartbeatResponse) size(version int16) int32 {
 }
 
 // encode HeartbeatResponse; Versions: 0-4
-func (t HeartbeatResponse) encode(e *protocol.Encoder, version int16) {
+func (t HeartbeatResponse) Encode(e *protocol.Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -46,7 +46,7 @@ func (t HeartbeatResponse) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode HeartbeatResponse; Versions: 0-4
-func (t *HeartbeatResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *HeartbeatResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.ThrottleTimeMs, err = d.Int32()

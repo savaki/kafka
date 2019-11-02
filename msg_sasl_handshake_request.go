@@ -34,12 +34,12 @@ func (t SaslHandshakeRequest) size(version int16) int32 {
 }
 
 // encode SaslHandshakeRequest; Versions: 0-1
-func (t SaslHandshakeRequest) encode(e *protocol.Encoder, version int16) {
+func (t SaslHandshakeRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Mechanism) // Mechanism
 }
 
 // decode SaslHandshakeRequest; Versions: 0-1
-func (t *SaslHandshakeRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *SaslHandshakeRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Mechanism, err = d.String()
 	if err != nil {

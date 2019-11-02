@@ -49,7 +49,7 @@ func (t FetchResponse) size(version int16) int32 {
 }
 
 // encode FetchResponse; Versions: 0-11
-func (t FetchResponse) encode(e *protocol.Encoder, version int16) {
+func (t FetchResponse) Encode(e *protocol.Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -63,12 +63,12 @@ func (t FetchResponse) encode(e *protocol.Encoder, version int16) {
 	len3 := len(t.Topics)
 	e.PutArrayLength(len3)
 	for i := 0; i < len3; i++ {
-		t.Topics[i].encode(e, version)
+		t.Topics[i].Encode(e, version)
 	}
 }
 
 // decode FetchResponse; Versions: 0-11
-func (t *FetchResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *FetchResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -95,7 +95,7 @@ func (t *FetchResponse) decode(d *protocol.Decoder, version int16) error {
 		t.Topics = make([]FetchableTopicResponse1, n)
 		for i := 0; i < n; i++ {
 			var item FetchableTopicResponse1
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Topics[i] = item
@@ -121,18 +121,18 @@ func (t FetchableTopicResponse1) size(version int16) int32 {
 }
 
 // encode FetchableTopicResponse1; Versions: 0-11
-func (t FetchableTopicResponse1) encode(e *protocol.Encoder, version int16) {
+func (t FetchableTopicResponse1) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Partitions[i].encode(e, version)
+		t.Partitions[i].Encode(e, version)
 	}
 }
 
 // decode FetchableTopicResponse1; Versions: 0-11
-func (t *FetchableTopicResponse1) decode(d *protocol.Decoder, version int16) error {
+func (t *FetchableTopicResponse1) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -145,7 +145,7 @@ func (t *FetchableTopicResponse1) decode(d *protocol.Decoder, version int16) err
 		t.Partitions = make([]FetchablePartitionResponse1, n)
 		for i := 0; i < n; i++ {
 			var item FetchablePartitionResponse1
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Partitions[i] = item
@@ -191,7 +191,7 @@ func (t FetchablePartitionResponse1) size(version int16) int32 {
 }
 
 // encode FetchablePartitionResponse1; Versions: 0-11
-func (t FetchablePartitionResponse1) encode(e *protocol.Encoder, version int16) {
+func (t FetchablePartitionResponse1) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	e.PutInt64(t.HighWatermark)  // HighWatermark
@@ -206,7 +206,7 @@ func (t FetchablePartitionResponse1) encode(e *protocol.Encoder, version int16) 
 		len5 := len(t.Aborted)
 		e.PutArrayLength(len5)
 		for i := 0; i < len5; i++ {
-			t.Aborted[i].encode(e, version)
+			t.Aborted[i].Encode(e, version)
 		}
 	}
 	if version >= 11 {
@@ -216,7 +216,7 @@ func (t FetchablePartitionResponse1) encode(e *protocol.Encoder, version int16) 
 }
 
 // decode FetchablePartitionResponse1; Versions: 0-11
-func (t *FetchablePartitionResponse1) decode(d *protocol.Decoder, version int16) error {
+func (t *FetchablePartitionResponse1) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -250,7 +250,7 @@ func (t *FetchablePartitionResponse1) decode(d *protocol.Decoder, version int16)
 			t.Aborted = make([]AbortedTransaction1, n)
 			for i := 0; i < n; i++ {
 				var item AbortedTransaction1
-				if err := (&item).decode(d, version); err != nil {
+				if err := (&item).Decode(d, version); err != nil {
 					return err
 				}
 				t.Aborted[i] = item
@@ -288,7 +288,7 @@ func (t AbortedTransaction1) size(version int16) int32 {
 }
 
 // encode AbortedTransaction1; Versions: 0-11
-func (t AbortedTransaction1) encode(e *protocol.Encoder, version int16) {
+func (t AbortedTransaction1) Encode(e *protocol.Encoder, version int16) {
 	if version >= 4 {
 		e.PutInt64(t.ProducerId) // ProducerId
 	}
@@ -298,7 +298,7 @@ func (t AbortedTransaction1) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode AbortedTransaction1; Versions: 0-11
-func (t *AbortedTransaction1) decode(d *protocol.Decoder, version int16) error {
+func (t *AbortedTransaction1) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 4 {
 		t.ProducerId, err = d.Int64()

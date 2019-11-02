@@ -51,7 +51,7 @@ func (t JoinGroupResponse) size(version int16) int32 {
 }
 
 // encode JoinGroupResponse; Versions: 0-6
-func (t JoinGroupResponse) encode(e *protocol.Encoder, version int16) {
+func (t JoinGroupResponse) Encode(e *protocol.Encoder, version int16) {
 	if version >= 2 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -64,12 +64,12 @@ func (t JoinGroupResponse) encode(e *protocol.Encoder, version int16) {
 	len6 := len(t.Members)
 	e.PutArrayLength(len6)
 	for i := 0; i < len6; i++ {
-		t.Members[i].encode(e, version)
+		t.Members[i].Encode(e, version)
 	}
 }
 
 // decode JoinGroupResponse; Versions: 0-6
-func (t *JoinGroupResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *JoinGroupResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 2 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -104,7 +104,7 @@ func (t *JoinGroupResponse) decode(d *protocol.Decoder, version int16) error {
 		t.Members = make([]JoinGroupResponseMember11, n)
 		for i := 0; i < n; i++ {
 			var item JoinGroupResponseMember11
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Members[i] = item
@@ -131,7 +131,7 @@ func (t JoinGroupResponseMember11) size(version int16) int32 {
 }
 
 // encode JoinGroupResponseMember11; Versions: 0-6
-func (t JoinGroupResponseMember11) encode(e *protocol.Encoder, version int16) {
+func (t JoinGroupResponseMember11) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.MemberId) // MemberId
 	if version >= 5 {
 		e.PutString(t.GroupInstanceId) // GroupInstanceId
@@ -140,7 +140,7 @@ func (t JoinGroupResponseMember11) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode JoinGroupResponseMember11; Versions: 0-6
-func (t *JoinGroupResponseMember11) decode(d *protocol.Decoder, version int16) error {
+func (t *JoinGroupResponseMember11) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.MemberId, err = d.String()
 	if err != nil {

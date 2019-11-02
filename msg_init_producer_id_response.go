@@ -40,7 +40,7 @@ func (t InitProducerIdResponse) size(version int16) int32 {
 }
 
 // encode InitProducerIdResponse; Versions: 0-2
-func (t InitProducerIdResponse) encode(e *protocol.Encoder, version int16) {
+func (t InitProducerIdResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	e.PutInt64(t.ProducerId)     // ProducerId
@@ -48,7 +48,7 @@ func (t InitProducerIdResponse) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode InitProducerIdResponse; Versions: 0-2
-func (t *InitProducerIdResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *InitProducerIdResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {

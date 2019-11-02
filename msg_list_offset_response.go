@@ -41,7 +41,7 @@ func (t ListOffsetResponse) size(version int16) int32 {
 }
 
 // encode ListOffsetResponse; Versions: 0-5
-func (t ListOffsetResponse) encode(e *protocol.Encoder, version int16) {
+func (t ListOffsetResponse) Encode(e *protocol.Encoder, version int16) {
 	if version >= 2 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -49,12 +49,12 @@ func (t ListOffsetResponse) encode(e *protocol.Encoder, version int16) {
 	len1 := len(t.Topics)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Topics[i].encode(e, version)
+		t.Topics[i].Encode(e, version)
 	}
 }
 
 // decode ListOffsetResponse; Versions: 0-5
-func (t *ListOffsetResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *ListOffsetResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 2 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -69,7 +69,7 @@ func (t *ListOffsetResponse) decode(d *protocol.Decoder, version int16) error {
 		t.Topics = make([]ListOffsetTopicResponse2, n)
 		for i := 0; i < n; i++ {
 			var item ListOffsetTopicResponse2
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Topics[i] = item
@@ -95,18 +95,18 @@ func (t ListOffsetTopicResponse2) size(version int16) int32 {
 }
 
 // encode ListOffsetTopicResponse2; Versions: 0-5
-func (t ListOffsetTopicResponse2) encode(e *protocol.Encoder, version int16) {
+func (t ListOffsetTopicResponse2) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Partitions[i].encode(e, version)
+		t.Partitions[i].Encode(e, version)
 	}
 }
 
 // decode ListOffsetTopicResponse2; Versions: 0-5
-func (t *ListOffsetTopicResponse2) decode(d *protocol.Decoder, version int16) error {
+func (t *ListOffsetTopicResponse2) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -119,7 +119,7 @@ func (t *ListOffsetTopicResponse2) decode(d *protocol.Decoder, version int16) er
 		t.Partitions = make([]ListOffsetPartitionResponse2, n)
 		for i := 0; i < n; i++ {
 			var item ListOffsetPartitionResponse2
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Partitions[i] = item
@@ -158,7 +158,7 @@ func (t ListOffsetPartitionResponse2) size(version int16) int32 {
 }
 
 // encode ListOffsetPartitionResponse2; Versions: 0-5
-func (t ListOffsetPartitionResponse2) encode(e *protocol.Encoder, version int16) {
+func (t ListOffsetPartitionResponse2) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	if version >= 0 && version <= 0 {
@@ -176,7 +176,7 @@ func (t ListOffsetPartitionResponse2) encode(e *protocol.Encoder, version int16)
 }
 
 // decode ListOffsetPartitionResponse2; Versions: 0-5
-func (t *ListOffsetPartitionResponse2) decode(d *protocol.Decoder, version int16) error {
+func (t *ListOffsetPartitionResponse2) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {

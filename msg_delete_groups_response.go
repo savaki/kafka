@@ -39,18 +39,18 @@ func (t DeleteGroupsResponse) size(version int16) int32 {
 }
 
 // encode DeleteGroupsResponse; Versions: 0-2
-func (t DeleteGroupsResponse) encode(e *protocol.Encoder, version int16) {
+func (t DeleteGroupsResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Results
 	len1 := len(t.Results)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Results[i].encode(e, version)
+		t.Results[i].Encode(e, version)
 	}
 }
 
 // decode DeleteGroupsResponse; Versions: 0-2
-func (t *DeleteGroupsResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteGroupsResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -63,7 +63,7 @@ func (t *DeleteGroupsResponse) decode(d *protocol.Decoder, version int16) error 
 		t.Results = make([]DeletableGroupResult42, n)
 		for i := 0; i < n; i++ {
 			var item DeletableGroupResult42
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Results[i] = item
@@ -86,13 +86,13 @@ func (t DeletableGroupResult42) size(version int16) int32 {
 }
 
 // encode DeletableGroupResult42; Versions: 0-2
-func (t DeletableGroupResult42) encode(e *protocol.Encoder, version int16) {
+func (t DeletableGroupResult42) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.GroupId)  // GroupId
 	e.PutInt16(t.ErrorCode) // ErrorCode
 }
 
 // decode DeletableGroupResult42; Versions: 0-2
-func (t *DeletableGroupResult42) decode(d *protocol.Decoder, version int16) error {
+func (t *DeletableGroupResult42) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.GroupId, err = d.String()
 	if err != nil {

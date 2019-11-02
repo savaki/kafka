@@ -39,18 +39,18 @@ func (t LeaderAndIsrResponse) size(version int16) int32 {
 }
 
 // encode LeaderAndIsrResponse; Versions: 0-4
-func (t LeaderAndIsrResponse) encode(e *protocol.Encoder, version int16) {
+func (t LeaderAndIsrResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.ErrorCode) // ErrorCode
 	// PartitionErrors
 	len1 := len(t.PartitionErrors)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.PartitionErrors[i].encode(e, version)
+		t.PartitionErrors[i].Encode(e, version)
 	}
 }
 
 // decode LeaderAndIsrResponse; Versions: 0-4
-func (t *LeaderAndIsrResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *LeaderAndIsrResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -63,7 +63,7 @@ func (t *LeaderAndIsrResponse) decode(d *protocol.Decoder, version int16) error 
 		t.PartitionErrors = make([]LeaderAndIsrPartitionError4, n)
 		for i := 0; i < n; i++ {
 			var item LeaderAndIsrPartitionError4
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.PartitionErrors[i] = item
@@ -88,14 +88,14 @@ func (t LeaderAndIsrPartitionError4) size(version int16) int32 {
 }
 
 // encode LeaderAndIsrPartitionError4; Versions: 0-4
-func (t LeaderAndIsrPartitionError4) encode(e *protocol.Encoder, version int16) {
+func (t LeaderAndIsrPartitionError4) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.TopicName)     // TopicName
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 }
 
 // decode LeaderAndIsrPartitionError4; Versions: 0-4
-func (t *LeaderAndIsrPartitionError4) decode(d *protocol.Decoder, version int16) error {
+func (t *LeaderAndIsrPartitionError4) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.TopicName, err = d.String()
 	if err != nil {

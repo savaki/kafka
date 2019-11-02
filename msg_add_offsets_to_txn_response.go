@@ -36,13 +36,13 @@ func (t AddOffsetsToTxnResponse) size(version int16) int32 {
 }
 
 // encode AddOffsetsToTxnResponse; Versions: 0-1
-func (t AddOffsetsToTxnResponse) encode(e *protocol.Encoder, version int16) {
+func (t AddOffsetsToTxnResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 }
 
 // decode AddOffsetsToTxnResponse; Versions: 0-1
-func (t *AddOffsetsToTxnResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *AddOffsetsToTxnResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {

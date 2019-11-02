@@ -39,18 +39,18 @@ func (t AlterConfigsResponse) size(version int16) int32 {
 }
 
 // encode AlterConfigsResponse; Versions: 0-1
-func (t AlterConfigsResponse) encode(e *protocol.Encoder, version int16) {
+func (t AlterConfigsResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Responses
 	len1 := len(t.Responses)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Responses[i].encode(e, version)
+		t.Responses[i].Encode(e, version)
 	}
 }
 
 // decode AlterConfigsResponse; Versions: 0-1
-func (t *AlterConfigsResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *AlterConfigsResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -63,7 +63,7 @@ func (t *AlterConfigsResponse) decode(d *protocol.Decoder, version int16) error 
 		t.Responses = make([]AlterConfigsResourceResponse33, n)
 		for i := 0; i < n; i++ {
 			var item AlterConfigsResourceResponse33
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Responses[i] = item
@@ -90,7 +90,7 @@ func (t AlterConfigsResourceResponse33) size(version int16) int32 {
 }
 
 // encode AlterConfigsResourceResponse33; Versions: 0-1
-func (t AlterConfigsResourceResponse33) encode(e *protocol.Encoder, version int16) {
+func (t AlterConfigsResourceResponse33) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)     // ErrorCode
 	e.PutString(t.ErrorMessage) // ErrorMessage
 	e.PutInt8(t.ResourceType)   // ResourceType
@@ -98,7 +98,7 @@ func (t AlterConfigsResourceResponse33) encode(e *protocol.Encoder, version int1
 }
 
 // decode AlterConfigsResourceResponse33; Versions: 0-1
-func (t *AlterConfigsResourceResponse33) decode(d *protocol.Decoder, version int16) error {
+func (t *AlterConfigsResourceResponse33) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {

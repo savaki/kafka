@@ -43,7 +43,7 @@ func (t ListPartitionReassignmentsResponse) size(version int16) int32 {
 }
 
 // encode ListPartitionReassignmentsResponse; Versions: 0
-func (t ListPartitionReassignmentsResponse) encode(e *protocol.Encoder, version int16) {
+func (t ListPartitionReassignmentsResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	e.PutString(t.ErrorMessage)  // ErrorMessage
@@ -51,12 +51,12 @@ func (t ListPartitionReassignmentsResponse) encode(e *protocol.Encoder, version 
 	len3 := len(t.Topics)
 	e.PutArrayLength(len3)
 	for i := 0; i < len3; i++ {
-		t.Topics[i].encode(e, version)
+		t.Topics[i].Encode(e, version)
 	}
 }
 
 // decode ListPartitionReassignmentsResponse; Versions: 0
-func (t *ListPartitionReassignmentsResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *ListPartitionReassignmentsResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -77,7 +77,7 @@ func (t *ListPartitionReassignmentsResponse) decode(d *protocol.Decoder, version
 		t.Topics = make([]OngoingTopicReassignment46, n)
 		for i := 0; i < n; i++ {
 			var item OngoingTopicReassignment46
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Topics[i] = item
@@ -103,18 +103,18 @@ func (t OngoingTopicReassignment46) size(version int16) int32 {
 }
 
 // encode OngoingTopicReassignment46; Versions: 0
-func (t OngoingTopicReassignment46) encode(e *protocol.Encoder, version int16) {
+func (t OngoingTopicReassignment46) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Partitions[i].encode(e, version)
+		t.Partitions[i].Encode(e, version)
 	}
 }
 
 // decode OngoingTopicReassignment46; Versions: 0
-func (t *OngoingTopicReassignment46) decode(d *protocol.Decoder, version int16) error {
+func (t *OngoingTopicReassignment46) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -127,7 +127,7 @@ func (t *OngoingTopicReassignment46) decode(d *protocol.Decoder, version int16) 
 		t.Partitions = make([]OngoingPartitionReassignment46, n)
 		for i := 0; i < n; i++ {
 			var item OngoingPartitionReassignment46
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Partitions[i] = item
@@ -154,7 +154,7 @@ func (t OngoingPartitionReassignment46) size(version int16) int32 {
 }
 
 // encode OngoingPartitionReassignment46; Versions: 0
-func (t OngoingPartitionReassignment46) encode(e *protocol.Encoder, version int16) {
+func (t OngoingPartitionReassignment46) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex)        // PartitionIndex
 	e.PutInt32Array(t.Replicas)         // Replicas
 	e.PutInt32Array(t.AddingReplicas)   // AddingReplicas
@@ -162,7 +162,7 @@ func (t OngoingPartitionReassignment46) encode(e *protocol.Encoder, version int1
 }
 
 // decode OngoingPartitionReassignment46; Versions: 0
-func (t *OngoingPartitionReassignment46) decode(d *protocol.Decoder, version int16) error {
+func (t *OngoingPartitionReassignment46) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {

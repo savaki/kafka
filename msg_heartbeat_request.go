@@ -42,7 +42,7 @@ func (t HeartbeatRequest) size(version int16) int32 {
 }
 
 // encode HeartbeatRequest; Versions: 0-4
-func (t HeartbeatRequest) encode(e *protocol.Encoder, version int16) {
+func (t HeartbeatRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.GroupId)     // GroupId
 	e.PutInt32(t.GenerationId) // GenerationId
 	e.PutString(t.MemberId)    // MemberId
@@ -52,7 +52,7 @@ func (t HeartbeatRequest) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode HeartbeatRequest; Versions: 0-4
-func (t *HeartbeatRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *HeartbeatRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.GroupId, err = d.String()
 	if err != nil {

@@ -37,17 +37,17 @@ func (t WriteTxnMarkersRequest) size(version int16) int32 {
 }
 
 // encode WriteTxnMarkersRequest; Versions: 0
-func (t WriteTxnMarkersRequest) encode(e *protocol.Encoder, version int16) {
+func (t WriteTxnMarkersRequest) Encode(e *protocol.Encoder, version int16) {
 	// Markers
 	len0 := len(t.Markers)
 	e.PutArrayLength(len0)
 	for i := 0; i < len0; i++ {
-		t.Markers[i].encode(e, version)
+		t.Markers[i].Encode(e, version)
 	}
 }
 
 // decode WriteTxnMarkersRequest; Versions: 0
-func (t *WriteTxnMarkersRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *WriteTxnMarkersRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	// Markers
 	if n, err := d.ArrayLength(); err != nil {
@@ -56,7 +56,7 @@ func (t *WriteTxnMarkersRequest) decode(d *protocol.Decoder, version int16) erro
 		t.Markers = make([]WritableTxnMarker27, n)
 		for i := 0; i < n; i++ {
 			var item WritableTxnMarker27
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Markers[i] = item
@@ -88,7 +88,7 @@ func (t WritableTxnMarker27) size(version int16) int32 {
 }
 
 // encode WritableTxnMarker27; Versions: 0
-func (t WritableTxnMarker27) encode(e *protocol.Encoder, version int16) {
+func (t WritableTxnMarker27) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt64(t.ProducerId)       // ProducerId
 	e.PutInt16(t.ProducerEpoch)    // ProducerEpoch
 	e.PutBool(t.TransactionResult) // TransactionResult
@@ -96,13 +96,13 @@ func (t WritableTxnMarker27) encode(e *protocol.Encoder, version int16) {
 	len3 := len(t.Topics)
 	e.PutArrayLength(len3)
 	for i := 0; i < len3; i++ {
-		t.Topics[i].encode(e, version)
+		t.Topics[i].Encode(e, version)
 	}
 	e.PutInt32(t.CoordinatorEpoch) // CoordinatorEpoch
 }
 
 // decode WritableTxnMarker27; Versions: 0
-func (t *WritableTxnMarker27) decode(d *protocol.Decoder, version int16) error {
+func (t *WritableTxnMarker27) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ProducerId, err = d.Int64()
 	if err != nil {
@@ -123,7 +123,7 @@ func (t *WritableTxnMarker27) decode(d *protocol.Decoder, version int16) error {
 		t.Topics = make([]WritableTxnMarkerTopic27, n)
 		for i := 0; i < n; i++ {
 			var item WritableTxnMarkerTopic27
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Topics[i] = item
@@ -150,13 +150,13 @@ func (t WritableTxnMarkerTopic27) size(version int16) int32 {
 }
 
 // encode WritableTxnMarkerTopic27; Versions: 0
-func (t WritableTxnMarkerTopic27) encode(e *protocol.Encoder, version int16) {
+func (t WritableTxnMarkerTopic27) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name)                 // Name
 	e.PutInt32Array(t.PartitionIndexes) // PartitionIndexes
 }
 
 // decode WritableTxnMarkerTopic27; Versions: 0
-func (t *WritableTxnMarkerTopic27) decode(d *protocol.Decoder, version int16) error {
+func (t *WritableTxnMarkerTopic27) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {

@@ -37,17 +37,17 @@ func (t CreateAclsRequest) size(version int16) int32 {
 }
 
 // encode CreateAclsRequest; Versions: 0-1
-func (t CreateAclsRequest) encode(e *protocol.Encoder, version int16) {
+func (t CreateAclsRequest) Encode(e *protocol.Encoder, version int16) {
 	// Creations
 	len0 := len(t.Creations)
 	e.PutArrayLength(len0)
 	for i := 0; i < len0; i++ {
-		t.Creations[i].encode(e, version)
+		t.Creations[i].Encode(e, version)
 	}
 }
 
 // decode CreateAclsRequest; Versions: 0-1
-func (t *CreateAclsRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *CreateAclsRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	// Creations
 	if n, err := d.ArrayLength(); err != nil {
@@ -56,7 +56,7 @@ func (t *CreateAclsRequest) decode(d *protocol.Decoder, version int16) error {
 		t.Creations = make([]CreatableAcl30, n)
 		for i := 0; i < n; i++ {
 			var item CreatableAcl30
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Creations[i] = item
@@ -91,7 +91,7 @@ func (t CreatableAcl30) size(version int16) int32 {
 }
 
 // encode CreatableAcl30; Versions: 0-1
-func (t CreatableAcl30) encode(e *protocol.Encoder, version int16) {
+func (t CreatableAcl30) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt8(t.ResourceType)   // ResourceType
 	e.PutString(t.ResourceName) // ResourceName
 	if version >= 1 {
@@ -104,7 +104,7 @@ func (t CreatableAcl30) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode CreatableAcl30; Versions: 0-1
-func (t *CreatableAcl30) decode(d *protocol.Decoder, version int16) error {
+func (t *CreatableAcl30) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ResourceType, err = d.Int8()
 	if err != nil {

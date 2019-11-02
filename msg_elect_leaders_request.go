@@ -43,7 +43,7 @@ func (t ElectLeadersRequest) size(version int16) int32 {
 }
 
 // encode ElectLeadersRequest; Versions: 0-2
-func (t ElectLeadersRequest) encode(e *protocol.Encoder, version int16) {
+func (t ElectLeadersRequest) Encode(e *protocol.Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt8(t.ElectionType) // ElectionType
 	}
@@ -51,13 +51,13 @@ func (t ElectLeadersRequest) encode(e *protocol.Encoder, version int16) {
 	len1 := len(t.TopicPartitions)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.TopicPartitions[i].encode(e, version)
+		t.TopicPartitions[i].Encode(e, version)
 	}
 	e.PutInt32(t.TimeoutMs) // TimeoutMs
 }
 
 // decode ElectLeadersRequest; Versions: 0-2
-func (t *ElectLeadersRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *ElectLeadersRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.ElectionType, err = d.Int8()
@@ -72,7 +72,7 @@ func (t *ElectLeadersRequest) decode(d *protocol.Decoder, version int16) error {
 		t.TopicPartitions = make([]TopicPartitions43, n)
 		for i := 0; i < n; i++ {
 			var item TopicPartitions43
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.TopicPartitions[i] = item
@@ -99,13 +99,13 @@ func (t TopicPartitions43) size(version int16) int32 {
 }
 
 // encode TopicPartitions43; Versions: 0-2
-func (t TopicPartitions43) encode(e *protocol.Encoder, version int16) {
+func (t TopicPartitions43) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Topic)           // Topic
 	e.PutInt32Array(t.PartitionId) // PartitionId
 }
 
 // decode TopicPartitions43; Versions: 0-2
-func (t *TopicPartitions43) decode(d *protocol.Decoder, version int16) error {
+func (t *TopicPartitions43) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Topic, err = d.String()
 	if err != nil {

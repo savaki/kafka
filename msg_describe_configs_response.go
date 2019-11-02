@@ -39,18 +39,18 @@ func (t DescribeConfigsResponse) size(version int16) int32 {
 }
 
 // encode DescribeConfigsResponse; Versions: 0-2
-func (t DescribeConfigsResponse) encode(e *protocol.Encoder, version int16) {
+func (t DescribeConfigsResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Results
 	len1 := len(t.Results)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Results[i].encode(e, version)
+		t.Results[i].Encode(e, version)
 	}
 }
 
 // decode DescribeConfigsResponse; Versions: 0-2
-func (t *DescribeConfigsResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeConfigsResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -63,7 +63,7 @@ func (t *DescribeConfigsResponse) decode(d *protocol.Decoder, version int16) err
 		t.Results = make([]DescribeConfigsResult32, n)
 		for i := 0; i < n; i++ {
 			var item DescribeConfigsResult32
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Results[i] = item
@@ -95,7 +95,7 @@ func (t DescribeConfigsResult32) size(version int16) int32 {
 }
 
 // encode DescribeConfigsResult32; Versions: 0-2
-func (t DescribeConfigsResult32) encode(e *protocol.Encoder, version int16) {
+func (t DescribeConfigsResult32) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)     // ErrorCode
 	e.PutString(t.ErrorMessage) // ErrorMessage
 	e.PutInt8(t.ResourceType)   // ResourceType
@@ -104,12 +104,12 @@ func (t DescribeConfigsResult32) encode(e *protocol.Encoder, version int16) {
 	len4 := len(t.Configs)
 	e.PutArrayLength(len4)
 	for i := 0; i < len4; i++ {
-		t.Configs[i].encode(e, version)
+		t.Configs[i].Encode(e, version)
 	}
 }
 
 // decode DescribeConfigsResult32; Versions: 0-2
-func (t *DescribeConfigsResult32) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeConfigsResult32) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -134,7 +134,7 @@ func (t *DescribeConfigsResult32) decode(d *protocol.Decoder, version int16) err
 		t.Configs = make([]DescribeConfigsResourceResult32, n)
 		for i := 0; i < n; i++ {
 			var item DescribeConfigsResourceResult32
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Configs[i] = item
@@ -176,7 +176,7 @@ func (t DescribeConfigsResourceResult32) size(version int16) int32 {
 }
 
 // encode DescribeConfigsResourceResult32; Versions: 0-2
-func (t DescribeConfigsResourceResult32) encode(e *protocol.Encoder, version int16) {
+func (t DescribeConfigsResourceResult32) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name)   // Name
 	e.PutString(t.Value)  // Value
 	e.PutBool(t.ReadOnly) // ReadOnly
@@ -192,13 +192,13 @@ func (t DescribeConfigsResourceResult32) encode(e *protocol.Encoder, version int
 		len6 := len(t.Synonyms)
 		e.PutArrayLength(len6)
 		for i := 0; i < len6; i++ {
-			t.Synonyms[i].encode(e, version)
+			t.Synonyms[i].Encode(e, version)
 		}
 	}
 }
 
 // decode DescribeConfigsResourceResult32; Versions: 0-2
-func (t *DescribeConfigsResourceResult32) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeConfigsResourceResult32) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -236,7 +236,7 @@ func (t *DescribeConfigsResourceResult32) decode(d *protocol.Decoder, version in
 			t.Synonyms = make([]DescribeConfigsSynonym32, n)
 			for i := 0; i < n; i++ {
 				var item DescribeConfigsSynonym32
-				if err := (&item).decode(d, version); err != nil {
+				if err := (&item).Decode(d, version); err != nil {
 					return err
 				}
 				t.Synonyms[i] = item
@@ -268,7 +268,7 @@ func (t DescribeConfigsSynonym32) size(version int16) int32 {
 }
 
 // encode DescribeConfigsSynonym32; Versions: 0-2
-func (t DescribeConfigsSynonym32) encode(e *protocol.Encoder, version int16) {
+func (t DescribeConfigsSynonym32) Encode(e *protocol.Encoder, version int16) {
 	if version >= 1 {
 		e.PutString(t.Name) // Name
 	}
@@ -281,7 +281,7 @@ func (t DescribeConfigsSynonym32) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeConfigsSynonym32; Versions: 0-2
-func (t *DescribeConfigsSynonym32) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeConfigsSynonym32) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.Name, err = d.String()

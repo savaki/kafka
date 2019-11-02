@@ -42,7 +42,7 @@ func (t RequestHeader) size(version int16) int32 {
 }
 
 // encode RequestHeader; Versions: 0-2
-func (t RequestHeader) encode(e *protocol.Encoder, version int16) {
+func (t RequestHeader) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.RequestApiKey)     // RequestApiKey
 	e.PutInt16(t.RequestApiVersion) // RequestApiVersion
 	e.PutInt32(t.CorrelationId)     // CorrelationId
@@ -52,7 +52,7 @@ func (t RequestHeader) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode RequestHeader; Versions: 0-2
-func (t *RequestHeader) decode(d *protocol.Decoder, version int16) error {
+func (t *RequestHeader) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.RequestApiKey, err = d.Int16()
 	if err != nil {

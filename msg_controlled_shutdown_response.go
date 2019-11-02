@@ -39,18 +39,18 @@ func (t ControlledShutdownResponse) size(version int16) int32 {
 }
 
 // encode ControlledShutdownResponse; Versions: 0-3
-func (t ControlledShutdownResponse) encode(e *protocol.Encoder, version int16) {
+func (t ControlledShutdownResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.ErrorCode) // ErrorCode
 	// RemainingPartitions
 	len1 := len(t.RemainingPartitions)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.RemainingPartitions[i].encode(e, version)
+		t.RemainingPartitions[i].Encode(e, version)
 	}
 }
 
 // decode ControlledShutdownResponse; Versions: 0-3
-func (t *ControlledShutdownResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *ControlledShutdownResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -63,7 +63,7 @@ func (t *ControlledShutdownResponse) decode(d *protocol.Decoder, version int16) 
 		t.RemainingPartitions = make([]RemainingPartition7, n)
 		for i := 0; i < n; i++ {
 			var item RemainingPartition7
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.RemainingPartitions[i] = item
@@ -86,13 +86,13 @@ func (t RemainingPartition7) size(version int16) int32 {
 }
 
 // encode RemainingPartition7; Versions: 0-3
-func (t RemainingPartition7) encode(e *protocol.Encoder, version int16) {
+func (t RemainingPartition7) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.TopicName)     // TopicName
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 }
 
 // decode RemainingPartition7; Versions: 0-3
-func (t *RemainingPartition7) decode(d *protocol.Decoder, version int16) error {
+func (t *RemainingPartition7) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.TopicName, err = d.String()
 	if err != nil {

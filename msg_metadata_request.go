@@ -49,12 +49,12 @@ func (t MetadataRequest) size(version int16) int32 {
 }
 
 // encode MetadataRequest; Versions: 0-9
-func (t MetadataRequest) encode(e *protocol.Encoder, version int16) {
+func (t MetadataRequest) Encode(e *protocol.Encoder, version int16) {
 	// Topics
 	len0 := len(t.Topics)
 	e.PutArrayLength(len0)
 	for i := 0; i < len0; i++ {
-		t.Topics[i].encode(e, version)
+		t.Topics[i].Encode(e, version)
 	}
 	if version >= 4 {
 		e.PutBool(t.AllowAutoTopicCreation) // AllowAutoTopicCreation
@@ -68,7 +68,7 @@ func (t MetadataRequest) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode MetadataRequest; Versions: 0-9
-func (t *MetadataRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *MetadataRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	// Topics
 	if n, err := d.ArrayLength(); err != nil {
@@ -77,7 +77,7 @@ func (t *MetadataRequest) decode(d *protocol.Decoder, version int16) error {
 		t.Topics = make([]MetadataRequestTopic3, n)
 		for i := 0; i < n; i++ {
 			var item MetadataRequestTopic3
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Topics[i] = item
@@ -116,12 +116,12 @@ func (t MetadataRequestTopic3) size(version int16) int32 {
 }
 
 // encode MetadataRequestTopic3; Versions: 0-9
-func (t MetadataRequestTopic3) encode(e *protocol.Encoder, version int16) {
+func (t MetadataRequestTopic3) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name) // Name
 }
 
 // decode MetadataRequestTopic3; Versions: 0-9
-func (t *MetadataRequestTopic3) decode(d *protocol.Decoder, version int16) error {
+func (t *MetadataRequestTopic3) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {

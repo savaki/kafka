@@ -41,7 +41,7 @@ func (t DescribeGroupsResponse) size(version int16) int32 {
 }
 
 // encode DescribeGroupsResponse; Versions: 0-5
-func (t DescribeGroupsResponse) encode(e *protocol.Encoder, version int16) {
+func (t DescribeGroupsResponse) Encode(e *protocol.Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -49,12 +49,12 @@ func (t DescribeGroupsResponse) encode(e *protocol.Encoder, version int16) {
 	len1 := len(t.Groups)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Groups[i].encode(e, version)
+		t.Groups[i].Encode(e, version)
 	}
 }
 
 // decode DescribeGroupsResponse; Versions: 0-5
-func (t *DescribeGroupsResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeGroupsResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -69,7 +69,7 @@ func (t *DescribeGroupsResponse) decode(d *protocol.Decoder, version int16) erro
 		t.Groups = make([]DescribedGroup15, n)
 		for i := 0; i < n; i++ {
 			var item DescribedGroup15
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Groups[i] = item
@@ -107,7 +107,7 @@ func (t DescribedGroup15) size(version int16) int32 {
 }
 
 // encode DescribedGroup15; Versions: 0-5
-func (t DescribedGroup15) encode(e *protocol.Encoder, version int16) {
+func (t DescribedGroup15) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)     // ErrorCode
 	e.PutString(t.GroupId)      // GroupId
 	e.PutString(t.GroupState)   // GroupState
@@ -117,7 +117,7 @@ func (t DescribedGroup15) encode(e *protocol.Encoder, version int16) {
 	len5 := len(t.Members)
 	e.PutArrayLength(len5)
 	for i := 0; i < len5; i++ {
-		t.Members[i].encode(e, version)
+		t.Members[i].Encode(e, version)
 	}
 	if version >= 3 {
 		e.PutInt32(t.AuthorizedOperations) // AuthorizedOperations
@@ -125,7 +125,7 @@ func (t DescribedGroup15) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribedGroup15; Versions: 0-5
-func (t *DescribedGroup15) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribedGroup15) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -154,7 +154,7 @@ func (t *DescribedGroup15) decode(d *protocol.Decoder, version int16) error {
 		t.Members = make([]DescribedGroupMember15, n)
 		for i := 0; i < n; i++ {
 			var item DescribedGroupMember15
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Members[i] = item
@@ -193,7 +193,7 @@ func (t DescribedGroupMember15) size(version int16) int32 {
 }
 
 // encode DescribedGroupMember15; Versions: 0-5
-func (t DescribedGroupMember15) encode(e *protocol.Encoder, version int16) {
+func (t DescribedGroupMember15) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.MemberId) // MemberId
 	if version >= 4 {
 		e.PutString(t.GroupInstanceId) // GroupInstanceId
@@ -205,7 +205,7 @@ func (t DescribedGroupMember15) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribedGroupMember15; Versions: 0-5
-func (t *DescribedGroupMember15) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribedGroupMember15) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.MemberId, err = d.String()
 	if err != nil {

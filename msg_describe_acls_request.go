@@ -48,7 +48,7 @@ func (t DescribeAclsRequest) size(version int16) int32 {
 }
 
 // encode DescribeAclsRequest; Versions: 0-1
-func (t DescribeAclsRequest) encode(e *protocol.Encoder, version int16) {
+func (t DescribeAclsRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt8(t.ResourceType)         // ResourceType
 	e.PutString(t.ResourceNameFilter) // ResourceNameFilter
 	if version >= 1 {
@@ -61,7 +61,7 @@ func (t DescribeAclsRequest) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeAclsRequest; Versions: 0-1
-func (t *DescribeAclsRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeAclsRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ResourceType, err = d.Int8()
 	if err != nil {

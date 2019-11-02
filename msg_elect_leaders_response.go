@@ -43,7 +43,7 @@ func (t ElectLeadersResponse) size(version int16) int32 {
 }
 
 // encode ElectLeadersResponse; Versions: 0-2
-func (t ElectLeadersResponse) encode(e *protocol.Encoder, version int16) {
+func (t ElectLeadersResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	if version >= 1 {
 		e.PutInt16(t.ErrorCode) // ErrorCode
@@ -52,12 +52,12 @@ func (t ElectLeadersResponse) encode(e *protocol.Encoder, version int16) {
 	len2 := len(t.ReplicaElectionResults)
 	e.PutArrayLength(len2)
 	for i := 0; i < len2; i++ {
-		t.ReplicaElectionResults[i].encode(e, version)
+		t.ReplicaElectionResults[i].Encode(e, version)
 	}
 }
 
 // decode ElectLeadersResponse; Versions: 0-2
-func (t *ElectLeadersResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *ElectLeadersResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -76,7 +76,7 @@ func (t *ElectLeadersResponse) decode(d *protocol.Decoder, version int16) error 
 		t.ReplicaElectionResults = make([]ReplicaElectionResult43, n)
 		for i := 0; i < n; i++ {
 			var item ReplicaElectionResult43
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.ReplicaElectionResults[i] = item
@@ -102,18 +102,18 @@ func (t ReplicaElectionResult43) size(version int16) int32 {
 }
 
 // encode ReplicaElectionResult43; Versions: 0-2
-func (t ReplicaElectionResult43) encode(e *protocol.Encoder, version int16) {
+func (t ReplicaElectionResult43) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Topic) // Topic
 	// PartitionResult
 	len1 := len(t.PartitionResult)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.PartitionResult[i].encode(e, version)
+		t.PartitionResult[i].Encode(e, version)
 	}
 }
 
 // decode ReplicaElectionResult43; Versions: 0-2
-func (t *ReplicaElectionResult43) decode(d *protocol.Decoder, version int16) error {
+func (t *ReplicaElectionResult43) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Topic, err = d.String()
 	if err != nil {
@@ -126,7 +126,7 @@ func (t *ReplicaElectionResult43) decode(d *protocol.Decoder, version int16) err
 		t.PartitionResult = make([]PartitionResult43, n)
 		for i := 0; i < n; i++ {
 			var item PartitionResult43
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.PartitionResult[i] = item
@@ -151,14 +151,14 @@ func (t PartitionResult43) size(version int16) int32 {
 }
 
 // encode PartitionResult43; Versions: 0-2
-func (t PartitionResult43) encode(e *protocol.Encoder, version int16) {
+func (t PartitionResult43) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.PartitionId)   // PartitionId
 	e.PutInt16(t.ErrorCode)     // ErrorCode
 	e.PutString(t.ErrorMessage) // ErrorMessage
 }
 
 // decode PartitionResult43; Versions: 0-2
-func (t *PartitionResult43) decode(d *protocol.Decoder, version int16) error {
+func (t *PartitionResult43) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.PartitionId, err = d.Int32()
 	if err != nil {

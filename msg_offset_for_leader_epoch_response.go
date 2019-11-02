@@ -41,7 +41,7 @@ func (t OffsetForLeaderEpochResponse) size(version int16) int32 {
 }
 
 // encode OffsetForLeaderEpochResponse; Versions: 0-3
-func (t OffsetForLeaderEpochResponse) encode(e *protocol.Encoder, version int16) {
+func (t OffsetForLeaderEpochResponse) Encode(e *protocol.Encoder, version int16) {
 	if version >= 2 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -49,12 +49,12 @@ func (t OffsetForLeaderEpochResponse) encode(e *protocol.Encoder, version int16)
 	len1 := len(t.Topics)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Topics[i].encode(e, version)
+		t.Topics[i].Encode(e, version)
 	}
 }
 
 // decode OffsetForLeaderEpochResponse; Versions: 0-3
-func (t *OffsetForLeaderEpochResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetForLeaderEpochResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 2 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -69,7 +69,7 @@ func (t *OffsetForLeaderEpochResponse) decode(d *protocol.Decoder, version int16
 		t.Topics = make([]OffsetForLeaderTopicResult23, n)
 		for i := 0; i < n; i++ {
 			var item OffsetForLeaderTopicResult23
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Topics[i] = item
@@ -95,18 +95,18 @@ func (t OffsetForLeaderTopicResult23) size(version int16) int32 {
 }
 
 // encode OffsetForLeaderTopicResult23; Versions: 0-3
-func (t OffsetForLeaderTopicResult23) encode(e *protocol.Encoder, version int16) {
+func (t OffsetForLeaderTopicResult23) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Partitions[i].encode(e, version)
+		t.Partitions[i].Encode(e, version)
 	}
 }
 
 // decode OffsetForLeaderTopicResult23; Versions: 0-3
-func (t *OffsetForLeaderTopicResult23) decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetForLeaderTopicResult23) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -119,7 +119,7 @@ func (t *OffsetForLeaderTopicResult23) decode(d *protocol.Decoder, version int16
 		t.Partitions = make([]OffsetForLeaderPartitionResult23, n)
 		for i := 0; i < n; i++ {
 			var item OffsetForLeaderPartitionResult23
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Partitions[i] = item
@@ -148,7 +148,7 @@ func (t OffsetForLeaderPartitionResult23) size(version int16) int32 {
 }
 
 // encode OffsetForLeaderPartitionResult23; Versions: 0-3
-func (t OffsetForLeaderPartitionResult23) encode(e *protocol.Encoder, version int16) {
+func (t OffsetForLeaderPartitionResult23) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	if version >= 1 {
@@ -158,7 +158,7 @@ func (t OffsetForLeaderPartitionResult23) encode(e *protocol.Encoder, version in
 }
 
 // decode OffsetForLeaderPartitionResult23; Versions: 0-3
-func (t *OffsetForLeaderPartitionResult23) decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetForLeaderPartitionResult23) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {

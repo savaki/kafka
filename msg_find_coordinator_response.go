@@ -48,7 +48,7 @@ func (t FindCoordinatorResponse) size(version int16) int32 {
 }
 
 // encode FindCoordinatorResponse; Versions: 0-3
-func (t FindCoordinatorResponse) encode(e *protocol.Encoder, version int16) {
+func (t FindCoordinatorResponse) Encode(e *protocol.Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -62,7 +62,7 @@ func (t FindCoordinatorResponse) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode FindCoordinatorResponse; Versions: 0-3
-func (t *FindCoordinatorResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *FindCoordinatorResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.ThrottleTimeMs, err = d.Int32()

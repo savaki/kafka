@@ -41,12 +41,12 @@ func (t ProduceResponse) size(version int16) int32 {
 }
 
 // encode ProduceResponse; Versions: 0-8
-func (t ProduceResponse) encode(e *protocol.Encoder, version int16) {
+func (t ProduceResponse) Encode(e *protocol.Encoder, version int16) {
 	// Responses
 	len0 := len(t.Responses)
 	e.PutArrayLength(len0)
 	for i := 0; i < len0; i++ {
-		t.Responses[i].encode(e, version)
+		t.Responses[i].Encode(e, version)
 	}
 	if version >= 1 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
@@ -54,7 +54,7 @@ func (t ProduceResponse) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ProduceResponse; Versions: 0-8
-func (t *ProduceResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *ProduceResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	// Responses
 	if n, err := d.ArrayLength(); err != nil {
@@ -63,7 +63,7 @@ func (t *ProduceResponse) decode(d *protocol.Decoder, version int16) error {
 		t.Responses = make([]TopicProduceResponse0, n)
 		for i := 0; i < n; i++ {
 			var item TopicProduceResponse0
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Responses[i] = item
@@ -95,18 +95,18 @@ func (t TopicProduceResponse0) size(version int16) int32 {
 }
 
 // encode TopicProduceResponse0; Versions: 0-8
-func (t TopicProduceResponse0) encode(e *protocol.Encoder, version int16) {
+func (t TopicProduceResponse0) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Partitions[i].encode(e, version)
+		t.Partitions[i].Encode(e, version)
 	}
 }
 
 // decode TopicProduceResponse0; Versions: 0-8
-func (t *TopicProduceResponse0) decode(d *protocol.Decoder, version int16) error {
+func (t *TopicProduceResponse0) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -119,7 +119,7 @@ func (t *TopicProduceResponse0) decode(d *protocol.Decoder, version int16) error
 		t.Partitions = make([]PartitionProduceResponse0, n)
 		for i := 0; i < n; i++ {
 			var item PartitionProduceResponse0
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Partitions[i] = item
@@ -163,7 +163,7 @@ func (t PartitionProduceResponse0) size(version int16) int32 {
 }
 
 // encode PartitionProduceResponse0; Versions: 0-8
-func (t PartitionProduceResponse0) encode(e *protocol.Encoder, version int16) {
+func (t PartitionProduceResponse0) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	e.PutInt64(t.BaseOffset)     // BaseOffset
@@ -178,7 +178,7 @@ func (t PartitionProduceResponse0) encode(e *protocol.Encoder, version int16) {
 		len5 := len(t.RecordErrors)
 		e.PutArrayLength(len5)
 		for i := 0; i < len5; i++ {
-			t.RecordErrors[i].encode(e, version)
+			t.RecordErrors[i].Encode(e, version)
 		}
 	}
 	if version >= 8 {
@@ -187,7 +187,7 @@ func (t PartitionProduceResponse0) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode PartitionProduceResponse0; Versions: 0-8
-func (t *PartitionProduceResponse0) decode(d *protocol.Decoder, version int16) error {
+func (t *PartitionProduceResponse0) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -221,7 +221,7 @@ func (t *PartitionProduceResponse0) decode(d *protocol.Decoder, version int16) e
 			t.RecordErrors = make([]BatchIndexAndErrorMessage0, n)
 			for i := 0; i < n; i++ {
 				var item BatchIndexAndErrorMessage0
-				if err := (&item).decode(d, version); err != nil {
+				if err := (&item).Decode(d, version); err != nil {
 					return err
 				}
 				t.RecordErrors[i] = item
@@ -255,7 +255,7 @@ func (t BatchIndexAndErrorMessage0) size(version int16) int32 {
 }
 
 // encode BatchIndexAndErrorMessage0; Versions: 0-8
-func (t BatchIndexAndErrorMessage0) encode(e *protocol.Encoder, version int16) {
+func (t BatchIndexAndErrorMessage0) Encode(e *protocol.Encoder, version int16) {
 	if version >= 8 {
 		e.PutInt32(t.BatchIndex) // BatchIndex
 	}
@@ -265,7 +265,7 @@ func (t BatchIndexAndErrorMessage0) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode BatchIndexAndErrorMessage0; Versions: 0-8
-func (t *BatchIndexAndErrorMessage0) decode(d *protocol.Decoder, version int16) error {
+func (t *BatchIndexAndErrorMessage0) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 8 {
 		t.BatchIndex, err = d.Int32()

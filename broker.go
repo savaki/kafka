@@ -100,12 +100,12 @@ func (b *Broker) Produce(req ProduceRequest) (ProduceResponse, error) {
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.Produce)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.Produce)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.Produce)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.Produce)
+			return (&resp).Decode(d, b.apiVersion.Produce)
 		},
 	)
 	return resp, err
@@ -125,12 +125,12 @@ func (b *Broker) Fetch(req FetchRequest) (FetchResponse, error) {
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.Fetch)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.Fetch)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.Fetch)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.Fetch)
+			return (&resp).Decode(d, b.apiVersion.Fetch)
 		},
 	)
 	return resp, err
@@ -150,12 +150,12 @@ func (b *Broker) ListOffset(req ListOffsetRequest) (ListOffsetResponse, error) {
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.ListOffset)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.ListOffset)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.ListOffset)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.ListOffset)
+			return (&resp).Decode(d, b.apiVersion.ListOffset)
 		},
 	)
 	return resp, err
@@ -175,12 +175,12 @@ func (b *Broker) Metadata(req MetadataRequest) (MetadataResponse, error) {
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.Metadata)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.Metadata)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.Metadata)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.Metadata)
+			return (&resp).Decode(d, b.apiVersion.Metadata)
 		},
 	)
 	return resp, err
@@ -200,12 +200,12 @@ func (b *Broker) LeaderAndIsr(req LeaderAndIsrRequest) (LeaderAndIsrResponse, er
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.LeaderAndIsr)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.LeaderAndIsr)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.LeaderAndIsr)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.LeaderAndIsr)
+			return (&resp).Decode(d, b.apiVersion.LeaderAndIsr)
 		},
 	)
 	return resp, err
@@ -225,12 +225,12 @@ func (b *Broker) StopReplica(req StopReplicaRequest) (StopReplicaResponse, error
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.StopReplica)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.StopReplica)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.StopReplica)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.StopReplica)
+			return (&resp).Decode(d, b.apiVersion.StopReplica)
 		},
 	)
 	return resp, err
@@ -250,12 +250,12 @@ func (b *Broker) UpdateMetadata(req UpdateMetadataRequest) (UpdateMetadataRespon
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.UpdateMetadata)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.UpdateMetadata)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.UpdateMetadata)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.UpdateMetadata)
+			return (&resp).Decode(d, b.apiVersion.UpdateMetadata)
 		},
 	)
 	return resp, err
@@ -275,12 +275,12 @@ func (b *Broker) ControlledShutdown(req ControlledShutdownRequest) (ControlledSh
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.ControlledShutdown)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.ControlledShutdown)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.ControlledShutdown)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.ControlledShutdown)
+			return (&resp).Decode(d, b.apiVersion.ControlledShutdown)
 		},
 	)
 	return resp, err
@@ -300,12 +300,12 @@ func (b *Broker) OffsetCommit(req OffsetCommitRequest) (OffsetCommitResponse, er
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.OffsetCommit)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.OffsetCommit)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.OffsetCommit)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.OffsetCommit)
+			return (&resp).Decode(d, b.apiVersion.OffsetCommit)
 		},
 	)
 	return resp, err
@@ -325,12 +325,12 @@ func (b *Broker) OffsetFetch(req OffsetFetchRequest) (OffsetFetchResponse, error
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.OffsetFetch)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.OffsetFetch)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.OffsetFetch)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.OffsetFetch)
+			return (&resp).Decode(d, b.apiVersion.OffsetFetch)
 		},
 	)
 	return resp, err
@@ -350,12 +350,12 @@ func (b *Broker) FindCoordinator(req FindCoordinatorRequest) (FindCoordinatorRes
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.FindCoordinator)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.FindCoordinator)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.FindCoordinator)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.FindCoordinator)
+			return (&resp).Decode(d, b.apiVersion.FindCoordinator)
 		},
 	)
 	return resp, err
@@ -375,12 +375,12 @@ func (b *Broker) JoinGroup(req JoinGroupRequest) (JoinGroupResponse, error) {
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.JoinGroup)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.JoinGroup)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.JoinGroup)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.JoinGroup)
+			return (&resp).Decode(d, b.apiVersion.JoinGroup)
 		},
 	)
 	return resp, err
@@ -400,12 +400,12 @@ func (b *Broker) Heartbeat(req HeartbeatRequest) (HeartbeatResponse, error) {
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.Heartbeat)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.Heartbeat)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.Heartbeat)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.Heartbeat)
+			return (&resp).Decode(d, b.apiVersion.Heartbeat)
 		},
 	)
 	return resp, err
@@ -425,12 +425,12 @@ func (b *Broker) LeaveGroup(req LeaveGroupRequest) (LeaveGroupResponse, error) {
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.LeaveGroup)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.LeaveGroup)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.LeaveGroup)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.LeaveGroup)
+			return (&resp).Decode(d, b.apiVersion.LeaveGroup)
 		},
 	)
 	return resp, err
@@ -450,12 +450,12 @@ func (b *Broker) SyncGroup(req SyncGroupRequest) (SyncGroupResponse, error) {
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.SyncGroup)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.SyncGroup)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.SyncGroup)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.SyncGroup)
+			return (&resp).Decode(d, b.apiVersion.SyncGroup)
 		},
 	)
 	return resp, err
@@ -475,12 +475,12 @@ func (b *Broker) DescribeGroups(req DescribeGroupsRequest) (DescribeGroupsRespon
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.DescribeGroups)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.DescribeGroups)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.DescribeGroups)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.DescribeGroups)
+			return (&resp).Decode(d, b.apiVersion.DescribeGroups)
 		},
 	)
 	return resp, err
@@ -500,12 +500,12 @@ func (b *Broker) ListGroups(req ListGroupsRequest) (ListGroupsResponse, error) {
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.ListGroups)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.ListGroups)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.ListGroups)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.ListGroups)
+			return (&resp).Decode(d, b.apiVersion.ListGroups)
 		},
 	)
 	return resp, err
@@ -525,12 +525,12 @@ func (b *Broker) SaslHandshake(req SaslHandshakeRequest) (SaslHandshakeResponse,
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.SaslHandshake)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.SaslHandshake)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.SaslHandshake)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.SaslHandshake)
+			return (&resp).Decode(d, b.apiVersion.SaslHandshake)
 		},
 	)
 	return resp, err
@@ -550,12 +550,12 @@ func (b *Broker) ApiVersions(req ApiVersionsRequest) (ApiVersionsResponse, error
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.ApiVersions)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.ApiVersions)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.ApiVersions)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.ApiVersions)
+			return (&resp).Decode(d, b.apiVersion.ApiVersions)
 		},
 	)
 	return resp, err
@@ -575,12 +575,12 @@ func (b *Broker) CreateTopics(req CreateTopicsRequest) (CreateTopicsResponse, er
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.CreateTopics)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.CreateTopics)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.CreateTopics)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.CreateTopics)
+			return (&resp).Decode(d, b.apiVersion.CreateTopics)
 		},
 	)
 	return resp, err
@@ -600,12 +600,12 @@ func (b *Broker) DeleteTopics(req DeleteTopicsRequest) (DeleteTopicsResponse, er
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.DeleteTopics)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.DeleteTopics)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.DeleteTopics)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.DeleteTopics)
+			return (&resp).Decode(d, b.apiVersion.DeleteTopics)
 		},
 	)
 	return resp, err
@@ -625,12 +625,12 @@ func (b *Broker) DeleteRecords(req DeleteRecordsRequest) (DeleteRecordsResponse,
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.DeleteRecords)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.DeleteRecords)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.DeleteRecords)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.DeleteRecords)
+			return (&resp).Decode(d, b.apiVersion.DeleteRecords)
 		},
 	)
 	return resp, err
@@ -650,12 +650,12 @@ func (b *Broker) InitProducerId(req InitProducerIdRequest) (InitProducerIdRespon
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.InitProducerId)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.InitProducerId)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.InitProducerId)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.InitProducerId)
+			return (&resp).Decode(d, b.apiVersion.InitProducerId)
 		},
 	)
 	return resp, err
@@ -675,12 +675,12 @@ func (b *Broker) OffsetForLeaderEpoch(req OffsetForLeaderEpochRequest) (OffsetFo
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.OffsetForLeaderEpoch)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.OffsetForLeaderEpoch)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.OffsetForLeaderEpoch)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.OffsetForLeaderEpoch)
+			return (&resp).Decode(d, b.apiVersion.OffsetForLeaderEpoch)
 		},
 	)
 	return resp, err
@@ -700,12 +700,12 @@ func (b *Broker) AddPartitionsToTxn(req AddPartitionsToTxnRequest) (AddPartition
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.AddPartitionsToTxn)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.AddPartitionsToTxn)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.AddPartitionsToTxn)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.AddPartitionsToTxn)
+			return (&resp).Decode(d, b.apiVersion.AddPartitionsToTxn)
 		},
 	)
 	return resp, err
@@ -725,12 +725,12 @@ func (b *Broker) AddOffsetsToTxn(req AddOffsetsToTxnRequest) (AddOffsetsToTxnRes
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.AddOffsetsToTxn)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.AddOffsetsToTxn)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.AddOffsetsToTxn)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.AddOffsetsToTxn)
+			return (&resp).Decode(d, b.apiVersion.AddOffsetsToTxn)
 		},
 	)
 	return resp, err
@@ -750,12 +750,12 @@ func (b *Broker) EndTxn(req EndTxnRequest) (EndTxnResponse, error) {
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.EndTxn)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.EndTxn)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.EndTxn)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.EndTxn)
+			return (&resp).Decode(d, b.apiVersion.EndTxn)
 		},
 	)
 	return resp, err
@@ -775,12 +775,12 @@ func (b *Broker) WriteTxnMarkers(req WriteTxnMarkersRequest) (WriteTxnMarkersRes
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.WriteTxnMarkers)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.WriteTxnMarkers)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.WriteTxnMarkers)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.WriteTxnMarkers)
+			return (&resp).Decode(d, b.apiVersion.WriteTxnMarkers)
 		},
 	)
 	return resp, err
@@ -800,12 +800,12 @@ func (b *Broker) TxnOffsetCommit(req TxnOffsetCommitRequest) (TxnOffsetCommitRes
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.TxnOffsetCommit)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.TxnOffsetCommit)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.TxnOffsetCommit)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.TxnOffsetCommit)
+			return (&resp).Decode(d, b.apiVersion.TxnOffsetCommit)
 		},
 	)
 	return resp, err
@@ -825,12 +825,12 @@ func (b *Broker) DescribeAcls(req DescribeAclsRequest) (DescribeAclsResponse, er
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.DescribeAcls)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.DescribeAcls)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.DescribeAcls)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.DescribeAcls)
+			return (&resp).Decode(d, b.apiVersion.DescribeAcls)
 		},
 	)
 	return resp, err
@@ -850,12 +850,12 @@ func (b *Broker) CreateAcls(req CreateAclsRequest) (CreateAclsResponse, error) {
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.CreateAcls)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.CreateAcls)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.CreateAcls)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.CreateAcls)
+			return (&resp).Decode(d, b.apiVersion.CreateAcls)
 		},
 	)
 	return resp, err
@@ -875,12 +875,12 @@ func (b *Broker) DeleteAcls(req DeleteAclsRequest) (DeleteAclsResponse, error) {
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.DeleteAcls)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.DeleteAcls)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.DeleteAcls)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.DeleteAcls)
+			return (&resp).Decode(d, b.apiVersion.DeleteAcls)
 		},
 	)
 	return resp, err
@@ -900,12 +900,12 @@ func (b *Broker) DescribeConfigs(req DescribeConfigsRequest) (DescribeConfigsRes
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.DescribeConfigs)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.DescribeConfigs)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.DescribeConfigs)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.DescribeConfigs)
+			return (&resp).Decode(d, b.apiVersion.DescribeConfigs)
 		},
 	)
 	return resp, err
@@ -925,12 +925,12 @@ func (b *Broker) AlterConfigs(req AlterConfigsRequest) (AlterConfigsResponse, er
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.AlterConfigs)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.AlterConfigs)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.AlterConfigs)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.AlterConfigs)
+			return (&resp).Decode(d, b.apiVersion.AlterConfigs)
 		},
 	)
 	return resp, err
@@ -950,12 +950,12 @@ func (b *Broker) AlterReplicaLogDirs(req AlterReplicaLogDirsRequest) (AlterRepli
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.AlterReplicaLogDirs)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.AlterReplicaLogDirs)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.AlterReplicaLogDirs)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.AlterReplicaLogDirs)
+			return (&resp).Decode(d, b.apiVersion.AlterReplicaLogDirs)
 		},
 	)
 	return resp, err
@@ -975,12 +975,12 @@ func (b *Broker) DescribeLogDirs(req DescribeLogDirsRequest) (DescribeLogDirsRes
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.DescribeLogDirs)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.DescribeLogDirs)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.DescribeLogDirs)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.DescribeLogDirs)
+			return (&resp).Decode(d, b.apiVersion.DescribeLogDirs)
 		},
 	)
 	return resp, err
@@ -1000,12 +1000,12 @@ func (b *Broker) SaslAuthenticate(req SaslAuthenticateRequest) (SaslAuthenticate
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.SaslAuthenticate)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.SaslAuthenticate)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.SaslAuthenticate)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.SaslAuthenticate)
+			return (&resp).Decode(d, b.apiVersion.SaslAuthenticate)
 		},
 	)
 	return resp, err
@@ -1025,12 +1025,12 @@ func (b *Broker) CreatePartitions(req CreatePartitionsRequest) (CreatePartitions
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.CreatePartitions)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.CreatePartitions)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.CreatePartitions)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.CreatePartitions)
+			return (&resp).Decode(d, b.apiVersion.CreatePartitions)
 		},
 	)
 	return resp, err
@@ -1050,12 +1050,12 @@ func (b *Broker) CreateDelegationToken(req CreateDelegationTokenRequest) (Create
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.CreateDelegationToken)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.CreateDelegationToken)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.CreateDelegationToken)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.CreateDelegationToken)
+			return (&resp).Decode(d, b.apiVersion.CreateDelegationToken)
 		},
 	)
 	return resp, err
@@ -1075,12 +1075,12 @@ func (b *Broker) RenewDelegationToken(req RenewDelegationTokenRequest) (RenewDel
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.RenewDelegationToken)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.RenewDelegationToken)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.RenewDelegationToken)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.RenewDelegationToken)
+			return (&resp).Decode(d, b.apiVersion.RenewDelegationToken)
 		},
 	)
 	return resp, err
@@ -1100,12 +1100,12 @@ func (b *Broker) ExpireDelegationToken(req ExpireDelegationTokenRequest) (Expire
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.ExpireDelegationToken)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.ExpireDelegationToken)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.ExpireDelegationToken)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.ExpireDelegationToken)
+			return (&resp).Decode(d, b.apiVersion.ExpireDelegationToken)
 		},
 	)
 	return resp, err
@@ -1125,12 +1125,12 @@ func (b *Broker) DescribeDelegationToken(req DescribeDelegationTokenRequest) (De
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.DescribeDelegationToken)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.DescribeDelegationToken)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.DescribeDelegationToken)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.DescribeDelegationToken)
+			return (&resp).Decode(d, b.apiVersion.DescribeDelegationToken)
 		},
 	)
 	return resp, err
@@ -1150,12 +1150,12 @@ func (b *Broker) DeleteGroups(req DeleteGroupsRequest) (DeleteGroupsResponse, er
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.DeleteGroups)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.DeleteGroups)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.DeleteGroups)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.DeleteGroups)
+			return (&resp).Decode(d, b.apiVersion.DeleteGroups)
 		},
 	)
 	return resp, err
@@ -1175,12 +1175,12 @@ func (b *Broker) ElectLeaders(req ElectLeadersRequest) (ElectLeadersResponse, er
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.ElectLeaders)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.ElectLeaders)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.ElectLeaders)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.ElectLeaders)
+			return (&resp).Decode(d, b.apiVersion.ElectLeaders)
 		},
 	)
 	return resp, err
@@ -1200,12 +1200,12 @@ func (b *Broker) IncrementalAlterConfigs(req IncrementalAlterConfigsRequest) (In
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.IncrementalAlterConfigs)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.IncrementalAlterConfigs)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.IncrementalAlterConfigs)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.IncrementalAlterConfigs)
+			return (&resp).Decode(d, b.apiVersion.IncrementalAlterConfigs)
 		},
 	)
 	return resp, err
@@ -1225,12 +1225,12 @@ func (b *Broker) AlterPartitionReassignments(req AlterPartitionReassignmentsRequ
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.AlterPartitionReassignments)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.AlterPartitionReassignments)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.AlterPartitionReassignments)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.AlterPartitionReassignments)
+			return (&resp).Decode(d, b.apiVersion.AlterPartitionReassignments)
 		},
 	)
 	return resp, err
@@ -1250,12 +1250,12 @@ func (b *Broker) ListPartitionReassignments(req ListPartitionReassignmentsReques
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.ListPartitionReassignments)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.ListPartitionReassignments)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.ListPartitionReassignments)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.ListPartitionReassignments)
+			return (&resp).Decode(d, b.apiVersion.ListPartitionReassignments)
 		},
 	)
 	return resp, err
@@ -1275,12 +1275,12 @@ func (b *Broker) OffsetDelete(req OffsetDeleteRequest) (OffsetDeleteResponse, er
 			}
 			size := hdr.size(2) + req.size(b.apiVersion.OffsetDelete)
 			e.PutInt32(size)
-			hdr.encode(e, 2)
-			req.encode(e, b.apiVersion.OffsetDelete)
+			hdr.Encode(e, 2)
+			req.Encode(e, b.apiVersion.OffsetDelete)
 		},
 		// decode response
 		func(d *protocol.Decoder) error {
-			return (&resp).decode(d, b.apiVersion.OffsetDelete)
+			return (&resp).Decode(d, b.apiVersion.OffsetDelete)
 		},
 	)
 	return resp, err

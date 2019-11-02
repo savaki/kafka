@@ -39,18 +39,18 @@ func (t CreateAclsResponse) size(version int16) int32 {
 }
 
 // encode CreateAclsResponse; Versions: 0-1
-func (t CreateAclsResponse) encode(e *protocol.Encoder, version int16) {
+func (t CreateAclsResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Results
 	len1 := len(t.Results)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Results[i].encode(e, version)
+		t.Results[i].Encode(e, version)
 	}
 }
 
 // decode CreateAclsResponse; Versions: 0-1
-func (t *CreateAclsResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *CreateAclsResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -63,7 +63,7 @@ func (t *CreateAclsResponse) decode(d *protocol.Decoder, version int16) error {
 		t.Results = make([]CreatableAclResult30, n)
 		for i := 0; i < n; i++ {
 			var item CreatableAclResult30
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Results[i] = item
@@ -86,13 +86,13 @@ func (t CreatableAclResult30) size(version int16) int32 {
 }
 
 // encode CreatableAclResult30; Versions: 0-1
-func (t CreatableAclResult30) encode(e *protocol.Encoder, version int16) {
+func (t CreatableAclResult30) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)     // ErrorCode
 	e.PutString(t.ErrorMessage) // ErrorMessage
 }
 
 // decode CreatableAclResult30; Versions: 0-1
-func (t *CreatableAclResult30) decode(d *protocol.Decoder, version int16) error {
+func (t *CreatableAclResult30) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {

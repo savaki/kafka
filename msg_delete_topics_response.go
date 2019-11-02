@@ -41,7 +41,7 @@ func (t DeleteTopicsResponse) size(version int16) int32 {
 }
 
 // encode DeleteTopicsResponse; Versions: 0-4
-func (t DeleteTopicsResponse) encode(e *protocol.Encoder, version int16) {
+func (t DeleteTopicsResponse) Encode(e *protocol.Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -49,12 +49,12 @@ func (t DeleteTopicsResponse) encode(e *protocol.Encoder, version int16) {
 	len1 := len(t.Responses)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Responses[i].encode(e, version)
+		t.Responses[i].Encode(e, version)
 	}
 }
 
 // decode DeleteTopicsResponse; Versions: 0-4
-func (t *DeleteTopicsResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteTopicsResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -69,7 +69,7 @@ func (t *DeleteTopicsResponse) decode(d *protocol.Decoder, version int16) error 
 		t.Responses = make([]DeletableTopicResult20, n)
 		for i := 0; i < n; i++ {
 			var item DeletableTopicResult20
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Responses[i] = item
@@ -92,13 +92,13 @@ func (t DeletableTopicResult20) size(version int16) int32 {
 }
 
 // encode DeletableTopicResult20; Versions: 0-4
-func (t DeletableTopicResult20) encode(e *protocol.Encoder, version int16) {
+func (t DeletableTopicResult20) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name)     // Name
 	e.PutInt16(t.ErrorCode) // ErrorCode
 }
 
 // decode DeletableTopicResult20; Versions: 0-4
-func (t *DeletableTopicResult20) decode(d *protocol.Decoder, version int16) error {
+func (t *DeletableTopicResult20) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {

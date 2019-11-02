@@ -39,18 +39,18 @@ func (t CreateDelegationTokenRequest) size(version int16) int32 {
 }
 
 // encode CreateDelegationTokenRequest; Versions: 0-2
-func (t CreateDelegationTokenRequest) encode(e *protocol.Encoder, version int16) {
+func (t CreateDelegationTokenRequest) Encode(e *protocol.Encoder, version int16) {
 	// Renewers
 	len0 := len(t.Renewers)
 	e.PutArrayLength(len0)
 	for i := 0; i < len0; i++ {
-		t.Renewers[i].encode(e, version)
+		t.Renewers[i].Encode(e, version)
 	}
 	e.PutInt64(t.MaxLifetimeMs) // MaxLifetimeMs
 }
 
 // decode CreateDelegationTokenRequest; Versions: 0-2
-func (t *CreateDelegationTokenRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *CreateDelegationTokenRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	// Renewers
 	if n, err := d.ArrayLength(); err != nil {
@@ -59,7 +59,7 @@ func (t *CreateDelegationTokenRequest) decode(d *protocol.Decoder, version int16
 		t.Renewers = make([]CreatableRenewers38, n)
 		for i := 0; i < n; i++ {
 			var item CreatableRenewers38
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Renewers[i] = item
@@ -86,13 +86,13 @@ func (t CreatableRenewers38) size(version int16) int32 {
 }
 
 // encode CreatableRenewers38; Versions: 0-2
-func (t CreatableRenewers38) encode(e *protocol.Encoder, version int16) {
+func (t CreatableRenewers38) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.PrincipalType) // PrincipalType
 	e.PutString(t.PrincipalName) // PrincipalName
 }
 
 // decode CreatableRenewers38; Versions: 0-2
-func (t *CreatableRenewers38) decode(d *protocol.Decoder, version int16) error {
+func (t *CreatableRenewers38) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.PrincipalType, err = d.String()
 	if err != nil {

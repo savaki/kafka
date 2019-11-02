@@ -58,7 +58,7 @@ func (t MetadataResponse) size(version int16) int32 {
 }
 
 // encode MetadataResponse; Versions: 0-9
-func (t MetadataResponse) encode(e *protocol.Encoder, version int16) {
+func (t MetadataResponse) Encode(e *protocol.Encoder, version int16) {
 	if version >= 3 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -66,7 +66,7 @@ func (t MetadataResponse) encode(e *protocol.Encoder, version int16) {
 	len1 := len(t.Brokers)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Brokers[i].encode(e, version)
+		t.Brokers[i].Encode(e, version)
 	}
 	if version >= 2 {
 		e.PutString(t.ClusterId) // ClusterId
@@ -78,7 +78,7 @@ func (t MetadataResponse) encode(e *protocol.Encoder, version int16) {
 	len4 := len(t.Topics)
 	e.PutArrayLength(len4)
 	for i := 0; i < len4; i++ {
-		t.Topics[i].encode(e, version)
+		t.Topics[i].Encode(e, version)
 	}
 	if version >= 8 {
 		e.PutInt32(t.ClusterAuthorizedOperations) // ClusterAuthorizedOperations
@@ -86,7 +86,7 @@ func (t MetadataResponse) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode MetadataResponse; Versions: 0-9
-func (t *MetadataResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *MetadataResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 3 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -101,7 +101,7 @@ func (t *MetadataResponse) decode(d *protocol.Decoder, version int16) error {
 		t.Brokers = make([]MetadataResponseBroker3, n)
 		for i := 0; i < n; i++ {
 			var item MetadataResponseBroker3
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Brokers[i] = item
@@ -126,7 +126,7 @@ func (t *MetadataResponse) decode(d *protocol.Decoder, version int16) error {
 		t.Topics = make([]MetadataResponseTopic3, n)
 		for i := 0; i < n; i++ {
 			var item MetadataResponseTopic3
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Topics[i] = item
@@ -161,7 +161,7 @@ func (t MetadataResponseBroker3) size(version int16) int32 {
 }
 
 // encode MetadataResponseBroker3; Versions: 0-9
-func (t MetadataResponseBroker3) encode(e *protocol.Encoder, version int16) {
+func (t MetadataResponseBroker3) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.NodeId) // NodeId
 	e.PutString(t.Host)  // Host
 	e.PutInt32(t.Port)   // Port
@@ -171,7 +171,7 @@ func (t MetadataResponseBroker3) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode MetadataResponseBroker3; Versions: 0-9
-func (t *MetadataResponseBroker3) decode(d *protocol.Decoder, version int16) error {
+func (t *MetadataResponseBroker3) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.NodeId, err = d.Int32()
 	if err != nil {
@@ -221,7 +221,7 @@ func (t MetadataResponseTopic3) size(version int16) int32 {
 }
 
 // encode MetadataResponseTopic3; Versions: 0-9
-func (t MetadataResponseTopic3) encode(e *protocol.Encoder, version int16) {
+func (t MetadataResponseTopic3) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.ErrorCode) // ErrorCode
 	e.PutString(t.Name)     // Name
 	if version >= 1 {
@@ -231,7 +231,7 @@ func (t MetadataResponseTopic3) encode(e *protocol.Encoder, version int16) {
 	len3 := len(t.Partitions)
 	e.PutArrayLength(len3)
 	for i := 0; i < len3; i++ {
-		t.Partitions[i].encode(e, version)
+		t.Partitions[i].Encode(e, version)
 	}
 	if version >= 8 {
 		e.PutInt32(t.TopicAuthorizedOperations) // TopicAuthorizedOperations
@@ -239,7 +239,7 @@ func (t MetadataResponseTopic3) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode MetadataResponseTopic3; Versions: 0-9
-func (t *MetadataResponseTopic3) decode(d *protocol.Decoder, version int16) error {
+func (t *MetadataResponseTopic3) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -262,7 +262,7 @@ func (t *MetadataResponseTopic3) decode(d *protocol.Decoder, version int16) erro
 		t.Partitions = make([]MetadataResponsePartition3, n)
 		for i := 0; i < n; i++ {
 			var item MetadataResponsePartition3
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Partitions[i] = item
@@ -305,7 +305,7 @@ func (t MetadataResponsePartition3) size(version int16) int32 {
 }
 
 // encode MetadataResponsePartition3; Versions: 0-9
-func (t MetadataResponsePartition3) encode(e *protocol.Encoder, version int16) {
+func (t MetadataResponsePartition3) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt32(t.LeaderId)       // LeaderId
@@ -320,7 +320,7 @@ func (t MetadataResponsePartition3) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode MetadataResponsePartition3; Versions: 0-9
-func (t *MetadataResponsePartition3) decode(d *protocol.Decoder, version int16) error {
+func (t *MetadataResponsePartition3) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {

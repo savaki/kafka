@@ -53,7 +53,7 @@ func (t JoinGroupRequest) size(version int16) int32 {
 }
 
 // encode JoinGroupRequest; Versions: 0-6
-func (t JoinGroupRequest) encode(e *protocol.Encoder, version int16) {
+func (t JoinGroupRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.GroupId)         // GroupId
 	e.PutInt32(t.SessionTimeoutMs) // SessionTimeoutMs
 	if version >= 1 {
@@ -68,12 +68,12 @@ func (t JoinGroupRequest) encode(e *protocol.Encoder, version int16) {
 	len6 := len(t.Protocols)
 	e.PutArrayLength(len6)
 	for i := 0; i < len6; i++ {
-		t.Protocols[i].encode(e, version)
+		t.Protocols[i].Encode(e, version)
 	}
 }
 
 // decode JoinGroupRequest; Versions: 0-6
-func (t *JoinGroupRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *JoinGroupRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.GroupId, err = d.String()
 	if err != nil {
@@ -110,7 +110,7 @@ func (t *JoinGroupRequest) decode(d *protocol.Decoder, version int16) error {
 		t.Protocols = make([]JoinGroupRequestProtocol11, n)
 		for i := 0; i < n; i++ {
 			var item JoinGroupRequestProtocol11
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Protocols[i] = item
@@ -133,13 +133,13 @@ func (t JoinGroupRequestProtocol11) size(version int16) int32 {
 }
 
 // encode JoinGroupRequestProtocol11; Versions: 0-6
-func (t JoinGroupRequestProtocol11) encode(e *protocol.Encoder, version int16) {
+func (t JoinGroupRequestProtocol11) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name)    // Name
 	e.PutBytes(t.Metadata) // Metadata
 }
 
 // decode JoinGroupRequestProtocol11; Versions: 0-6
-func (t *JoinGroupRequestProtocol11) decode(d *protocol.Decoder, version int16) error {
+func (t *JoinGroupRequestProtocol11) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {

@@ -70,7 +70,7 @@ func (t FetchRequest) size(version int16) int32 {
 }
 
 // encode FetchRequest; Versions: 0-11
-func (t FetchRequest) encode(e *protocol.Encoder, version int16) {
+func (t FetchRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.ReplicaId) // ReplicaId
 	e.PutInt32(t.MaxWait)   // MaxWait
 	e.PutInt32(t.MinBytes)  // MinBytes
@@ -90,14 +90,14 @@ func (t FetchRequest) encode(e *protocol.Encoder, version int16) {
 	len7 := len(t.Topics)
 	e.PutArrayLength(len7)
 	for i := 0; i < len7; i++ {
-		t.Topics[i].encode(e, version)
+		t.Topics[i].Encode(e, version)
 	}
 	if version >= 7 {
 		// Forgotten
 		len8 := len(t.Forgotten)
 		e.PutArrayLength(len8)
 		for i := 0; i < len8; i++ {
-			t.Forgotten[i].encode(e, version)
+			t.Forgotten[i].Encode(e, version)
 		}
 	}
 	if version >= 11 {
@@ -106,7 +106,7 @@ func (t FetchRequest) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode FetchRequest; Versions: 0-11
-func (t *FetchRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *FetchRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ReplicaId, err = d.Int32()
 	if err != nil {
@@ -151,7 +151,7 @@ func (t *FetchRequest) decode(d *protocol.Decoder, version int16) error {
 		t.Topics = make([]FetchableTopic1, n)
 		for i := 0; i < n; i++ {
 			var item FetchableTopic1
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Topics[i] = item
@@ -165,7 +165,7 @@ func (t *FetchRequest) decode(d *protocol.Decoder, version int16) error {
 			t.Forgotten = make([]ForgottenTopic1, n)
 			for i := 0; i < n; i++ {
 				var item ForgottenTopic1
-				if err := (&item).decode(d, version); err != nil {
+				if err := (&item).Decode(d, version); err != nil {
 					return err
 				}
 				t.Forgotten[i] = item
@@ -198,18 +198,18 @@ func (t FetchableTopic1) size(version int16) int32 {
 }
 
 // encode FetchableTopic1; Versions: 0-11
-func (t FetchableTopic1) encode(e *protocol.Encoder, version int16) {
+func (t FetchableTopic1) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// FetchPartitions
 	len1 := len(t.FetchPartitions)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.FetchPartitions[i].encode(e, version)
+		t.FetchPartitions[i].Encode(e, version)
 	}
 }
 
 // decode FetchableTopic1; Versions: 0-11
-func (t *FetchableTopic1) decode(d *protocol.Decoder, version int16) error {
+func (t *FetchableTopic1) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -222,7 +222,7 @@ func (t *FetchableTopic1) decode(d *protocol.Decoder, version int16) error {
 		t.FetchPartitions = make([]FetchPartition1, n)
 		for i := 0; i < n; i++ {
 			var item FetchPartition1
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.FetchPartitions[i] = item
@@ -255,7 +255,7 @@ func (t FetchPartition1) size(version int16) int32 {
 }
 
 // encode FetchPartition1; Versions: 0-11
-func (t FetchPartition1) encode(e *protocol.Encoder, version int16) {
+func (t FetchPartition1) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	if version >= 9 {
 		e.PutInt32(t.CurrentLeaderEpoch) // CurrentLeaderEpoch
@@ -268,7 +268,7 @@ func (t FetchPartition1) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode FetchPartition1; Versions: 0-11
-func (t *FetchPartition1) decode(d *protocol.Decoder, version int16) error {
+func (t *FetchPartition1) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -315,7 +315,7 @@ func (t ForgottenTopic1) size(version int16) int32 {
 }
 
 // encode ForgottenTopic1; Versions: 0-11
-func (t ForgottenTopic1) encode(e *protocol.Encoder, version int16) {
+func (t ForgottenTopic1) Encode(e *protocol.Encoder, version int16) {
 	if version >= 7 {
 		e.PutString(t.Name) // Name
 	}
@@ -325,7 +325,7 @@ func (t ForgottenTopic1) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ForgottenTopic1; Versions: 0-11
-func (t *ForgottenTopic1) decode(d *protocol.Decoder, version int16) error {
+func (t *ForgottenTopic1) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	if version >= 7 {
 		t.Name, err = d.String()

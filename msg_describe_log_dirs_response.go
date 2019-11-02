@@ -39,18 +39,18 @@ func (t DescribeLogDirsResponse) size(version int16) int32 {
 }
 
 // encode DescribeLogDirsResponse; Versions: 0-1
-func (t DescribeLogDirsResponse) encode(e *protocol.Encoder, version int16) {
+func (t DescribeLogDirsResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Results
 	len1 := len(t.Results)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Results[i].encode(e, version)
+		t.Results[i].Encode(e, version)
 	}
 }
 
 // decode DescribeLogDirsResponse; Versions: 0-1
-func (t *DescribeLogDirsResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeLogDirsResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -63,7 +63,7 @@ func (t *DescribeLogDirsResponse) decode(d *protocol.Decoder, version int16) err
 		t.Results = make([]DescribeLogDirsResult35, n)
 		for i := 0; i < n; i++ {
 			var item DescribeLogDirsResult35
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Results[i] = item
@@ -91,19 +91,19 @@ func (t DescribeLogDirsResult35) size(version int16) int32 {
 }
 
 // encode DescribeLogDirsResult35; Versions: 0-1
-func (t DescribeLogDirsResult35) encode(e *protocol.Encoder, version int16) {
+func (t DescribeLogDirsResult35) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.ErrorCode) // ErrorCode
 	e.PutString(t.LogDir)   // LogDir
 	// Topics
 	len2 := len(t.Topics)
 	e.PutArrayLength(len2)
 	for i := 0; i < len2; i++ {
-		t.Topics[i].encode(e, version)
+		t.Topics[i].Encode(e, version)
 	}
 }
 
 // decode DescribeLogDirsResult35; Versions: 0-1
-func (t *DescribeLogDirsResult35) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeLogDirsResult35) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -120,7 +120,7 @@ func (t *DescribeLogDirsResult35) decode(d *protocol.Decoder, version int16) err
 		t.Topics = make([]DescribeLogDirsTopic35, n)
 		for i := 0; i < n; i++ {
 			var item DescribeLogDirsTopic35
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Topics[i] = item
@@ -146,18 +146,18 @@ func (t DescribeLogDirsTopic35) size(version int16) int32 {
 }
 
 // encode DescribeLogDirsTopic35; Versions: 0-1
-func (t DescribeLogDirsTopic35) encode(e *protocol.Encoder, version int16) {
+func (t DescribeLogDirsTopic35) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Partitions[i].encode(e, version)
+		t.Partitions[i].Encode(e, version)
 	}
 }
 
 // decode DescribeLogDirsTopic35; Versions: 0-1
-func (t *DescribeLogDirsTopic35) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeLogDirsTopic35) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -170,7 +170,7 @@ func (t *DescribeLogDirsTopic35) decode(d *protocol.Decoder, version int16) erro
 		t.Partitions = make([]DescribeLogDirsPartition35, n)
 		for i := 0; i < n; i++ {
 			var item DescribeLogDirsPartition35
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Partitions[i] = item
@@ -197,7 +197,7 @@ func (t DescribeLogDirsPartition35) size(version int16) int32 {
 }
 
 // encode DescribeLogDirsPartition35; Versions: 0-1
-func (t DescribeLogDirsPartition35) encode(e *protocol.Encoder, version int16) {
+func (t DescribeLogDirsPartition35) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt64(t.PartitionSize)  // PartitionSize
 	e.PutInt64(t.OffsetLag)      // OffsetLag
@@ -205,7 +205,7 @@ func (t DescribeLogDirsPartition35) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeLogDirsPartition35; Versions: 0-1
-func (t *DescribeLogDirsPartition35) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeLogDirsPartition35) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {

@@ -39,18 +39,18 @@ func (t OffsetFetchRequest) size(version int16) int32 {
 }
 
 // encode OffsetFetchRequest; Versions: 0-6
-func (t OffsetFetchRequest) encode(e *protocol.Encoder, version int16) {
+func (t OffsetFetchRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.GroupId) // GroupId
 	// Topics
 	len1 := len(t.Topics)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Topics[i].encode(e, version)
+		t.Topics[i].Encode(e, version)
 	}
 }
 
 // decode OffsetFetchRequest; Versions: 0-6
-func (t *OffsetFetchRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetFetchRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.GroupId, err = d.String()
 	if err != nil {
@@ -63,7 +63,7 @@ func (t *OffsetFetchRequest) decode(d *protocol.Decoder, version int16) error {
 		t.Topics = make([]OffsetFetchRequestTopic9, n)
 		for i := 0; i < n; i++ {
 			var item OffsetFetchRequestTopic9
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Topics[i] = item
@@ -86,13 +86,13 @@ func (t OffsetFetchRequestTopic9) size(version int16) int32 {
 }
 
 // encode OffsetFetchRequestTopic9; Versions: 0-6
-func (t OffsetFetchRequestTopic9) encode(e *protocol.Encoder, version int16) {
+func (t OffsetFetchRequestTopic9) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name)                 // Name
 	e.PutInt32Array(t.PartitionIndexes) // PartitionIndexes
 }
 
 // decode OffsetFetchRequestTopic9; Versions: 0-6
-func (t *OffsetFetchRequestTopic9) decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetFetchRequestTopic9) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {

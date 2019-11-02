@@ -41,19 +41,19 @@ func (t OffsetDeleteResponse) size(version int16) int32 {
 }
 
 // encode OffsetDeleteResponse; Versions: 0
-func (t OffsetDeleteResponse) encode(e *protocol.Encoder, version int16) {
+func (t OffsetDeleteResponse) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Topics
 	len2 := len(t.Topics)
 	e.PutArrayLength(len2)
 	for i := 0; i < len2; i++ {
-		t.Topics[i].encode(e, version)
+		t.Topics[i].Encode(e, version)
 	}
 }
 
 // decode OffsetDeleteResponse; Versions: 0
-func (t *OffsetDeleteResponse) decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetDeleteResponse) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -70,7 +70,7 @@ func (t *OffsetDeleteResponse) decode(d *protocol.Decoder, version int16) error 
 		t.Topics = make([]OffsetDeleteResponseTopic47, n)
 		for i := 0; i < n; i++ {
 			var item OffsetDeleteResponseTopic47
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Topics[i] = item
@@ -96,18 +96,18 @@ func (t OffsetDeleteResponseTopic47) size(version int16) int32 {
 }
 
 // encode OffsetDeleteResponseTopic47; Versions: 0
-func (t OffsetDeleteResponseTopic47) encode(e *protocol.Encoder, version int16) {
+func (t OffsetDeleteResponseTopic47) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
 	e.PutArrayLength(len1)
 	for i := 0; i < len1; i++ {
-		t.Partitions[i].encode(e, version)
+		t.Partitions[i].Encode(e, version)
 	}
 }
 
 // decode OffsetDeleteResponseTopic47; Versions: 0
-func (t *OffsetDeleteResponseTopic47) decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetDeleteResponseTopic47) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -120,7 +120,7 @@ func (t *OffsetDeleteResponseTopic47) decode(d *protocol.Decoder, version int16)
 		t.Partitions = make([]OffsetDeleteResponsePartition47, n)
 		for i := 0; i < n; i++ {
 			var item OffsetDeleteResponsePartition47
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Partitions[i] = item
@@ -143,13 +143,13 @@ func (t OffsetDeleteResponsePartition47) size(version int16) int32 {
 }
 
 // encode OffsetDeleteResponsePartition47; Versions: 0
-func (t OffsetDeleteResponsePartition47) encode(e *protocol.Encoder, version int16) {
+func (t OffsetDeleteResponsePartition47) Encode(e *protocol.Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 }
 
 // decode OffsetDeleteResponsePartition47; Versions: 0
-func (t *OffsetDeleteResponsePartition47) decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetDeleteResponsePartition47) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {

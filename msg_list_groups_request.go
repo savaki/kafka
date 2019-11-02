@@ -31,11 +31,11 @@ func (t ListGroupsRequest) size(version int16) int32 {
 }
 
 // encode ListGroupsRequest; Versions: 0-3
-func (t ListGroupsRequest) encode(e *protocol.Encoder, version int16) {
+func (t ListGroupsRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ListGroupsRequest; Versions: 0-3
-func (t *ListGroupsRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *ListGroupsRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	return err
 }

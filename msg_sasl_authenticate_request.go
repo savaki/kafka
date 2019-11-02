@@ -34,12 +34,12 @@ func (t SaslAuthenticateRequest) size(version int16) int32 {
 }
 
 // encode SaslAuthenticateRequest; Versions: 0-1
-func (t SaslAuthenticateRequest) encode(e *protocol.Encoder, version int16) {
+func (t SaslAuthenticateRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutBytes(t.AuthBytes) // AuthBytes
 }
 
 // decode SaslAuthenticateRequest; Versions: 0-1
-func (t *SaslAuthenticateRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *SaslAuthenticateRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.AuthBytes, err = d.Bytes()
 	if err != nil {

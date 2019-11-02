@@ -36,13 +36,13 @@ func (t RenewDelegationTokenRequest) size(version int16) int32 {
 }
 
 // encode RenewDelegationTokenRequest; Versions: 0-1
-func (t RenewDelegationTokenRequest) encode(e *protocol.Encoder, version int16) {
+func (t RenewDelegationTokenRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutBytes(t.Hmac)          // Hmac
 	e.PutInt64(t.RenewPeriodMs) // RenewPeriodMs
 }
 
 // decode RenewDelegationTokenRequest; Versions: 0-1
-func (t *RenewDelegationTokenRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *RenewDelegationTokenRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.Hmac, err = d.Bytes()
 	if err != nil {

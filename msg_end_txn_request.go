@@ -40,7 +40,7 @@ func (t EndTxnRequest) size(version int16) int32 {
 }
 
 // encode EndTxnRequest; Versions: 0-1
-func (t EndTxnRequest) encode(e *protocol.Encoder, version int16) {
+func (t EndTxnRequest) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.TransactionalId) // TransactionalId
 	e.PutInt64(t.ProducerId)       // ProducerId
 	e.PutInt16(t.ProducerEpoch)    // ProducerEpoch
@@ -48,7 +48,7 @@ func (t EndTxnRequest) encode(e *protocol.Encoder, version int16) {
 }
 
 // decode EndTxnRequest; Versions: 0-1
-func (t *EndTxnRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *EndTxnRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.TransactionalId, err = d.String()
 	if err != nil {

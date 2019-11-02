@@ -37,17 +37,17 @@ func (t DescribeDelegationTokenRequest) size(version int16) int32 {
 }
 
 // encode DescribeDelegationTokenRequest; Versions: 0-1
-func (t DescribeDelegationTokenRequest) encode(e *protocol.Encoder, version int16) {
+func (t DescribeDelegationTokenRequest) Encode(e *protocol.Encoder, version int16) {
 	// Owners
 	len0 := len(t.Owners)
 	e.PutArrayLength(len0)
 	for i := 0; i < len0; i++ {
-		t.Owners[i].encode(e, version)
+		t.Owners[i].Encode(e, version)
 	}
 }
 
 // decode DescribeDelegationTokenRequest; Versions: 0-1
-func (t *DescribeDelegationTokenRequest) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeDelegationTokenRequest) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	// Owners
 	if n, err := d.ArrayLength(); err != nil {
@@ -56,7 +56,7 @@ func (t *DescribeDelegationTokenRequest) decode(d *protocol.Decoder, version int
 		t.Owners = make([]DescribeDelegationTokenOwner41, n)
 		for i := 0; i < n; i++ {
 			var item DescribeDelegationTokenOwner41
-			if err := (&item).decode(d, version); err != nil {
+			if err := (&item).Decode(d, version); err != nil {
 				return err
 			}
 			t.Owners[i] = item
@@ -79,13 +79,13 @@ func (t DescribeDelegationTokenOwner41) size(version int16) int32 {
 }
 
 // encode DescribeDelegationTokenOwner41; Versions: 0-1
-func (t DescribeDelegationTokenOwner41) encode(e *protocol.Encoder, version int16) {
+func (t DescribeDelegationTokenOwner41) Encode(e *protocol.Encoder, version int16) {
 	e.PutString(t.PrincipalType) // PrincipalType
 	e.PutString(t.PrincipalName) // PrincipalName
 }
 
 // decode DescribeDelegationTokenOwner41; Versions: 0-1
-func (t *DescribeDelegationTokenOwner41) decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeDelegationTokenOwner41) Decode(d *protocol.Decoder, version int16) error {
 	var err error
 	t.PrincipalType, err = d.String()
 	if err != nil {
