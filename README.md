@@ -1,6 +1,6 @@
 [![GoDoc](https://godoc.org/github.com/savaki/kafka?status.svg)](https://godoc.org/github.com/savaki/kafka)
 
-kafka
+# kafka
 
 `kafka` is a pure go Kafka library.
 
