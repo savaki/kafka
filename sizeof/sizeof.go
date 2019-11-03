@@ -17,30 +17,35 @@
 package sizeof
 
 const (
-	Bool        int32 = 1
-	Int8        int32 = 1
-	Int16       int32 = 2
-	Int32       int32 = 4
-	Int64       int32 = 8
-	ArrayLength       = Int32
+	Bool        int32 = 1     // Bool bytes
+	Int8        int32 = 1     // Int8 bytes
+	Int16       int32 = 2     // Int16 size
+	Int32       int32 = 4     // Int32 bytes
+	Int64       int32 = 8     // Int64 bytes
+	ArrayLength       = Int32 // Arraylength bytes e.g. Int32
 )
 
+// Bytes returns size of []byte
 func Bytes(data []byte) int32 {
 	return ArrayLength + int32(len(data)) // int32 length + length of bytes
 }
 
+// Int32Array returns size of []int32
 func Int32Array(ii []int32) int32 {
 	return ArrayLength + int32(len(ii))*Int32 // int32 length + length of array * int32 length
 }
 
+// Int64Array returns size of []int64
 func Int64Array(ii []int64) int32 {
 	return ArrayLength + int32(len(ii))*Int64 // int32 length + length of array * int64 length
 }
 
+// String returns size of string
 func String(s string) int32 {
 	return Int16 + int32(len(s))
 }
 
+// String returns size of string array
 func StringArray(ss []string) int32 {
 	var sz int32
 	sz += ArrayLength // int32 length of array

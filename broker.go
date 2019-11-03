@@ -24,6 +24,8 @@ import (
 	"github.com/savaki/kafka/protocol/apikey"
 )
 
+const defaultClientID = "github.com/savaki/kafka"
+
 type config struct {
 	brokers  []string
 	clientID string
@@ -40,10 +42,21 @@ type Broker struct {
 // Option provides functional options to Client
 type Option func(*config)
 
+// WithClientID allows kafka client id to be specified
+func WithClientID(id string) Option {
+	return func(c *config) {
+		if id == "" {
+			c.clientID = defaultClientID
+			return
+		}
+		c.clientID = id
+	}
+}
+
 // buildConfig builds config from provided options
 func buildConfig(opts []Option) config {
 	c := config{
-		clientID: "github.com/savaki/kafka",
+		clientID: defaultClientID,
 		dialFunc: net.Dial,
 	}
 
