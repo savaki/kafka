@@ -21,6 +21,7 @@ import (
 	"net"
 
 	"github.com/savaki/kafka/protocol"
+	"github.com/savaki/kafka/protocol/apikey"
 )
 
 const defaultClientID = "github.com/savaki/kafka"
