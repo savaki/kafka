@@ -21,28 +21,60 @@ import (
 	"sync/atomic"
 )
 
+type mutex struct {
+	ctx context.Context
+	ch  chan struct{}
+	set int32
+}
+
+func newMutex(ctx context.Context) *mutex {
+	return &mutex{
+		ctx: ctx,
+		ch:  make(chan struct{}),
+	}
+}
+
+func (m *mutex) Wait() {
+	if atomic.CompareAndSwapInt32(&m.set, 0, 1) {
+		select {
+		case <-m.ctx.Done():
+		case m.ch <- struct{}{}:
+		}
+	}
+}
+
+func (m *mutex) Release() {
+	if atomic.CompareAndSwapInt32(&m.set, 1, 0) {
+		select {
+		case <-m.ctx.Done():
+		case <-m.ch:
+		}
+	}
+}
+
 // RingBuffer implements a ring buffer that supports a single reader and
 // single writer.
 type RingBuffer struct {
 	ctx       context.Context
 	cancel    context.CancelFunc
-	data      []byte        // data provides a temporary internal buffer
-	start     int32         // start position to read from
-	next      int32         // next position to write to
-	lock      chan struct{} // lock enables signaling between read and write goroutines
-	lockState int32         // lockState will either be 0 or 1
-	size      int32         // size of internal buffer
+	data      []byte // data provides a temporary internal buffer
+	start     int32  // start position of next unread by
+	next      int32  // next position to write to
+	readLock  *mutex // lockState will either be 0 or 1
+	writeLock *mutex // lockState will either be 0 or 1
+	size      int32  // size of internal buffer
 }
 
 // NewRingBuffer returns a new ringBuffer suitable for a single reader and a single writer
 func NewRingBuffer(size int) *RingBuffer {
 	ctx, cancel := context.WithCancel(context.Background())
 	return &RingBuffer{
-		ctx:    ctx,
-		cancel: cancel,
-		data:   make([]byte, size),
-		lock:   make(chan struct{}),
-		size:   int32(size),
+		ctx:       ctx,
+		cancel:    cancel,
+		data:      make([]byte, size),
+		readLock:  newMutex(ctx),
+		writeLock: newMutex(ctx),
+		size:      int32(size),
 	}
 }
 
@@ -69,30 +101,16 @@ func (r *RingBuffer) WriteN(data []byte, n int) {
 
 		// whenever pos catches up to the starting position, wait for
 		// additional bytes to be written before continuing
-		if pos == start {
-			// important to store pos prior to reading from lockMux
+		if pos+1 == start {
 			atomic.StoreInt32(&r.next, pos)
 
-			// release the read goroutine if its locked on us
-			if atomic.CompareAndSwapInt32(&r.lockState, 1, 0) {
-				wrote = i
-				select {
-				case <-r.ctx.Done():
-					return
-				case <-r.lock:
-					// ok
-				}
-			}
+			// important to store pos prior to reading from lockMux
+			r.readLock.Release()
+			wrote = i
 
-			// lock this goroutine and wait for the read goroutine to unlock us
-			if atomic.CompareAndSwapInt32(&r.lockState, 0, 1) {
-				select {
-				case <-r.ctx.Done():
-					return
-				case r.lock <- struct{}{}:
-					// ok
-				}
-				start = atomic.LoadInt32(&r.start)
+			start = atomic.LoadInt32(&r.start)
+			if pos+1 == start {
+				r.writeLock.Wait()
 			}
 		}
 	}
@@ -102,14 +120,7 @@ func (r *RingBuffer) WriteN(data []byte, n int) {
 	// if at least one byte has been written since the last time r.lock
 	// was cleared, check to see if it needs to be cleared again
 	if n > wrote+1 {
-		if atomic.CompareAndSwapInt32(&r.lockState, 1, 0) {
-			select {
-			case <-r.ctx.Done():
-				return
-			case <-r.lock:
-				// ok
-			}
-		}
+		r.readLock.Release()
 	}
 }
 
@@ -124,27 +135,14 @@ func (r *RingBuffer) ReadN(data []byte, n int) {
 
 	for i := 0; i < n; i++ {
 		if pos == next {
+			atomic.StoreInt32(&r.start, pos)
 			if read > 0 {
-				atomic.StoreInt32(&r.start, pos)
-				if atomic.CompareAndSwapInt32(&r.lockState, 1, 0) {
-					select {
-					case <-r.ctx.Done():
-						return
-					case <-r.lock:
-						// ok
-					}
-					read = 0
-				}
+				r.writeLock.Release()
 			}
-			if atomic.CompareAndSwapInt32(&r.lockState, 0, 1) {
-				select {
-				case <-r.ctx.Done():
-					return
-				case r.lock <- struct{}{}:
-					// ok
-				}
 
-				next = atomic.LoadInt32(&r.next)
+			next = atomic.LoadInt32(&r.next)
+			if pos == next {
+				r.readLock.Wait()
 			}
 		}
 
@@ -158,13 +156,6 @@ func (r *RingBuffer) ReadN(data []byte, n int) {
 
 	atomic.StoreInt32(&r.start, pos)
 	if read > 0 {
-		if atomic.CompareAndSwapInt32(&r.lockState, 1, 0) {
-			select {
-			case <-r.ctx.Done():
-				return
-			case <-r.lock:
-				// ok
-			}
-		}
+		r.writeLock.Release()
 	}
 }

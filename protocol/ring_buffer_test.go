@@ -26,10 +26,7 @@ import (
 )
 
 func TestRingBuffer_WriteN(t *testing.T) {
-	ring := RingBuffer{
-		data: make([]byte, 15),
-	}
-
+	ring := NewRingBuffer(15)
 	content := []byte("hello world")
 	ring.WriteN(content, len(content))
 	fmt.Println(string(ring.data))
@@ -42,6 +39,80 @@ func BenchmarkAtomic(t *testing.B) {
 	}
 	if n == 0 {
 		t.Fatalf("got %v; want > 0", n)
+	}
+}
+
+var digits = []byte("1234567890")
+
+type iterator struct {
+	offset int
+}
+
+func (iter *iterator) ReadN(data []byte, n int) {
+	for i := 0; i < n; i++ {
+		data[i] = digits[iter.offset]
+
+		iter.offset++
+		if iter.offset == len(digits) {
+			iter.offset = 0
+		}
+	}
+}
+
+func TestMutex(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	mutex := newMutex(ctx)
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			default:
+			}
+			mutex.Wait()
+			mutex.Wait()
+		}
+	}()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		default:
+		}
+		mutex.Release()
+	}
+}
+
+func TestConcurrent(t *testing.T) {
+	const total = 1e4
+
+	buffer := NewRingBuffer(1e2)
+	go func() {
+		data := make([]byte, 10)
+		iter := &iterator{}
+		for i := 0; i < (total / 20); i++ {
+			for n := 1; n < 10; n++ {
+				iter.ReadN(data, n)
+				buffer.WriteN(data, n)
+			}
+			for n := 10; n >= 1; n-- {
+				iter.ReadN(data, n)
+				buffer.WriteN(data, n)
+			}
+		}
+	}()
+
+	data := make([]byte, 10)
+	remain := int(total)
+	for remain > 0 {
+		buffer.ReadN(data, cap(data))
+		if got, want := string(data[0:cap(data)]), string(digits); got != want {
+			t.Fatalf("got %v; want %v", got, want)
+		}
+		remain -= cap(data)
 	}
 }
 
