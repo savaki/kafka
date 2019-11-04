@@ -30,7 +30,7 @@ type AddOffsetsToTxnRequest struct {
 }
 
 // size of AddOffsetsToTxnRequest; Versions: 0-1
-func (t AddOffsetsToTxnRequest) size(version int16) int32 {
+func (t AddOffsetsToTxnRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.TransactionalId) // TransactionalId
 	sz += sizeof.Int64                     // ProducerId
