@@ -53,6 +53,17 @@ func WithClientID(id string) Option {
 	}
 }
 
+// WithDialFunc allows the dialer to be customized
+func WithDialFunc(dialFunc func(network, addr string) (net.Conn, error)) Option {
+	return func(c *config) {
+		if dialFunc == nil {
+			c.dialFunc = net.Dial
+			return
+		}
+		c.dialFunc = dialFunc
+	}
+}
+
 // buildConfig builds config from provided options
 func buildConfig(opts []Option) config {
 	c := config{
