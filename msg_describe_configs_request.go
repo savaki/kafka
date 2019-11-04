@@ -28,11 +28,11 @@ type DescribeConfigsRequest struct {
 }
 
 // size of DescribeConfigsRequest; Versions: 0-2
-func (t DescribeConfigsRequest) size(version int16) int32 {
+func (t DescribeConfigsRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.ArrayLength // Resources
 	for i := len(t.Resources) - 1; i >= 0; i-- {
-		sz += t.Resources[i].size(version)
+		sz += t.Resources[i].Size(version)
 	}
 	if version >= 1 {
 		sz += sizeof.Bool // IncludeSynoyms
@@ -85,7 +85,7 @@ type DescribeConfigsResource32 struct {
 }
 
 // size of DescribeConfigsResource32; Versions: 0-2
-func (t DescribeConfigsResource32) size(version int16) int32 {
+func (t DescribeConfigsResource32) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int8                             // ResourceType
 	sz += sizeof.String(t.ResourceName)           // ResourceName

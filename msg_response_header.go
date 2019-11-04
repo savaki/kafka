@@ -27,7 +27,7 @@ type ResponseHeader struct {
 }
 
 // size of ResponseHeader; Versions: 0-1
-func (t ResponseHeader) size(version int16) int32 {
+func (t ResponseHeader) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // CorrelationId
 	return sz

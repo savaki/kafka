@@ -28,12 +28,12 @@ type AddPartitionsToTxnResponse struct {
 }
 
 // size of AddPartitionsToTxnResponse; Versions: 0-1
-func (t AddPartitionsToTxnResponse) size(version int16) int32 {
+func (t AddPartitionsToTxnResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32       // ThrottleTimeMs
 	sz += sizeof.ArrayLength // Results
 	for i := len(t.Results) - 1; i >= 0; i-- {
-		sz += t.Results[i].size(version)
+		sz += t.Results[i].Size(version)
 	}
 	return sz
 }
@@ -78,12 +78,12 @@ type AddPartitionsToTxnTopicResult24 struct {
 }
 
 // size of AddPartitionsToTxnTopicResult24; Versions: 0-1
-func (t AddPartitionsToTxnTopicResult24) size(version int16) int32 {
+func (t AddPartitionsToTxnTopicResult24) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.ArrayLength    // Results
 	for i := len(t.Results) - 1; i >= 0; i-- {
-		sz += t.Results[i].size(version)
+		sz += t.Results[i].Size(version)
 	}
 	return sz
 }
@@ -128,7 +128,7 @@ type AddPartitionsToTxnPartitionResult24 struct {
 }
 
 // size of AddPartitionsToTxnPartitionResult24; Versions: 0-1
-func (t AddPartitionsToTxnPartitionResult24) size(version int16) int32 {
+func (t AddPartitionsToTxnPartitionResult24) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // PartitionIndex
 	sz += sizeof.Int16 // ErrorCode

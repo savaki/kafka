@@ -29,11 +29,11 @@ type CreatePartitionsRequest struct {
 }
 
 // size of CreatePartitionsRequest; Versions: 0-1
-func (t CreatePartitionsRequest) size(version int16) int32 {
+func (t CreatePartitionsRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.ArrayLength // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	sz += sizeof.Int32 // TimeoutMs
 	sz += sizeof.Bool  // ValidateOnly
@@ -86,13 +86,13 @@ type CreatePartitionsTopic37 struct {
 }
 
 // size of CreatePartitionsTopic37; Versions: 0-1
-func (t CreatePartitionsTopic37) size(version int16) int32 {
+func (t CreatePartitionsTopic37) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.Int32          // Count
 	sz += sizeof.ArrayLength    // Assignments
 	for i := len(t.Assignments) - 1; i >= 0; i-- {
-		sz += t.Assignments[i].size(version)
+		sz += t.Assignments[i].Size(version)
 	}
 	return sz
 }
@@ -141,7 +141,7 @@ type CreatePartitionsAssignment37 struct {
 }
 
 // size of CreatePartitionsAssignment37; Versions: 0-1
-func (t CreatePartitionsAssignment37) size(version int16) int32 {
+func (t CreatePartitionsAssignment37) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32Array(t.BrokerIds) // BrokerIds
 	return sz

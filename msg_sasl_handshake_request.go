@@ -27,7 +27,7 @@ type SaslHandshakeRequest struct {
 }
 
 // size of SaslHandshakeRequest; Versions: 0-1
-func (t SaslHandshakeRequest) size(version int16) int32 {
+func (t SaslHandshakeRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Mechanism) // Mechanism
 	return sz

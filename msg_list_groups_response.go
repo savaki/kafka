@@ -29,7 +29,7 @@ type ListGroupsResponse struct {
 }
 
 // size of ListGroupsResponse; Versions: 0-3
-func (t ListGroupsResponse) size(version int16) int32 {
+func (t ListGroupsResponse) Size(version int16) int32 {
 	var sz int32
 	if version >= 1 {
 		sz += sizeof.Int32 // ThrottleTimeMs
@@ -37,7 +37,7 @@ func (t ListGroupsResponse) size(version int16) int32 {
 	sz += sizeof.Int16       // ErrorCode
 	sz += sizeof.ArrayLength // Groups
 	for i := len(t.Groups) - 1; i >= 0; i-- {
-		sz += t.Groups[i].size(version)
+		sz += t.Groups[i].Size(version)
 	}
 	return sz
 }
@@ -91,7 +91,7 @@ type ListedGroup16 struct {
 }
 
 // size of ListedGroup16; Versions: 0-3
-func (t ListedGroup16) size(version int16) int32 {
+func (t ListedGroup16) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.GroupId)      // GroupId
 	sz += sizeof.String(t.ProtocolType) // ProtocolType

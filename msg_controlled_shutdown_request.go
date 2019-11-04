@@ -28,7 +28,7 @@ type ControlledShutdownRequest struct {
 }
 
 // size of ControlledShutdownRequest; Versions: 0-3
-func (t ControlledShutdownRequest) size(version int16) int32 {
+func (t ControlledShutdownRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // BrokerId
 	if version >= 2 {

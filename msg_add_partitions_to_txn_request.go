@@ -30,14 +30,14 @@ type AddPartitionsToTxnRequest struct {
 }
 
 // size of AddPartitionsToTxnRequest; Versions: 0-1
-func (t AddPartitionsToTxnRequest) size(version int16) int32 {
+func (t AddPartitionsToTxnRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.TransactionalId) // TransactionalId
 	sz += sizeof.Int64                     // ProducerId
 	sz += sizeof.Int16                     // ProducerEpoch
 	sz += sizeof.ArrayLength               // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	return sz
 }
@@ -92,7 +92,7 @@ type AddPartitionsToTxnTopic24 struct {
 }
 
 // size of AddPartitionsToTxnTopic24; Versions: 0-1
-func (t AddPartitionsToTxnTopic24) size(version int16) int32 {
+func (t AddPartitionsToTxnTopic24) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name)           // Name
 	sz += sizeof.Int32Array(t.Partitions) // Partitions

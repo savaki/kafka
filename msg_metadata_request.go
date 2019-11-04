@@ -30,11 +30,11 @@ type MetadataRequest struct {
 }
 
 // size of MetadataRequest; Versions: 0-9
-func (t MetadataRequest) size(version int16) int32 {
+func (t MetadataRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.ArrayLength // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	if version >= 4 {
 		sz += sizeof.Bool // AllowAutoTopicCreation
@@ -109,7 +109,7 @@ type MetadataRequestTopic3 struct {
 }
 
 // size of MetadataRequestTopic3; Versions: 0-9
-func (t MetadataRequestTopic3) size(version int16) int32 {
+func (t MetadataRequestTopic3) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	return sz

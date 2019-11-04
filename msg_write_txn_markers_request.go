@@ -27,11 +27,11 @@ type WriteTxnMarkersRequest struct {
 }
 
 // size of WriteTxnMarkersRequest; Versions: 0
-func (t WriteTxnMarkersRequest) size(version int16) int32 {
+func (t WriteTxnMarkersRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.ArrayLength // Markers
 	for i := len(t.Markers) - 1; i >= 0; i-- {
-		sz += t.Markers[i].size(version)
+		sz += t.Markers[i].Size(version)
 	}
 	return sz
 }
@@ -74,14 +74,14 @@ type WritableTxnMarker27 struct {
 }
 
 // size of WritableTxnMarker27; Versions: 0
-func (t WritableTxnMarker27) size(version int16) int32 {
+func (t WritableTxnMarker27) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int64       // ProducerId
 	sz += sizeof.Int16       // ProducerEpoch
 	sz += sizeof.Bool        // TransactionResult
 	sz += sizeof.ArrayLength // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	sz += sizeof.Int32 // CoordinatorEpoch
 	return sz
@@ -142,7 +142,7 @@ type WritableTxnMarkerTopic27 struct {
 }
 
 // size of WritableTxnMarkerTopic27; Versions: 0
-func (t WritableTxnMarkerTopic27) size(version int16) int32 {
+func (t WritableTxnMarkerTopic27) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name)                 // Name
 	sz += sizeof.Int32Array(t.PartitionIndexes) // PartitionIndexes

@@ -29,12 +29,12 @@ type DescribeDelegationTokenResponse struct {
 }
 
 // size of DescribeDelegationTokenResponse; Versions: 0-1
-func (t DescribeDelegationTokenResponse) size(version int16) int32 {
+func (t DescribeDelegationTokenResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16       // ErrorCode
 	sz += sizeof.ArrayLength // Tokens
 	for i := len(t.Tokens) - 1; i >= 0; i-- {
-		sz += t.Tokens[i].size(version)
+		sz += t.Tokens[i].Size(version)
 	}
 	sz += sizeof.Int32 // ThrottleTimeMs
 	return sz
@@ -91,7 +91,7 @@ type DescribedDelegationToken41 struct {
 }
 
 // size of DescribedDelegationToken41; Versions: 0-1
-func (t DescribedDelegationToken41) size(version int16) int32 {
+func (t DescribedDelegationToken41) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.PrincipalType) // PrincipalType
 	sz += sizeof.String(t.PrincipalName) // PrincipalName
@@ -102,7 +102,7 @@ func (t DescribedDelegationToken41) size(version int16) int32 {
 	sz += sizeof.Bytes(t.Hmac)           // Hmac
 	sz += sizeof.ArrayLength             // Renewers
 	for i := len(t.Renewers) - 1; i >= 0; i-- {
-		sz += t.Renewers[i].size(version)
+		sz += t.Renewers[i].Size(version)
 	}
 	return sz
 }
@@ -177,7 +177,7 @@ type DescribedDelegationTokenRenewer41 struct {
 }
 
 // size of DescribedDelegationTokenRenewer41; Versions: 0-1
-func (t DescribedDelegationTokenRenewer41) size(version int16) int32 {
+func (t DescribedDelegationTokenRenewer41) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.PrincipalType) // PrincipalType
 	sz += sizeof.String(t.PrincipalName) // PrincipalName

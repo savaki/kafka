@@ -28,11 +28,11 @@ type CreateDelegationTokenRequest struct {
 }
 
 // size of CreateDelegationTokenRequest; Versions: 0-2
-func (t CreateDelegationTokenRequest) size(version int16) int32 {
+func (t CreateDelegationTokenRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.ArrayLength // Renewers
 	for i := len(t.Renewers) - 1; i >= 0; i-- {
-		sz += t.Renewers[i].size(version)
+		sz += t.Renewers[i].Size(version)
 	}
 	sz += sizeof.Int64 // MaxLifetimeMs
 	return sz
@@ -78,7 +78,7 @@ type CreatableRenewers38 struct {
 }
 
 // size of CreatableRenewers38; Versions: 0-2
-func (t CreatableRenewers38) size(version int16) int32 {
+func (t CreatableRenewers38) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.PrincipalType) // PrincipalType
 	sz += sizeof.String(t.PrincipalName) // PrincipalName

@@ -112,7 +112,7 @@ func (b *Broker) Produce(req ProduceRequest) (ProduceResponse, error) {
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.Produce)
+			size := hdr.Size(2) + req.Size(b.apiVersion.Produce)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.Produce)
@@ -137,7 +137,7 @@ func (b *Broker) Fetch(req FetchRequest) (FetchResponse, error) {
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.Fetch)
+			size := hdr.Size(2) + req.Size(b.apiVersion.Fetch)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.Fetch)
@@ -162,7 +162,7 @@ func (b *Broker) ListOffset(req ListOffsetRequest) (ListOffsetResponse, error) {
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.ListOffset)
+			size := hdr.Size(2) + req.Size(b.apiVersion.ListOffset)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.ListOffset)
@@ -187,7 +187,7 @@ func (b *Broker) Metadata(req MetadataRequest) (MetadataResponse, error) {
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.Metadata)
+			size := hdr.Size(2) + req.Size(b.apiVersion.Metadata)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.Metadata)
@@ -212,7 +212,7 @@ func (b *Broker) LeaderAndIsr(req LeaderAndIsrRequest) (LeaderAndIsrResponse, er
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.LeaderAndIsr)
+			size := hdr.Size(2) + req.Size(b.apiVersion.LeaderAndIsr)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.LeaderAndIsr)
@@ -237,7 +237,7 @@ func (b *Broker) StopReplica(req StopReplicaRequest) (StopReplicaResponse, error
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.StopReplica)
+			size := hdr.Size(2) + req.Size(b.apiVersion.StopReplica)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.StopReplica)
@@ -262,7 +262,7 @@ func (b *Broker) UpdateMetadata(req UpdateMetadataRequest) (UpdateMetadataRespon
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.UpdateMetadata)
+			size := hdr.Size(2) + req.Size(b.apiVersion.UpdateMetadata)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.UpdateMetadata)
@@ -287,7 +287,7 @@ func (b *Broker) ControlledShutdown(req ControlledShutdownRequest) (ControlledSh
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.ControlledShutdown)
+			size := hdr.Size(2) + req.Size(b.apiVersion.ControlledShutdown)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.ControlledShutdown)
@@ -312,7 +312,7 @@ func (b *Broker) OffsetCommit(req OffsetCommitRequest) (OffsetCommitResponse, er
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.OffsetCommit)
+			size := hdr.Size(2) + req.Size(b.apiVersion.OffsetCommit)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.OffsetCommit)
@@ -337,7 +337,7 @@ func (b *Broker) OffsetFetch(req OffsetFetchRequest) (OffsetFetchResponse, error
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.OffsetFetch)
+			size := hdr.Size(2) + req.Size(b.apiVersion.OffsetFetch)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.OffsetFetch)
@@ -362,7 +362,7 @@ func (b *Broker) FindCoordinator(req FindCoordinatorRequest) (FindCoordinatorRes
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.FindCoordinator)
+			size := hdr.Size(2) + req.Size(b.apiVersion.FindCoordinator)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.FindCoordinator)
@@ -387,7 +387,7 @@ func (b *Broker) JoinGroup(req JoinGroupRequest) (JoinGroupResponse, error) {
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.JoinGroup)
+			size := hdr.Size(2) + req.Size(b.apiVersion.JoinGroup)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.JoinGroup)
@@ -412,7 +412,7 @@ func (b *Broker) Heartbeat(req HeartbeatRequest) (HeartbeatResponse, error) {
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.Heartbeat)
+			size := hdr.Size(2) + req.Size(b.apiVersion.Heartbeat)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.Heartbeat)
@@ -437,7 +437,7 @@ func (b *Broker) LeaveGroup(req LeaveGroupRequest) (LeaveGroupResponse, error) {
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.LeaveGroup)
+			size := hdr.Size(2) + req.Size(b.apiVersion.LeaveGroup)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.LeaveGroup)
@@ -462,7 +462,7 @@ func (b *Broker) SyncGroup(req SyncGroupRequest) (SyncGroupResponse, error) {
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.SyncGroup)
+			size := hdr.Size(2) + req.Size(b.apiVersion.SyncGroup)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.SyncGroup)
@@ -487,7 +487,7 @@ func (b *Broker) DescribeGroups(req DescribeGroupsRequest) (DescribeGroupsRespon
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.DescribeGroups)
+			size := hdr.Size(2) + req.Size(b.apiVersion.DescribeGroups)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.DescribeGroups)
@@ -512,7 +512,7 @@ func (b *Broker) ListGroups(req ListGroupsRequest) (ListGroupsResponse, error) {
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.ListGroups)
+			size := hdr.Size(2) + req.Size(b.apiVersion.ListGroups)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.ListGroups)
@@ -537,7 +537,7 @@ func (b *Broker) SaslHandshake(req SaslHandshakeRequest) (SaslHandshakeResponse,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.SaslHandshake)
+			size := hdr.Size(2) + req.Size(b.apiVersion.SaslHandshake)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.SaslHandshake)
@@ -562,7 +562,7 @@ func (b *Broker) ApiVersions(req ApiVersionsRequest) (ApiVersionsResponse, error
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.ApiVersions)
+			size := hdr.Size(2) + req.Size(b.apiVersion.ApiVersions)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.ApiVersions)
@@ -587,7 +587,7 @@ func (b *Broker) CreateTopics(req CreateTopicsRequest) (CreateTopicsResponse, er
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.CreateTopics)
+			size := hdr.Size(2) + req.Size(b.apiVersion.CreateTopics)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.CreateTopics)
@@ -612,7 +612,7 @@ func (b *Broker) DeleteTopics(req DeleteTopicsRequest) (DeleteTopicsResponse, er
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.DeleteTopics)
+			size := hdr.Size(2) + req.Size(b.apiVersion.DeleteTopics)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.DeleteTopics)
@@ -637,7 +637,7 @@ func (b *Broker) DeleteRecords(req DeleteRecordsRequest) (DeleteRecordsResponse,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.DeleteRecords)
+			size := hdr.Size(2) + req.Size(b.apiVersion.DeleteRecords)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.DeleteRecords)
@@ -662,7 +662,7 @@ func (b *Broker) InitProducerId(req InitProducerIdRequest) (InitProducerIdRespon
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.InitProducerId)
+			size := hdr.Size(2) + req.Size(b.apiVersion.InitProducerId)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.InitProducerId)
@@ -687,7 +687,7 @@ func (b *Broker) OffsetForLeaderEpoch(req OffsetForLeaderEpochRequest) (OffsetFo
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.OffsetForLeaderEpoch)
+			size := hdr.Size(2) + req.Size(b.apiVersion.OffsetForLeaderEpoch)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.OffsetForLeaderEpoch)
@@ -712,7 +712,7 @@ func (b *Broker) AddPartitionsToTxn(req AddPartitionsToTxnRequest) (AddPartition
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.AddPartitionsToTxn)
+			size := hdr.Size(2) + req.Size(b.apiVersion.AddPartitionsToTxn)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.AddPartitionsToTxn)
@@ -737,7 +737,7 @@ func (b *Broker) AddOffsetsToTxn(req AddOffsetsToTxnRequest) (AddOffsetsToTxnRes
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.AddOffsetsToTxn)
+			size := hdr.Size(2) + req.Size(b.apiVersion.AddOffsetsToTxn)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.AddOffsetsToTxn)
@@ -762,7 +762,7 @@ func (b *Broker) EndTxn(req EndTxnRequest) (EndTxnResponse, error) {
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.EndTxn)
+			size := hdr.Size(2) + req.Size(b.apiVersion.EndTxn)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.EndTxn)
@@ -787,7 +787,7 @@ func (b *Broker) WriteTxnMarkers(req WriteTxnMarkersRequest) (WriteTxnMarkersRes
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.WriteTxnMarkers)
+			size := hdr.Size(2) + req.Size(b.apiVersion.WriteTxnMarkers)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.WriteTxnMarkers)
@@ -812,7 +812,7 @@ func (b *Broker) TxnOffsetCommit(req TxnOffsetCommitRequest) (TxnOffsetCommitRes
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.TxnOffsetCommit)
+			size := hdr.Size(2) + req.Size(b.apiVersion.TxnOffsetCommit)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.TxnOffsetCommit)
@@ -837,7 +837,7 @@ func (b *Broker) DescribeAcls(req DescribeAclsRequest) (DescribeAclsResponse, er
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.DescribeAcls)
+			size := hdr.Size(2) + req.Size(b.apiVersion.DescribeAcls)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.DescribeAcls)
@@ -862,7 +862,7 @@ func (b *Broker) CreateAcls(req CreateAclsRequest) (CreateAclsResponse, error) {
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.CreateAcls)
+			size := hdr.Size(2) + req.Size(b.apiVersion.CreateAcls)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.CreateAcls)
@@ -887,7 +887,7 @@ func (b *Broker) DeleteAcls(req DeleteAclsRequest) (DeleteAclsResponse, error) {
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.DeleteAcls)
+			size := hdr.Size(2) + req.Size(b.apiVersion.DeleteAcls)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.DeleteAcls)
@@ -912,7 +912,7 @@ func (b *Broker) DescribeConfigs(req DescribeConfigsRequest) (DescribeConfigsRes
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.DescribeConfigs)
+			size := hdr.Size(2) + req.Size(b.apiVersion.DescribeConfigs)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.DescribeConfigs)
@@ -937,7 +937,7 @@ func (b *Broker) AlterConfigs(req AlterConfigsRequest) (AlterConfigsResponse, er
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.AlterConfigs)
+			size := hdr.Size(2) + req.Size(b.apiVersion.AlterConfigs)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.AlterConfigs)
@@ -962,7 +962,7 @@ func (b *Broker) AlterReplicaLogDirs(req AlterReplicaLogDirsRequest) (AlterRepli
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.AlterReplicaLogDirs)
+			size := hdr.Size(2) + req.Size(b.apiVersion.AlterReplicaLogDirs)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.AlterReplicaLogDirs)
@@ -987,7 +987,7 @@ func (b *Broker) DescribeLogDirs(req DescribeLogDirsRequest) (DescribeLogDirsRes
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.DescribeLogDirs)
+			size := hdr.Size(2) + req.Size(b.apiVersion.DescribeLogDirs)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.DescribeLogDirs)
@@ -1012,7 +1012,7 @@ func (b *Broker) SaslAuthenticate(req SaslAuthenticateRequest) (SaslAuthenticate
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.SaslAuthenticate)
+			size := hdr.Size(2) + req.Size(b.apiVersion.SaslAuthenticate)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.SaslAuthenticate)
@@ -1037,7 +1037,7 @@ func (b *Broker) CreatePartitions(req CreatePartitionsRequest) (CreatePartitions
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.CreatePartitions)
+			size := hdr.Size(2) + req.Size(b.apiVersion.CreatePartitions)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.CreatePartitions)
@@ -1062,7 +1062,7 @@ func (b *Broker) CreateDelegationToken(req CreateDelegationTokenRequest) (Create
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.CreateDelegationToken)
+			size := hdr.Size(2) + req.Size(b.apiVersion.CreateDelegationToken)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.CreateDelegationToken)
@@ -1087,7 +1087,7 @@ func (b *Broker) RenewDelegationToken(req RenewDelegationTokenRequest) (RenewDel
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.RenewDelegationToken)
+			size := hdr.Size(2) + req.Size(b.apiVersion.RenewDelegationToken)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.RenewDelegationToken)
@@ -1112,7 +1112,7 @@ func (b *Broker) ExpireDelegationToken(req ExpireDelegationTokenRequest) (Expire
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.ExpireDelegationToken)
+			size := hdr.Size(2) + req.Size(b.apiVersion.ExpireDelegationToken)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.ExpireDelegationToken)
@@ -1137,7 +1137,7 @@ func (b *Broker) DescribeDelegationToken(req DescribeDelegationTokenRequest) (De
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.DescribeDelegationToken)
+			size := hdr.Size(2) + req.Size(b.apiVersion.DescribeDelegationToken)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.DescribeDelegationToken)
@@ -1162,7 +1162,7 @@ func (b *Broker) DeleteGroups(req DeleteGroupsRequest) (DeleteGroupsResponse, er
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.DeleteGroups)
+			size := hdr.Size(2) + req.Size(b.apiVersion.DeleteGroups)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.DeleteGroups)
@@ -1187,7 +1187,7 @@ func (b *Broker) ElectLeaders(req ElectLeadersRequest) (ElectLeadersResponse, er
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.ElectLeaders)
+			size := hdr.Size(2) + req.Size(b.apiVersion.ElectLeaders)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.ElectLeaders)
@@ -1212,7 +1212,7 @@ func (b *Broker) IncrementalAlterConfigs(req IncrementalAlterConfigsRequest) (In
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.IncrementalAlterConfigs)
+			size := hdr.Size(2) + req.Size(b.apiVersion.IncrementalAlterConfigs)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.IncrementalAlterConfigs)
@@ -1237,7 +1237,7 @@ func (b *Broker) AlterPartitionReassignments(req AlterPartitionReassignmentsRequ
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.AlterPartitionReassignments)
+			size := hdr.Size(2) + req.Size(b.apiVersion.AlterPartitionReassignments)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.AlterPartitionReassignments)
@@ -1262,7 +1262,7 @@ func (b *Broker) ListPartitionReassignments(req ListPartitionReassignmentsReques
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.ListPartitionReassignments)
+			size := hdr.Size(2) + req.Size(b.apiVersion.ListPartitionReassignments)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.ListPartitionReassignments)
@@ -1287,7 +1287,7 @@ func (b *Broker) OffsetDelete(req OffsetDeleteRequest) (OffsetDeleteResponse, er
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
 			}
-			size := hdr.size(2) + req.size(b.apiVersion.OffsetDelete)
+			size := hdr.Size(2) + req.Size(b.apiVersion.OffsetDelete)
 			e.PutInt32(size)
 			hdr.Encode(e, 2)
 			req.Encode(e, b.apiVersion.OffsetDelete)

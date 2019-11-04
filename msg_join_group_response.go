@@ -33,7 +33,7 @@ type JoinGroupResponse struct {
 }
 
 // size of JoinGroupResponse; Versions: 0-6
-func (t JoinGroupResponse) size(version int16) int32 {
+func (t JoinGroupResponse) Size(version int16) int32 {
 	var sz int32
 	if version >= 2 {
 		sz += sizeof.Int32 // ThrottleTimeMs
@@ -45,7 +45,7 @@ func (t JoinGroupResponse) size(version int16) int32 {
 	sz += sizeof.String(t.MemberId)     // MemberId
 	sz += sizeof.ArrayLength            // Members
 	for i := len(t.Members) - 1; i >= 0; i-- {
-		sz += t.Members[i].size(version)
+		sz += t.Members[i].Size(version)
 	}
 	return sz
 }
@@ -120,7 +120,7 @@ type JoinGroupResponseMember11 struct {
 }
 
 // size of JoinGroupResponseMember11; Versions: 0-6
-func (t JoinGroupResponseMember11) size(version int16) int32 {
+func (t JoinGroupResponseMember11) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.MemberId) // MemberId
 	if version >= 5 {

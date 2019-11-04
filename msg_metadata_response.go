@@ -32,14 +32,14 @@ type MetadataResponse struct {
 }
 
 // size of MetadataResponse; Versions: 0-9
-func (t MetadataResponse) size(version int16) int32 {
+func (t MetadataResponse) Size(version int16) int32 {
 	var sz int32
 	if version >= 3 {
 		sz += sizeof.Int32 // ThrottleTimeMs
 	}
 	sz += sizeof.ArrayLength // Brokers
 	for i := len(t.Brokers) - 1; i >= 0; i-- {
-		sz += t.Brokers[i].size(version)
+		sz += t.Brokers[i].Size(version)
 	}
 	if version >= 2 {
 		sz += sizeof.String(t.ClusterId) // ClusterId
@@ -49,7 +49,7 @@ func (t MetadataResponse) size(version int16) int32 {
 	}
 	sz += sizeof.ArrayLength // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	if version >= 8 {
 		sz += sizeof.Int32 // ClusterAuthorizedOperations
@@ -149,7 +149,7 @@ type MetadataResponseBroker3 struct {
 }
 
 // size of MetadataResponseBroker3; Versions: 0-9
-func (t MetadataResponseBroker3) size(version int16) int32 {
+func (t MetadataResponseBroker3) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32          // NodeId
 	sz += sizeof.String(t.Host) // Host
@@ -203,7 +203,7 @@ type MetadataResponseTopic3 struct {
 }
 
 // size of MetadataResponseTopic3; Versions: 0-9
-func (t MetadataResponseTopic3) size(version int16) int32 {
+func (t MetadataResponseTopic3) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16          // ErrorCode
 	sz += sizeof.String(t.Name) // Name
@@ -212,7 +212,7 @@ func (t MetadataResponseTopic3) size(version int16) int32 {
 	}
 	sz += sizeof.ArrayLength // Partitions
 	for i := len(t.Partitions) - 1; i >= 0; i-- {
-		sz += t.Partitions[i].size(version)
+		sz += t.Partitions[i].Size(version)
 	}
 	if version >= 8 {
 		sz += sizeof.Int32 // TopicAuthorizedOperations
@@ -288,7 +288,7 @@ type MetadataResponsePartition3 struct {
 }
 
 // size of MetadataResponsePartition3; Versions: 0-9
-func (t MetadataResponsePartition3) size(version int16) int32 {
+func (t MetadataResponsePartition3) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16 // ErrorCode
 	sz += sizeof.Int32 // PartitionIndex

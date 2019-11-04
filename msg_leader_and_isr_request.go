@@ -32,7 +32,7 @@ type LeaderAndIsrRequest struct {
 }
 
 // size of LeaderAndIsrRequest; Versions: 0-4
-func (t LeaderAndIsrRequest) size(version int16) int32 {
+func (t LeaderAndIsrRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // ControllerId
 	sz += sizeof.Int32 // ControllerEpoch
@@ -42,18 +42,18 @@ func (t LeaderAndIsrRequest) size(version int16) int32 {
 	if version >= 0 && version <= 1 {
 		sz += sizeof.ArrayLength // UngroupedPartitionStates
 		for i := len(t.UngroupedPartitionStates) - 1; i >= 0; i-- {
-			sz += t.UngroupedPartitionStates[i].size(version)
+			sz += t.UngroupedPartitionStates[i].Size(version)
 		}
 	}
 	if version >= 2 {
 		sz += sizeof.ArrayLength // TopicStates
 		for i := len(t.TopicStates) - 1; i >= 0; i-- {
-			sz += t.TopicStates[i].size(version)
+			sz += t.TopicStates[i].Size(version)
 		}
 	}
 	sz += sizeof.ArrayLength // LiveLeaders
 	for i := len(t.LiveLeaders) - 1; i >= 0; i-- {
-		sz += t.LiveLeaders[i].size(version)
+		sz += t.LiveLeaders[i].Size(version)
 	}
 	return sz
 }
@@ -158,7 +158,7 @@ type LeaderAndIsrTopicState4 struct {
 }
 
 // size of LeaderAndIsrTopicState4; Versions: 0-4
-func (t LeaderAndIsrTopicState4) size(version int16) int32 {
+func (t LeaderAndIsrTopicState4) Size(version int16) int32 {
 	var sz int32
 	if version >= 2 {
 		sz += sizeof.String(t.TopicName) // TopicName
@@ -166,7 +166,7 @@ func (t LeaderAndIsrTopicState4) size(version int16) int32 {
 	if version >= 2 {
 		sz += sizeof.ArrayLength // PartitionStates
 		for i := len(t.PartitionStates) - 1; i >= 0; i-- {
-			sz += t.PartitionStates[i].size(version)
+			sz += t.PartitionStates[i].Size(version)
 		}
 	}
 	return sz
@@ -221,7 +221,7 @@ type LeaderAndIsrLiveLeader4 struct {
 }
 
 // size of LeaderAndIsrLiveLeader4; Versions: 0-4
-func (t LeaderAndIsrLiveLeader4) size(version int16) int32 {
+func (t LeaderAndIsrLiveLeader4) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32              // BrokerId
 	sz += sizeof.String(t.HostName) // HostName
@@ -269,7 +269,7 @@ type LeaderAndIsrPartitionState4 struct {
 }
 
 // size of LeaderAndIsrPartitionState4; Versions: 0-4
-func (t LeaderAndIsrPartitionState4) size(version int16) int32 {
+func (t LeaderAndIsrPartitionState4) Size(version int16) int32 {
 	var sz int32
 	if version >= 0 && version <= 1 {
 		sz += sizeof.String(t.TopicName) // TopicName

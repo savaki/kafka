@@ -27,7 +27,7 @@ type SaslAuthenticateRequest struct {
 }
 
 // size of SaslAuthenticateRequest; Versions: 0-1
-func (t SaslAuthenticateRequest) size(version int16) int32 {
+func (t SaslAuthenticateRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Bytes(t.AuthBytes) // AuthBytes
 	return sz

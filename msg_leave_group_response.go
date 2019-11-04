@@ -29,7 +29,7 @@ type LeaveGroupResponse struct {
 }
 
 // size of LeaveGroupResponse; Versions: 0-4
-func (t LeaveGroupResponse) size(version int16) int32 {
+func (t LeaveGroupResponse) Size(version int16) int32 {
 	var sz int32
 	if version >= 1 {
 		sz += sizeof.Int32 // ThrottleTimeMs
@@ -38,7 +38,7 @@ func (t LeaveGroupResponse) size(version int16) int32 {
 	if version >= 3 {
 		sz += sizeof.ArrayLength // Members
 		for i := len(t.Members) - 1; i >= 0; i-- {
-			sz += t.Members[i].size(version)
+			sz += t.Members[i].Size(version)
 		}
 	}
 	return sz
@@ -98,7 +98,7 @@ type MemberResponse13 struct {
 }
 
 // size of MemberResponse13; Versions: 0-4
-func (t MemberResponse13) size(version int16) int32 {
+func (t MemberResponse13) Size(version int16) int32 {
 	var sz int32
 	if version >= 3 {
 		sz += sizeof.String(t.MemberId) // MemberId

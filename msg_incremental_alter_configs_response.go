@@ -28,12 +28,12 @@ type IncrementalAlterConfigsResponse struct {
 }
 
 // size of IncrementalAlterConfigsResponse; Versions: 0-1
-func (t IncrementalAlterConfigsResponse) size(version int16) int32 {
+func (t IncrementalAlterConfigsResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32       // ThrottleTimeMs
 	sz += sizeof.ArrayLength // Responses
 	for i := len(t.Responses) - 1; i >= 0; i-- {
-		sz += t.Responses[i].size(version)
+		sz += t.Responses[i].Size(version)
 	}
 	return sz
 }
@@ -80,7 +80,7 @@ type AlterConfigsResourceResponse44 struct {
 }
 
 // size of AlterConfigsResourceResponse44; Versions: 0-1
-func (t AlterConfigsResourceResponse44) size(version int16) int32 {
+func (t AlterConfigsResourceResponse44) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16                  // ErrorCode
 	sz += sizeof.String(t.ErrorMessage) // ErrorMessage

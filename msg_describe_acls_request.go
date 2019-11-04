@@ -33,7 +33,7 @@ type DescribeAclsRequest struct {
 }
 
 // size of DescribeAclsRequest; Versions: 0-1
-func (t DescribeAclsRequest) size(version int16) int32 {
+func (t DescribeAclsRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int8                         // ResourceType
 	sz += sizeof.String(t.ResourceNameFilter) // ResourceNameFilter

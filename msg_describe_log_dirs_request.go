@@ -27,11 +27,11 @@ type DescribeLogDirsRequest struct {
 }
 
 // size of DescribeLogDirsRequest; Versions: 0-1
-func (t DescribeLogDirsRequest) size(version int16) int32 {
+func (t DescribeLogDirsRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.ArrayLength // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	return sz
 }
@@ -71,7 +71,7 @@ type DescribableLogDirTopic35 struct {
 }
 
 // size of DescribableLogDirTopic35; Versions: 0-1
-func (t DescribableLogDirTopic35) size(version int16) int32 {
+func (t DescribableLogDirTopic35) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Topic)              // Topic
 	sz += sizeof.Int32Array(t.PartitionIndex) // PartitionIndex

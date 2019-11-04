@@ -29,11 +29,11 @@ type CreateTopicsRequest struct {
 }
 
 // size of CreateTopicsRequest; Versions: 0-5
-func (t CreateTopicsRequest) size(version int16) int32 {
+func (t CreateTopicsRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.ArrayLength // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	sz += sizeof.Int32 // timeoutMs
 	if version >= 1 {
@@ -94,18 +94,18 @@ type CreatableTopic19 struct {
 }
 
 // size of CreatableTopic19; Versions: 0-5
-func (t CreatableTopic19) size(version int16) int32 {
+func (t CreatableTopic19) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.Int32          // NumPartitions
 	sz += sizeof.Int16          // ReplicationFactor
 	sz += sizeof.ArrayLength    // Assignments
 	for i := len(t.Assignments) - 1; i >= 0; i-- {
-		sz += t.Assignments[i].size(version)
+		sz += t.Assignments[i].Size(version)
 	}
 	sz += sizeof.ArrayLength // Configs
 	for i := len(t.Configs) - 1; i >= 0; i-- {
-		sz += t.Configs[i].size(version)
+		sz += t.Configs[i].Size(version)
 	}
 	return sz
 }
@@ -179,7 +179,7 @@ type CreatableReplicaAssignment19 struct {
 }
 
 // size of CreatableReplicaAssignment19; Versions: 0-5
-func (t CreatableReplicaAssignment19) size(version int16) int32 {
+func (t CreatableReplicaAssignment19) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32                   // PartitionIndex
 	sz += sizeof.Int32Array(t.BrokerIds) // BrokerIds
@@ -212,7 +212,7 @@ type CreateableTopicConfig19 struct {
 }
 
 // size of CreateableTopicConfig19; Versions: 0-5
-func (t CreateableTopicConfig19) size(version int16) int32 {
+func (t CreateableTopicConfig19) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name)  // Name
 	sz += sizeof.String(t.Value) // Value

@@ -30,7 +30,7 @@ type RequestHeader struct {
 }
 
 // size of RequestHeader; Versions: 0-2
-func (t RequestHeader) size(version int16) int32 {
+func (t RequestHeader) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16 // RequestApiKey
 	sz += sizeof.Int16 // RequestApiVersion

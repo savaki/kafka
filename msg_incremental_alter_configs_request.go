@@ -28,11 +28,11 @@ type IncrementalAlterConfigsRequest struct {
 }
 
 // size of IncrementalAlterConfigsRequest; Versions: 0-1
-func (t IncrementalAlterConfigsRequest) size(version int16) int32 {
+func (t IncrementalAlterConfigsRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.ArrayLength // Resources
 	for i := len(t.Resources) - 1; i >= 0; i-- {
-		sz += t.Resources[i].size(version)
+		sz += t.Resources[i].Size(version)
 	}
 	sz += sizeof.Bool // ValidateOnly
 	return sz
@@ -79,13 +79,13 @@ type AlterConfigsResource44 struct {
 }
 
 // size of AlterConfigsResource44; Versions: 0-1
-func (t AlterConfigsResource44) size(version int16) int32 {
+func (t AlterConfigsResource44) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int8                   // ResourceType
 	sz += sizeof.String(t.ResourceName) // ResourceName
 	sz += sizeof.ArrayLength            // Configs
 	for i := len(t.Configs) - 1; i >= 0; i-- {
-		sz += t.Configs[i].size(version)
+		sz += t.Configs[i].Size(version)
 	}
 	return sz
 }
@@ -136,7 +136,7 @@ type AlterableConfig44 struct {
 }
 
 // size of AlterableConfig44; Versions: 0-1
-func (t AlterableConfig44) size(version int16) int32 {
+func (t AlterableConfig44) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name)  // Name
 	sz += sizeof.Int8            // ConfigOperation

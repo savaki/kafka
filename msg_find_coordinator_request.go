@@ -28,7 +28,7 @@ type FindCoordinatorRequest struct {
 }
 
 // size of FindCoordinatorRequest; Versions: 0-3
-func (t FindCoordinatorRequest) size(version int16) int32 {
+func (t FindCoordinatorRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Key) // Key
 	if version >= 1 {

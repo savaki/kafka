@@ -27,11 +27,11 @@ type DescribeDelegationTokenRequest struct {
 }
 
 // size of DescribeDelegationTokenRequest; Versions: 0-1
-func (t DescribeDelegationTokenRequest) size(version int16) int32 {
+func (t DescribeDelegationTokenRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.ArrayLength // Owners
 	for i := len(t.Owners) - 1; i >= 0; i-- {
-		sz += t.Owners[i].size(version)
+		sz += t.Owners[i].Size(version)
 	}
 	return sz
 }
@@ -71,7 +71,7 @@ type DescribeDelegationTokenOwner41 struct {
 }
 
 // size of DescribeDelegationTokenOwner41; Versions: 0-1
-func (t DescribeDelegationTokenOwner41) size(version int16) int32 {
+func (t DescribeDelegationTokenOwner41) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.PrincipalType) // PrincipalType
 	sz += sizeof.String(t.PrincipalName) // PrincipalName

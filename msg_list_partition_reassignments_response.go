@@ -30,14 +30,14 @@ type ListPartitionReassignmentsResponse struct {
 }
 
 // size of ListPartitionReassignmentsResponse; Versions: 0
-func (t ListPartitionReassignmentsResponse) size(version int16) int32 {
+func (t ListPartitionReassignmentsResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32                  // ThrottleTimeMs
 	sz += sizeof.Int16                  // ErrorCode
 	sz += sizeof.String(t.ErrorMessage) // ErrorMessage
 	sz += sizeof.ArrayLength            // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	return sz
 }
@@ -92,12 +92,12 @@ type OngoingTopicReassignment46 struct {
 }
 
 // size of OngoingTopicReassignment46; Versions: 0
-func (t OngoingTopicReassignment46) size(version int16) int32 {
+func (t OngoingTopicReassignment46) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.ArrayLength    // Partitions
 	for i := len(t.Partitions) - 1; i >= 0; i-- {
-		sz += t.Partitions[i].size(version)
+		sz += t.Partitions[i].Size(version)
 	}
 	return sz
 }
@@ -144,7 +144,7 @@ type OngoingPartitionReassignment46 struct {
 }
 
 // size of OngoingPartitionReassignment46; Versions: 0
-func (t OngoingPartitionReassignment46) size(version int16) int32 {
+func (t OngoingPartitionReassignment46) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32                          // PartitionIndex
 	sz += sizeof.Int32Array(t.Replicas)         // Replicas

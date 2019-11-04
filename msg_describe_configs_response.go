@@ -28,12 +28,12 @@ type DescribeConfigsResponse struct {
 }
 
 // size of DescribeConfigsResponse; Versions: 0-2
-func (t DescribeConfigsResponse) size(version int16) int32 {
+func (t DescribeConfigsResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32       // ThrottleTimeMs
 	sz += sizeof.ArrayLength // Results
 	for i := len(t.Results) - 1; i >= 0; i-- {
-		sz += t.Results[i].size(version)
+		sz += t.Results[i].Size(version)
 	}
 	return sz
 }
@@ -81,7 +81,7 @@ type DescribeConfigsResult32 struct {
 }
 
 // size of DescribeConfigsResult32; Versions: 0-2
-func (t DescribeConfigsResult32) size(version int16) int32 {
+func (t DescribeConfigsResult32) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16                  // ErrorCode
 	sz += sizeof.String(t.ErrorMessage) // ErrorMessage
@@ -89,7 +89,7 @@ func (t DescribeConfigsResult32) size(version int16) int32 {
 	sz += sizeof.String(t.ResourceName) // ResourceName
 	sz += sizeof.ArrayLength            // Configs
 	for i := len(t.Configs) - 1; i >= 0; i-- {
-		sz += t.Configs[i].size(version)
+		sz += t.Configs[i].Size(version)
 	}
 	return sz
 }
@@ -154,7 +154,7 @@ type DescribeConfigsResourceResult32 struct {
 }
 
 // size of DescribeConfigsResourceResult32; Versions: 0-2
-func (t DescribeConfigsResourceResult32) size(version int16) int32 {
+func (t DescribeConfigsResourceResult32) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name)  // Name
 	sz += sizeof.String(t.Value) // Value
@@ -169,7 +169,7 @@ func (t DescribeConfigsResourceResult32) size(version int16) int32 {
 	if version >= 1 {
 		sz += sizeof.ArrayLength // Synonyms
 		for i := len(t.Synonyms) - 1; i >= 0; i-- {
-			sz += t.Synonyms[i].size(version)
+			sz += t.Synonyms[i].Size(version)
 		}
 	}
 	return sz
@@ -253,7 +253,7 @@ type DescribeConfigsSynonym32 struct {
 }
 
 // size of DescribeConfigsSynonym32; Versions: 0-2
-func (t DescribeConfigsSynonym32) size(version int16) int32 {
+func (t DescribeConfigsSynonym32) Size(version int16) int32 {
 	var sz int32
 	if version >= 1 {
 		sz += sizeof.String(t.Name) // Name

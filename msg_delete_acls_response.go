@@ -28,12 +28,12 @@ type DeleteAclsResponse struct {
 }
 
 // size of DeleteAclsResponse; Versions: 0-1
-func (t DeleteAclsResponse) size(version int16) int32 {
+func (t DeleteAclsResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32       // ThrottleTimeMs
 	sz += sizeof.ArrayLength // FilterResults
 	for i := len(t.FilterResults) - 1; i >= 0; i-- {
-		sz += t.FilterResults[i].size(version)
+		sz += t.FilterResults[i].Size(version)
 	}
 	return sz
 }
@@ -79,13 +79,13 @@ type DeleteAclsFilterResult31 struct {
 }
 
 // size of DeleteAclsFilterResult31; Versions: 0-1
-func (t DeleteAclsFilterResult31) size(version int16) int32 {
+func (t DeleteAclsFilterResult31) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16                  // ErrorCode
 	sz += sizeof.String(t.ErrorMessage) // ErrorMessage
 	sz += sizeof.ArrayLength            // MatchingAcls
 	for i := len(t.MatchingAcls) - 1; i >= 0; i-- {
-		sz += t.MatchingAcls[i].size(version)
+		sz += t.MatchingAcls[i].Size(version)
 	}
 	return sz
 }
@@ -142,7 +142,7 @@ type DeleteAclsMatchingAcl31 struct {
 }
 
 // size of DeleteAclsMatchingAcl31; Versions: 0-1
-func (t DeleteAclsMatchingAcl31) size(version int16) int32 {
+func (t DeleteAclsMatchingAcl31) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16                  // ErrorCode
 	sz += sizeof.String(t.ErrorMessage) // ErrorMessage

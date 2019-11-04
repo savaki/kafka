@@ -28,14 +28,14 @@ type CreateTopicsResponse struct {
 }
 
 // size of CreateTopicsResponse; Versions: 0-5
-func (t CreateTopicsResponse) size(version int16) int32 {
+func (t CreateTopicsResponse) Size(version int16) int32 {
 	var sz int32
 	if version >= 2 {
 		sz += sizeof.Int32 // ThrottleTimeMs
 	}
 	sz += sizeof.ArrayLength // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	return sz
 }
@@ -89,7 +89,7 @@ type CreatableTopicResult19 struct {
 }
 
 // size of CreatableTopicResult19; Versions: 0-5
-func (t CreatableTopicResult19) size(version int16) int32 {
+func (t CreatableTopicResult19) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.Int16          // ErrorCode
@@ -108,7 +108,7 @@ func (t CreatableTopicResult19) size(version int16) int32 {
 	if version >= 5 {
 		sz += sizeof.ArrayLength // Configs
 		for i := len(t.Configs) - 1; i >= 0; i-- {
-			sz += t.Configs[i].size(version)
+			sz += t.Configs[i].Size(version)
 		}
 	}
 	return sz
@@ -202,7 +202,7 @@ type CreatableTopicConfigs19 struct {
 }
 
 // size of CreatableTopicConfigs19; Versions: 0-5
-func (t CreatableTopicConfigs19) size(version int16) int32 {
+func (t CreatableTopicConfigs19) Size(version int16) int32 {
 	var sz int32
 	if version >= 5 {
 		sz += sizeof.String(t.Name) // Name

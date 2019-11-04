@@ -28,7 +28,7 @@ type ApiVersionsRequest struct {
 }
 
 // size of ApiVersionsRequest; Versions: 0-3
-func (t ApiVersionsRequest) size(version int16) int32 {
+func (t ApiVersionsRequest) Size(version int16) int32 {
 	var sz int32
 	if version >= 3 {
 		sz += sizeof.String(t.ClientSoftwareName) // ClientSoftwareName

@@ -28,7 +28,7 @@ type EndTxnResponse struct {
 }
 
 // size of EndTxnResponse; Versions: 0-1
-func (t EndTxnResponse) size(version int16) int32 {
+func (t EndTxnResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // ThrottleTimeMs
 	sz += sizeof.Int16 // ErrorCode

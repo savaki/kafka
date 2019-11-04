@@ -27,7 +27,7 @@ type DeleteGroupsRequest struct {
 }
 
 // size of DeleteGroupsRequest; Versions: 0-2
-func (t DeleteGroupsRequest) size(version int16) int32 {
+func (t DeleteGroupsRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.StringArray(t.GroupsNames) // GroupsNames
 	return sz

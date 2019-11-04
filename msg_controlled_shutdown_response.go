@@ -28,12 +28,12 @@ type ControlledShutdownResponse struct {
 }
 
 // size of ControlledShutdownResponse; Versions: 0-3
-func (t ControlledShutdownResponse) size(version int16) int32 {
+func (t ControlledShutdownResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16       // ErrorCode
 	sz += sizeof.ArrayLength // RemainingPartitions
 	for i := len(t.RemainingPartitions) - 1; i >= 0; i-- {
-		sz += t.RemainingPartitions[i].size(version)
+		sz += t.RemainingPartitions[i].Size(version)
 	}
 	return sz
 }
@@ -78,7 +78,7 @@ type RemainingPartition7 struct {
 }
 
 // size of RemainingPartition7; Versions: 0-3
-func (t RemainingPartition7) size(version int16) int32 {
+func (t RemainingPartition7) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.TopicName) // TopicName
 	sz += sizeof.Int32               // PartitionIndex

@@ -29,13 +29,13 @@ type OffsetDeleteResponse struct {
 }
 
 // size of OffsetDeleteResponse; Versions: 0
-func (t OffsetDeleteResponse) size(version int16) int32 {
+func (t OffsetDeleteResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16       // ErrorCode
 	sz += sizeof.Int32       // ThrottleTimeMs
 	sz += sizeof.ArrayLength // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	return sz
 }
@@ -85,12 +85,12 @@ type OffsetDeleteResponseTopic47 struct {
 }
 
 // size of OffsetDeleteResponseTopic47; Versions: 0
-func (t OffsetDeleteResponseTopic47) size(version int16) int32 {
+func (t OffsetDeleteResponseTopic47) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.ArrayLength    // Partitions
 	for i := len(t.Partitions) - 1; i >= 0; i-- {
-		sz += t.Partitions[i].size(version)
+		sz += t.Partitions[i].Size(version)
 	}
 	return sz
 }
@@ -135,7 +135,7 @@ type OffsetDeleteResponsePartition47 struct {
 }
 
 // size of OffsetDeleteResponsePartition47; Versions: 0
-func (t OffsetDeleteResponsePartition47) size(version int16) int32 {
+func (t OffsetDeleteResponsePartition47) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // PartitionIndex
 	sz += sizeof.Int16 // ErrorCode

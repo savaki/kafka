@@ -28,14 +28,14 @@ type OffsetForLeaderEpochResponse struct {
 }
 
 // size of OffsetForLeaderEpochResponse; Versions: 0-3
-func (t OffsetForLeaderEpochResponse) size(version int16) int32 {
+func (t OffsetForLeaderEpochResponse) Size(version int16) int32 {
 	var sz int32
 	if version >= 2 {
 		sz += sizeof.Int32 // ThrottleTimeMs
 	}
 	sz += sizeof.ArrayLength // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	return sz
 }
@@ -84,12 +84,12 @@ type OffsetForLeaderTopicResult23 struct {
 }
 
 // size of OffsetForLeaderTopicResult23; Versions: 0-3
-func (t OffsetForLeaderTopicResult23) size(version int16) int32 {
+func (t OffsetForLeaderTopicResult23) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.ArrayLength    // Partitions
 	for i := len(t.Partitions) - 1; i >= 0; i-- {
-		sz += t.Partitions[i].size(version)
+		sz += t.Partitions[i].Size(version)
 	}
 	return sz
 }
@@ -136,7 +136,7 @@ type OffsetForLeaderPartitionResult23 struct {
 }
 
 // size of OffsetForLeaderPartitionResult23; Versions: 0-3
-func (t OffsetForLeaderPartitionResult23) size(version int16) int32 {
+func (t OffsetForLeaderPartitionResult23) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16 // ErrorCode
 	sz += sizeof.Int32 // PartitionIndex

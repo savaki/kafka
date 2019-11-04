@@ -29,7 +29,7 @@ type ElectLeadersResponse struct {
 }
 
 // size of ElectLeadersResponse; Versions: 0-2
-func (t ElectLeadersResponse) size(version int16) int32 {
+func (t ElectLeadersResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // ThrottleTimeMs
 	if version >= 1 {
@@ -37,7 +37,7 @@ func (t ElectLeadersResponse) size(version int16) int32 {
 	}
 	sz += sizeof.ArrayLength // ReplicaElectionResults
 	for i := len(t.ReplicaElectionResults) - 1; i >= 0; i-- {
-		sz += t.ReplicaElectionResults[i].size(version)
+		sz += t.ReplicaElectionResults[i].Size(version)
 	}
 	return sz
 }
@@ -91,12 +91,12 @@ type ReplicaElectionResult43 struct {
 }
 
 // size of ReplicaElectionResult43; Versions: 0-2
-func (t ReplicaElectionResult43) size(version int16) int32 {
+func (t ReplicaElectionResult43) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Topic) // Topic
 	sz += sizeof.ArrayLength     // PartitionResult
 	for i := len(t.PartitionResult) - 1; i >= 0; i-- {
-		sz += t.PartitionResult[i].size(version)
+		sz += t.PartitionResult[i].Size(version)
 	}
 	return sz
 }
@@ -142,7 +142,7 @@ type PartitionResult43 struct {
 }
 
 // size of PartitionResult43; Versions: 0-2
-func (t PartitionResult43) size(version int16) int32 {
+func (t PartitionResult43) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32                  // PartitionId
 	sz += sizeof.Int16                  // ErrorCode

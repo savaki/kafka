@@ -30,7 +30,7 @@ type ProduceRequest struct {
 }
 
 // size of ProduceRequest; Versions: 0-8
-func (t ProduceRequest) size(version int16) int32 {
+func (t ProduceRequest) Size(version int16) int32 {
 	var sz int32
 	if version >= 3 {
 		sz += sizeof.String(t.TransactionalId) // TransactionalId
@@ -39,7 +39,7 @@ func (t ProduceRequest) size(version int16) int32 {
 	sz += sizeof.Int32       // TimeoutMs
 	sz += sizeof.ArrayLength // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	return sz
 }
@@ -98,12 +98,12 @@ type TopicProduceData0 struct {
 }
 
 // size of TopicProduceData0; Versions: 0-8
-func (t TopicProduceData0) size(version int16) int32 {
+func (t TopicProduceData0) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.ArrayLength    // Partitions
 	for i := len(t.Partitions) - 1; i >= 0; i-- {
-		sz += t.Partitions[i].size(version)
+		sz += t.Partitions[i].Size(version)
 	}
 	return sz
 }
@@ -148,7 +148,7 @@ type PartitionProduceData0 struct {
 }
 
 // size of PartitionProduceData0; Versions: 0-8
-func (t PartitionProduceData0) size(version int16) int32 {
+func (t PartitionProduceData0) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32            // PartitionIndex
 	sz += sizeof.Bytes(t.Records) // Records

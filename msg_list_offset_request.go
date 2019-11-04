@@ -29,7 +29,7 @@ type ListOffsetRequest struct {
 }
 
 // size of ListOffsetRequest; Versions: 0-5
-func (t ListOffsetRequest) size(version int16) int32 {
+func (t ListOffsetRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // ReplicaId
 	if version >= 2 {
@@ -37,7 +37,7 @@ func (t ListOffsetRequest) size(version int16) int32 {
 	}
 	sz += sizeof.ArrayLength // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	return sz
 }
@@ -91,12 +91,12 @@ type ListOffsetTopic2 struct {
 }
 
 // size of ListOffsetTopic2; Versions: 0-5
-func (t ListOffsetTopic2) size(version int16) int32 {
+func (t ListOffsetTopic2) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.ArrayLength    // Partitions
 	for i := len(t.Partitions) - 1; i >= 0; i-- {
-		sz += t.Partitions[i].size(version)
+		sz += t.Partitions[i].Size(version)
 	}
 	return sz
 }
@@ -143,7 +143,7 @@ type ListOffsetPartition2 struct {
 }
 
 // size of ListOffsetPartition2; Versions: 0-5
-func (t ListOffsetPartition2) size(version int16) int32 {
+func (t ListOffsetPartition2) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // PartitionIndex
 	if version >= 4 {

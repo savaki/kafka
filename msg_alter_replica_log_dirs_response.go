@@ -28,12 +28,12 @@ type AlterReplicaLogDirsResponse struct {
 }
 
 // size of AlterReplicaLogDirsResponse; Versions: 0-1
-func (t AlterReplicaLogDirsResponse) size(version int16) int32 {
+func (t AlterReplicaLogDirsResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32       // ThrottleTimeMs
 	sz += sizeof.ArrayLength // Results
 	for i := len(t.Results) - 1; i >= 0; i-- {
-		sz += t.Results[i].size(version)
+		sz += t.Results[i].Size(version)
 	}
 	return sz
 }
@@ -78,12 +78,12 @@ type AlterReplicaLogDirTopicResult34 struct {
 }
 
 // size of AlterReplicaLogDirTopicResult34; Versions: 0-1
-func (t AlterReplicaLogDirTopicResult34) size(version int16) int32 {
+func (t AlterReplicaLogDirTopicResult34) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.TopicName) // TopicName
 	sz += sizeof.ArrayLength         // Partitions
 	for i := len(t.Partitions) - 1; i >= 0; i-- {
-		sz += t.Partitions[i].size(version)
+		sz += t.Partitions[i].Size(version)
 	}
 	return sz
 }
@@ -128,7 +128,7 @@ type AlterReplicaLogDirPartitionResult34 struct {
 }
 
 // size of AlterReplicaLogDirPartitionResult34; Versions: 0-1
-func (t AlterReplicaLogDirPartitionResult34) size(version int16) int32 {
+func (t AlterReplicaLogDirPartitionResult34) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // PartitionIndex
 	sz += sizeof.Int16 // ErrorCode

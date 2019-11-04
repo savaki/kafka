@@ -33,7 +33,7 @@ type JoinGroupRequest struct {
 }
 
 // size of JoinGroupRequest; Versions: 0-6
-func (t JoinGroupRequest) size(version int16) int32 {
+func (t JoinGroupRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.GroupId) // GroupId
 	sz += sizeof.Int32             // SessionTimeoutMs
@@ -47,7 +47,7 @@ func (t JoinGroupRequest) size(version int16) int32 {
 	sz += sizeof.String(t.ProtocolType) // ProtocolType
 	sz += sizeof.ArrayLength            // Protocols
 	for i := len(t.Protocols) - 1; i >= 0; i-- {
-		sz += t.Protocols[i].size(version)
+		sz += t.Protocols[i].Size(version)
 	}
 	return sz
 }
@@ -125,7 +125,7 @@ type JoinGroupRequestProtocol11 struct {
 }
 
 // size of JoinGroupRequestProtocol11; Versions: 0-6
-func (t JoinGroupRequestProtocol11) size(version int16) int32 {
+func (t JoinGroupRequestProtocol11) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name)    // Name
 	sz += sizeof.Bytes(t.Metadata) // Metadata

@@ -30,7 +30,7 @@ type HeartbeatRequest struct {
 }
 
 // size of HeartbeatRequest; Versions: 0-4
-func (t HeartbeatRequest) size(version int16) int32 {
+func (t HeartbeatRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.GroupId)  // GroupId
 	sz += sizeof.Int32              // GenerationId

@@ -28,14 +28,14 @@ type DescribeGroupsResponse struct {
 }
 
 // size of DescribeGroupsResponse; Versions: 0-5
-func (t DescribeGroupsResponse) size(version int16) int32 {
+func (t DescribeGroupsResponse) Size(version int16) int32 {
 	var sz int32
 	if version >= 1 {
 		sz += sizeof.Int32 // ThrottleTimeMs
 	}
 	sz += sizeof.ArrayLength // Groups
 	for i := len(t.Groups) - 1; i >= 0; i-- {
-		sz += t.Groups[i].size(version)
+		sz += t.Groups[i].Size(version)
 	}
 	return sz
 }
@@ -89,7 +89,7 @@ type DescribedGroup15 struct {
 }
 
 // size of DescribedGroup15; Versions: 0-5
-func (t DescribedGroup15) size(version int16) int32 {
+func (t DescribedGroup15) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16                  // ErrorCode
 	sz += sizeof.String(t.GroupId)      // GroupId
@@ -98,7 +98,7 @@ func (t DescribedGroup15) size(version int16) int32 {
 	sz += sizeof.String(t.ProtocolData) // ProtocolData
 	sz += sizeof.ArrayLength            // Members
 	for i := len(t.Members) - 1; i >= 0; i-- {
-		sz += t.Members[i].size(version)
+		sz += t.Members[i].Size(version)
 	}
 	if version >= 3 {
 		sz += sizeof.Int32 // AuthorizedOperations
@@ -179,7 +179,7 @@ type DescribedGroupMember15 struct {
 }
 
 // size of DescribedGroupMember15; Versions: 0-5
-func (t DescribedGroupMember15) size(version int16) int32 {
+func (t DescribedGroupMember15) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.MemberId) // MemberId
 	if version >= 4 {

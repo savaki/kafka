@@ -28,12 +28,12 @@ type LeaderAndIsrResponse struct {
 }
 
 // size of LeaderAndIsrResponse; Versions: 0-4
-func (t LeaderAndIsrResponse) size(version int16) int32 {
+func (t LeaderAndIsrResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16       // ErrorCode
 	sz += sizeof.ArrayLength // PartitionErrors
 	for i := len(t.PartitionErrors) - 1; i >= 0; i-- {
-		sz += t.PartitionErrors[i].size(version)
+		sz += t.PartitionErrors[i].Size(version)
 	}
 	return sz
 }
@@ -79,7 +79,7 @@ type LeaderAndIsrPartitionError4 struct {
 }
 
 // size of LeaderAndIsrPartitionError4; Versions: 0-4
-func (t LeaderAndIsrPartitionError4) size(version int16) int32 {
+func (t LeaderAndIsrPartitionError4) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.TopicName) // TopicName
 	sz += sizeof.Int32               // PartitionIndex

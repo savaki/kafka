@@ -29,14 +29,14 @@ type OffsetFetchResponse struct {
 }
 
 // size of OffsetFetchResponse; Versions: 0-6
-func (t OffsetFetchResponse) size(version int16) int32 {
+func (t OffsetFetchResponse) Size(version int16) int32 {
 	var sz int32
 	if version >= 3 {
 		sz += sizeof.Int32 // ThrottleTimeMs
 	}
 	sz += sizeof.ArrayLength // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	if version >= 2 {
 		sz += sizeof.Int16 // ErrorCode
@@ -97,12 +97,12 @@ type OffsetFetchResponseTopic9 struct {
 }
 
 // size of OffsetFetchResponseTopic9; Versions: 0-6
-func (t OffsetFetchResponseTopic9) size(version int16) int32 {
+func (t OffsetFetchResponseTopic9) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.ArrayLength    // Partitions
 	for i := len(t.Partitions) - 1; i >= 0; i-- {
-		sz += t.Partitions[i].size(version)
+		sz += t.Partitions[i].Size(version)
 	}
 	return sz
 }
@@ -150,7 +150,7 @@ type OffsetFetchResponsePartition9 struct {
 }
 
 // size of OffsetFetchResponsePartition9; Versions: 0-6
-func (t OffsetFetchResponsePartition9) size(version int16) int32 {
+func (t OffsetFetchResponsePartition9) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // PartitionIndex
 	sz += sizeof.Int64 // CommittedOffset

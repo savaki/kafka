@@ -98,6 +98,17 @@ func (d *Decoder) Bytes() ([]byte, error) {
 	return v, nil
 }
 
+// Discard the specified number of bytes
+func (d *Decoder) Discard(n int) error {
+	if err := d.remains(n); err != nil {
+		return err
+	}
+
+	d.offset += n
+
+	return nil
+}
+
 // Int8 returns the buffer head as an int8
 func (d *Decoder) Int8() (int8, error) {
 	if err := d.remains(1); err != nil {

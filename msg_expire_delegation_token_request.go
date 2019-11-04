@@ -28,7 +28,7 @@ type ExpireDelegationTokenRequest struct {
 }
 
 // size of ExpireDelegationTokenRequest; Versions: 0-1
-func (t ExpireDelegationTokenRequest) size(version int16) int32 {
+func (t ExpireDelegationTokenRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Bytes(t.Hmac) // Hmac
 	sz += sizeof.Int64         // ExpiryTimePeriodMs

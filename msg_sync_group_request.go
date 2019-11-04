@@ -31,7 +31,7 @@ type SyncGroupRequest struct {
 }
 
 // size of SyncGroupRequest; Versions: 0-4
-func (t SyncGroupRequest) size(version int16) int32 {
+func (t SyncGroupRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.GroupId)  // GroupId
 	sz += sizeof.Int32              // GenerationId
@@ -41,7 +41,7 @@ func (t SyncGroupRequest) size(version int16) int32 {
 	}
 	sz += sizeof.ArrayLength // Assignments
 	for i := len(t.Assignments) - 1; i >= 0; i-- {
-		sz += t.Assignments[i].size(version)
+		sz += t.Assignments[i].Size(version)
 	}
 	return sz
 }
@@ -105,7 +105,7 @@ type SyncGroupRequestAssignment14 struct {
 }
 
 // size of SyncGroupRequestAssignment14; Versions: 0-4
-func (t SyncGroupRequestAssignment14) size(version int16) int32 {
+func (t SyncGroupRequestAssignment14) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.MemberId)  // MemberId
 	sz += sizeof.Bytes(t.Assignment) // Assignment

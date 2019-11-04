@@ -36,7 +36,7 @@ type FetchRequest struct {
 }
 
 // size of FetchRequest; Versions: 0-11
-func (t FetchRequest) size(version int16) int32 {
+func (t FetchRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // ReplicaId
 	sz += sizeof.Int32 // MaxWait
@@ -55,12 +55,12 @@ func (t FetchRequest) size(version int16) int32 {
 	}
 	sz += sizeof.ArrayLength // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	if version >= 7 {
 		sz += sizeof.ArrayLength // Forgotten
 		for i := len(t.Forgotten) - 1; i >= 0; i-- {
-			sz += t.Forgotten[i].size(version)
+			sz += t.Forgotten[i].Size(version)
 		}
 	}
 	if version >= 11 {
@@ -187,12 +187,12 @@ type FetchableTopic1 struct {
 }
 
 // size of FetchableTopic1; Versions: 0-11
-func (t FetchableTopic1) size(version int16) int32 {
+func (t FetchableTopic1) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.ArrayLength    // FetchPartitions
 	for i := len(t.FetchPartitions) - 1; i >= 0; i-- {
-		sz += t.FetchPartitions[i].size(version)
+		sz += t.FetchPartitions[i].Size(version)
 	}
 	return sz
 }
@@ -240,7 +240,7 @@ type FetchPartition1 struct {
 }
 
 // size of FetchPartition1; Versions: 0-11
-func (t FetchPartition1) size(version int16) int32 {
+func (t FetchPartition1) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // PartitionIndex
 	if version >= 9 {
@@ -303,7 +303,7 @@ type ForgottenTopic1 struct {
 }
 
 // size of ForgottenTopic1; Versions: 0-11
-func (t ForgottenTopic1) size(version int16) int32 {
+func (t ForgottenTopic1) Size(version int16) int32 {
 	var sz int32
 	if version >= 7 {
 		sz += sizeof.String(t.Name) // Name

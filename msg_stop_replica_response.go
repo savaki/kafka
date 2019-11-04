@@ -28,12 +28,12 @@ type StopReplicaResponse struct {
 }
 
 // size of StopReplicaResponse; Versions: 0-2
-func (t StopReplicaResponse) size(version int16) int32 {
+func (t StopReplicaResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16       // ErrorCode
 	sz += sizeof.ArrayLength // PartitionErrors
 	for i := len(t.PartitionErrors) - 1; i >= 0; i-- {
-		sz += t.PartitionErrors[i].size(version)
+		sz += t.PartitionErrors[i].Size(version)
 	}
 	return sz
 }
@@ -79,7 +79,7 @@ type StopReplicaPartitionError5 struct {
 }
 
 // size of StopReplicaPartitionError5; Versions: 0-2
-func (t StopReplicaPartitionError5) size(version int16) int32 {
+func (t StopReplicaPartitionError5) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.TopicName) // TopicName
 	sz += sizeof.Int32               // PartitionIndex

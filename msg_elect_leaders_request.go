@@ -29,14 +29,14 @@ type ElectLeadersRequest struct {
 }
 
 // size of ElectLeadersRequest; Versions: 0-2
-func (t ElectLeadersRequest) size(version int16) int32 {
+func (t ElectLeadersRequest) Size(version int16) int32 {
 	var sz int32
 	if version >= 1 {
 		sz += sizeof.Int8 // ElectionType
 	}
 	sz += sizeof.ArrayLength // TopicPartitions
 	for i := len(t.TopicPartitions) - 1; i >= 0; i-- {
-		sz += t.TopicPartitions[i].size(version)
+		sz += t.TopicPartitions[i].Size(version)
 	}
 	sz += sizeof.Int32 // TimeoutMs
 	return sz
@@ -91,7 +91,7 @@ type TopicPartitions43 struct {
 }
 
 // size of TopicPartitions43; Versions: 0-2
-func (t TopicPartitions43) size(version int16) int32 {
+func (t TopicPartitions43) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Topic)           // Topic
 	sz += sizeof.Int32Array(t.PartitionId) // PartitionId

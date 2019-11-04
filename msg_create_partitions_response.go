@@ -28,12 +28,12 @@ type CreatePartitionsResponse struct {
 }
 
 // size of CreatePartitionsResponse; Versions: 0-1
-func (t CreatePartitionsResponse) size(version int16) int32 {
+func (t CreatePartitionsResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32       // ThrottleTimeMs
 	sz += sizeof.ArrayLength // Results
 	for i := len(t.Results) - 1; i >= 0; i-- {
-		sz += t.Results[i].size(version)
+		sz += t.Results[i].Size(version)
 	}
 	return sz
 }
@@ -79,7 +79,7 @@ type CreatePartitionsTopicResult37 struct {
 }
 
 // size of CreatePartitionsTopicResult37; Versions: 0-1
-func (t CreatePartitionsTopicResult37) size(version int16) int32 {
+func (t CreatePartitionsTopicResult37) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name)         // Name
 	sz += sizeof.Int16                  // ErrorCode

@@ -30,7 +30,7 @@ type FetchResponse struct {
 }
 
 // size of FetchResponse; Versions: 0-11
-func (t FetchResponse) size(version int16) int32 {
+func (t FetchResponse) Size(version int16) int32 {
 	var sz int32
 	if version >= 1 {
 		sz += sizeof.Int32 // ThrottleTimeMs
@@ -43,7 +43,7 @@ func (t FetchResponse) size(version int16) int32 {
 	}
 	sz += sizeof.ArrayLength // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	return sz
 }
@@ -110,12 +110,12 @@ type FetchableTopicResponse1 struct {
 }
 
 // size of FetchableTopicResponse1; Versions: 0-11
-func (t FetchableTopicResponse1) size(version int16) int32 {
+func (t FetchableTopicResponse1) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.ArrayLength    // Partitions
 	for i := len(t.Partitions) - 1; i >= 0; i-- {
-		sz += t.Partitions[i].size(version)
+		sz += t.Partitions[i].Size(version)
 	}
 	return sz
 }
@@ -166,7 +166,7 @@ type FetchablePartitionResponse1 struct {
 }
 
 // size of FetchablePartitionResponse1; Versions: 0-11
-func (t FetchablePartitionResponse1) size(version int16) int32 {
+func (t FetchablePartitionResponse1) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // PartitionIndex
 	sz += sizeof.Int16 // ErrorCode
@@ -180,7 +180,7 @@ func (t FetchablePartitionResponse1) size(version int16) int32 {
 	if version >= 4 {
 		sz += sizeof.ArrayLength // Aborted
 		for i := len(t.Aborted) - 1; i >= 0; i-- {
-			sz += t.Aborted[i].size(version)
+			sz += t.Aborted[i].Size(version)
 		}
 	}
 	if version >= 11 {
@@ -276,7 +276,7 @@ type AbortedTransaction1 struct {
 }
 
 // size of AbortedTransaction1; Versions: 0-11
-func (t AbortedTransaction1) size(version int16) int32 {
+func (t AbortedTransaction1) Size(version int16) int32 {
 	var sz int32
 	if version >= 4 {
 		sz += sizeof.Int64 // ProducerId

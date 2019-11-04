@@ -30,7 +30,7 @@ type SaslAuthenticateResponse struct {
 }
 
 // size of SaslAuthenticateResponse; Versions: 0-1
-func (t SaslAuthenticateResponse) size(version int16) int32 {
+func (t SaslAuthenticateResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16                  // ErrorCode
 	sz += sizeof.String(t.ErrorMessage) // ErrorMessage

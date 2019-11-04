@@ -32,7 +32,7 @@ type StopReplicaRequest struct {
 }
 
 // size of StopReplicaRequest; Versions: 0-2
-func (t StopReplicaRequest) size(version int16) int32 {
+func (t StopReplicaRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // ControllerId
 	sz += sizeof.Int32 // ControllerEpoch
@@ -43,13 +43,13 @@ func (t StopReplicaRequest) size(version int16) int32 {
 	if version >= 0 && version <= 0 {
 		sz += sizeof.ArrayLength // UngroupedPartitions
 		for i := len(t.UngroupedPartitions) - 1; i >= 0; i-- {
-			sz += t.UngroupedPartitions[i].size(version)
+			sz += t.UngroupedPartitions[i].Size(version)
 		}
 	}
 	if version >= 1 {
 		sz += sizeof.ArrayLength // Topics
 		for i := len(t.Topics) - 1; i >= 0; i-- {
-			sz += t.Topics[i].size(version)
+			sz += t.Topics[i].Size(version)
 		}
 	}
 	return sz
@@ -141,7 +141,7 @@ type StopReplicaPartitionV05 struct {
 }
 
 // size of StopReplicaPartitionV05; Versions: 0-2
-func (t StopReplicaPartitionV05) size(version int16) int32 {
+func (t StopReplicaPartitionV05) Size(version int16) int32 {
 	var sz int32
 	if version >= 0 && version <= 0 {
 		sz += sizeof.String(t.TopicName) // TopicName
@@ -186,7 +186,7 @@ type StopReplicaTopic5 struct {
 }
 
 // size of StopReplicaTopic5; Versions: 0-2
-func (t StopReplicaTopic5) size(version int16) int32 {
+func (t StopReplicaTopic5) Size(version int16) int32 {
 	var sz int32
 	if version >= 1 {
 		sz += sizeof.String(t.Name) // Name

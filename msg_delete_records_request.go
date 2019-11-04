@@ -28,11 +28,11 @@ type DeleteRecordsRequest struct {
 }
 
 // size of DeleteRecordsRequest; Versions: 0-1
-func (t DeleteRecordsRequest) size(version int16) int32 {
+func (t DeleteRecordsRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.ArrayLength // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	sz += sizeof.Int32 // TimeoutMs
 	return sz
@@ -78,12 +78,12 @@ type DeleteRecordsTopic21 struct {
 }
 
 // size of DeleteRecordsTopic21; Versions: 0-1
-func (t DeleteRecordsTopic21) size(version int16) int32 {
+func (t DeleteRecordsTopic21) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.ArrayLength    // Partitions
 	for i := len(t.Partitions) - 1; i >= 0; i-- {
-		sz += t.Partitions[i].size(version)
+		sz += t.Partitions[i].Size(version)
 	}
 	return sz
 }
@@ -128,7 +128,7 @@ type DeleteRecordsPartition21 struct {
 }
 
 // size of DeleteRecordsPartition21; Versions: 0-1
-func (t DeleteRecordsPartition21) size(version int16) int32 {
+func (t DeleteRecordsPartition21) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // PartitionIndex
 	sz += sizeof.Int64 // Offset

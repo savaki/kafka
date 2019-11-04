@@ -25,7 +25,7 @@ type ListGroupsRequest struct {
 }
 
 // size of ListGroupsRequest; Versions: 0-3
-func (t ListGroupsRequest) size(version int16) int32 {
+func (t ListGroupsRequest) Size(version int16) int32 {
 	var sz int32
 	return sz
 }

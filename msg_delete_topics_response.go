@@ -28,14 +28,14 @@ type DeleteTopicsResponse struct {
 }
 
 // size of DeleteTopicsResponse; Versions: 0-4
-func (t DeleteTopicsResponse) size(version int16) int32 {
+func (t DeleteTopicsResponse) Size(version int16) int32 {
 	var sz int32
 	if version >= 1 {
 		sz += sizeof.Int32 // ThrottleTimeMs
 	}
 	sz += sizeof.ArrayLength // Responses
 	for i := len(t.Responses) - 1; i >= 0; i-- {
-		sz += t.Responses[i].size(version)
+		sz += t.Responses[i].Size(version)
 	}
 	return sz
 }
@@ -84,7 +84,7 @@ type DeletableTopicResult20 struct {
 }
 
 // size of DeletableTopicResult20; Versions: 0-4
-func (t DeletableTopicResult20) size(version int16) int32 {
+func (t DeletableTopicResult20) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.Int16          // ErrorCode

@@ -28,12 +28,12 @@ type TxnOffsetCommitResponse struct {
 }
 
 // size of TxnOffsetCommitResponse; Versions: 0-2
-func (t TxnOffsetCommitResponse) size(version int16) int32 {
+func (t TxnOffsetCommitResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32       // ThrottleTimeMs
 	sz += sizeof.ArrayLength // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	return sz
 }
@@ -78,12 +78,12 @@ type TxnOffsetCommitResponseTopic28 struct {
 }
 
 // size of TxnOffsetCommitResponseTopic28; Versions: 0-2
-func (t TxnOffsetCommitResponseTopic28) size(version int16) int32 {
+func (t TxnOffsetCommitResponseTopic28) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.ArrayLength    // Partitions
 	for i := len(t.Partitions) - 1; i >= 0; i-- {
-		sz += t.Partitions[i].size(version)
+		sz += t.Partitions[i].Size(version)
 	}
 	return sz
 }
@@ -128,7 +128,7 @@ type TxnOffsetCommitResponsePartition28 struct {
 }
 
 // size of TxnOffsetCommitResponsePartition28; Versions: 0-2
-func (t TxnOffsetCommitResponsePartition28) size(version int16) int32 {
+func (t TxnOffsetCommitResponsePartition28) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // PartitionIndex
 	sz += sizeof.Int16 // ErrorCode

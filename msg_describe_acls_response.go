@@ -30,14 +30,14 @@ type DescribeAclsResponse struct {
 }
 
 // size of DescribeAclsResponse; Versions: 0-1
-func (t DescribeAclsResponse) size(version int16) int32 {
+func (t DescribeAclsResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32                  // ThrottleTimeMs
 	sz += sizeof.Int16                  // ErrorCode
 	sz += sizeof.String(t.ErrorMessage) // ErrorMessage
 	sz += sizeof.ArrayLength            // Resources
 	for i := len(t.Resources) - 1; i >= 0; i-- {
-		sz += t.Resources[i].size(version)
+		sz += t.Resources[i].Size(version)
 	}
 	return sz
 }
@@ -94,7 +94,7 @@ type DescribeAclsResource29 struct {
 }
 
 // size of DescribeAclsResource29; Versions: 0-1
-func (t DescribeAclsResource29) size(version int16) int32 {
+func (t DescribeAclsResource29) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int8           // Type
 	sz += sizeof.String(t.Name) // Name
@@ -103,7 +103,7 @@ func (t DescribeAclsResource29) size(version int16) int32 {
 	}
 	sz += sizeof.ArrayLength // Acls
 	for i := len(t.Acls) - 1; i >= 0; i-- {
-		sz += t.Acls[i].size(version)
+		sz += t.Acls[i].Size(version)
 	}
 	return sz
 }
@@ -164,7 +164,7 @@ type AclDescription29 struct {
 }
 
 // size of AclDescription29; Versions: 0-1
-func (t AclDescription29) size(version int16) int32 {
+func (t AclDescription29) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Principal) // Principal
 	sz += sizeof.String(t.Host)      // Host

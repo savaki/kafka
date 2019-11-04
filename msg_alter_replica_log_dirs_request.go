@@ -27,11 +27,11 @@ type AlterReplicaLogDirsRequest struct {
 }
 
 // size of AlterReplicaLogDirsRequest; Versions: 0-1
-func (t AlterReplicaLogDirsRequest) size(version int16) int32 {
+func (t AlterReplicaLogDirsRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.ArrayLength // Dirs
 	for i := len(t.Dirs) - 1; i >= 0; i-- {
-		sz += t.Dirs[i].size(version)
+		sz += t.Dirs[i].Size(version)
 	}
 	return sz
 }
@@ -71,12 +71,12 @@ type AlterReplicaLogDir34 struct {
 }
 
 // size of AlterReplicaLogDir34; Versions: 0-1
-func (t AlterReplicaLogDir34) size(version int16) int32 {
+func (t AlterReplicaLogDir34) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Path) // Path
 	sz += sizeof.ArrayLength    // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	return sz
 }
@@ -121,7 +121,7 @@ type AlterReplicaLogDirTopic34 struct {
 }
 
 // size of AlterReplicaLogDirTopic34; Versions: 0-1
-func (t AlterReplicaLogDirTopic34) size(version int16) int32 {
+func (t AlterReplicaLogDirTopic34) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name)           // Name
 	sz += sizeof.Int32Array(t.Partitions) // Partitions

@@ -27,7 +27,7 @@ type UpdateMetadataResponse struct {
 }
 
 // size of UpdateMetadataResponse; Versions: 0-6
-func (t UpdateMetadataResponse) size(version int16) int32 {
+func (t UpdateMetadataResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16 // ErrorCode
 	return sz

@@ -28,7 +28,7 @@ type DescribeGroupsRequest struct {
 }
 
 // size of DescribeGroupsRequest; Versions: 0-5
-func (t DescribeGroupsRequest) size(version int16) int32 {
+func (t DescribeGroupsRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.StringArray(t.Groups) // Groups
 	if version >= 3 {

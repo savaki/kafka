@@ -32,7 +32,7 @@ type FindCoordinatorResponse struct {
 }
 
 // size of FindCoordinatorResponse; Versions: 0-3
-func (t FindCoordinatorResponse) size(version int16) int32 {
+func (t FindCoordinatorResponse) Size(version int16) int32 {
 	var sz int32
 	if version >= 1 {
 		sz += sizeof.Int32 // ThrottleTimeMs

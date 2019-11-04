@@ -31,7 +31,7 @@ type TxnOffsetCommitRequest struct {
 }
 
 // size of TxnOffsetCommitRequest; Versions: 0-2
-func (t TxnOffsetCommitRequest) size(version int16) int32 {
+func (t TxnOffsetCommitRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.TransactionalId) // TransactionalId
 	sz += sizeof.String(t.GroupId)         // GroupId
@@ -39,7 +39,7 @@ func (t TxnOffsetCommitRequest) size(version int16) int32 {
 	sz += sizeof.Int16                     // ProducerEpoch
 	sz += sizeof.ArrayLength               // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	return sz
 }
@@ -99,12 +99,12 @@ type TxnOffsetCommitRequestTopic28 struct {
 }
 
 // size of TxnOffsetCommitRequestTopic28; Versions: 0-2
-func (t TxnOffsetCommitRequestTopic28) size(version int16) int32 {
+func (t TxnOffsetCommitRequestTopic28) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.ArrayLength    // Partitions
 	for i := len(t.Partitions) - 1; i >= 0; i-- {
-		sz += t.Partitions[i].size(version)
+		sz += t.Partitions[i].Size(version)
 	}
 	return sz
 }
@@ -151,7 +151,7 @@ type TxnOffsetCommitRequestPartition28 struct {
 }
 
 // size of TxnOffsetCommitRequestPartition28; Versions: 0-2
-func (t TxnOffsetCommitRequestPartition28) size(version int16) int32 {
+func (t TxnOffsetCommitRequestPartition28) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // PartitionIndex
 	sz += sizeof.Int64 // CommittedOffset

@@ -28,12 +28,12 @@ type OffsetFetchRequest struct {
 }
 
 // size of OffsetFetchRequest; Versions: 0-6
-func (t OffsetFetchRequest) size(version int16) int32 {
+func (t OffsetFetchRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.GroupId) // GroupId
 	sz += sizeof.ArrayLength       // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	return sz
 }
@@ -78,7 +78,7 @@ type OffsetFetchRequestTopic9 struct {
 }
 
 // size of OffsetFetchRequestTopic9; Versions: 0-6
-func (t OffsetFetchRequestTopic9) size(version int16) int32 {
+func (t OffsetFetchRequestTopic9) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name)                 // Name
 	sz += sizeof.Int32Array(t.PartitionIndexes) // PartitionIndexes

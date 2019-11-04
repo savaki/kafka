@@ -27,11 +27,11 @@ type WriteTxnMarkersResponse struct {
 }
 
 // size of WriteTxnMarkersResponse; Versions: 0
-func (t WriteTxnMarkersResponse) size(version int16) int32 {
+func (t WriteTxnMarkersResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.ArrayLength // Markers
 	for i := len(t.Markers) - 1; i >= 0; i-- {
-		sz += t.Markers[i].size(version)
+		sz += t.Markers[i].Size(version)
 	}
 	return sz
 }
@@ -71,12 +71,12 @@ type WritableTxnMarkerResult27 struct {
 }
 
 // size of WritableTxnMarkerResult27; Versions: 0
-func (t WritableTxnMarkerResult27) size(version int16) int32 {
+func (t WritableTxnMarkerResult27) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int64       // ProducerId
 	sz += sizeof.ArrayLength // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	return sz
 }
@@ -121,12 +121,12 @@ type WritableTxnMarkerTopicResult27 struct {
 }
 
 // size of WritableTxnMarkerTopicResult27; Versions: 0
-func (t WritableTxnMarkerTopicResult27) size(version int16) int32 {
+func (t WritableTxnMarkerTopicResult27) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.ArrayLength    // Partitions
 	for i := len(t.Partitions) - 1; i >= 0; i-- {
-		sz += t.Partitions[i].size(version)
+		sz += t.Partitions[i].Size(version)
 	}
 	return sz
 }
@@ -171,7 +171,7 @@ type WritableTxnMarkerPartitionResult27 struct {
 }
 
 // size of WritableTxnMarkerPartitionResult27; Versions: 0
-func (t WritableTxnMarkerPartitionResult27) size(version int16) int32 {
+func (t WritableTxnMarkerPartitionResult27) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // PartitionIndex
 	sz += sizeof.Int16 // ErrorCode

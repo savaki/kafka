@@ -28,7 +28,7 @@ type SaslHandshakeResponse struct {
 }
 
 // size of SaslHandshakeResponse; Versions: 0-1
-func (t SaslHandshakeResponse) size(version int16) int32 {
+func (t SaslHandshakeResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16                     // ErrorCode
 	sz += sizeof.StringArray(t.Mechanisms) // Mechanisms

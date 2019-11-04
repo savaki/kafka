@@ -28,7 +28,7 @@ type DeleteTopicsRequest struct {
 }
 
 // size of DeleteTopicsRequest; Versions: 0-4
-func (t DeleteTopicsRequest) size(version int16) int32 {
+func (t DeleteTopicsRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.StringArray(t.TopicNames) // TopicNames
 	sz += sizeof.Int32                     // TimeoutMs

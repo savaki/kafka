@@ -28,12 +28,12 @@ type DeleteGroupsResponse struct {
 }
 
 // size of DeleteGroupsResponse; Versions: 0-2
-func (t DeleteGroupsResponse) size(version int16) int32 {
+func (t DeleteGroupsResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32       // ThrottleTimeMs
 	sz += sizeof.ArrayLength // Results
 	for i := len(t.Results) - 1; i >= 0; i-- {
-		sz += t.Results[i].size(version)
+		sz += t.Results[i].Size(version)
 	}
 	return sz
 }
@@ -78,7 +78,7 @@ type DeletableGroupResult42 struct {
 }
 
 // size of DeletableGroupResult42; Versions: 0-2
-func (t DeletableGroupResult42) size(version int16) int32 {
+func (t DeletableGroupResult42) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.GroupId) // GroupId
 	sz += sizeof.Int16             // ErrorCode

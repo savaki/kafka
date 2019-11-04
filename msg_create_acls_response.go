@@ -28,12 +28,12 @@ type CreateAclsResponse struct {
 }
 
 // size of CreateAclsResponse; Versions: 0-1
-func (t CreateAclsResponse) size(version int16) int32 {
+func (t CreateAclsResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32       // ThrottleTimeMs
 	sz += sizeof.ArrayLength // Results
 	for i := len(t.Results) - 1; i >= 0; i-- {
-		sz += t.Results[i].size(version)
+		sz += t.Results[i].Size(version)
 	}
 	return sz
 }
@@ -78,7 +78,7 @@ type CreatableAclResult30 struct {
 }
 
 // size of CreatableAclResult30; Versions: 0-1
-func (t CreatableAclResult30) size(version int16) int32 {
+func (t CreatableAclResult30) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16                  // ErrorCode
 	sz += sizeof.String(t.ErrorMessage) // ErrorMessage

@@ -30,14 +30,14 @@ type AlterPartitionReassignmentsResponse struct {
 }
 
 // size of AlterPartitionReassignmentsResponse; Versions: 0
-func (t AlterPartitionReassignmentsResponse) size(version int16) int32 {
+func (t AlterPartitionReassignmentsResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32                  // ThrottleTimeMs
 	sz += sizeof.Int16                  // ErrorCode
 	sz += sizeof.String(t.ErrorMessage) // ErrorMessage
 	sz += sizeof.ArrayLength            // Responses
 	for i := len(t.Responses) - 1; i >= 0; i-- {
-		sz += t.Responses[i].size(version)
+		sz += t.Responses[i].Size(version)
 	}
 	return sz
 }
@@ -92,12 +92,12 @@ type ReassignableTopicResponse45 struct {
 }
 
 // size of ReassignableTopicResponse45; Versions: 0
-func (t ReassignableTopicResponse45) size(version int16) int32 {
+func (t ReassignableTopicResponse45) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.ArrayLength    // Partitions
 	for i := len(t.Partitions) - 1; i >= 0; i-- {
-		sz += t.Partitions[i].size(version)
+		sz += t.Partitions[i].Size(version)
 	}
 	return sz
 }
@@ -143,7 +143,7 @@ type ReassignablePartitionResponse45 struct {
 }
 
 // size of ReassignablePartitionResponse45; Versions: 0
-func (t ReassignablePartitionResponse45) size(version int16) int32 {
+func (t ReassignablePartitionResponse45) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32                  // PartitionIndex
 	sz += sizeof.Int16                  // ErrorCode

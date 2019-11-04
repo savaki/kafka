@@ -28,14 +28,14 @@ type OffsetForLeaderEpochRequest struct {
 }
 
 // size of OffsetForLeaderEpochRequest; Versions: 0-3
-func (t OffsetForLeaderEpochRequest) size(version int16) int32 {
+func (t OffsetForLeaderEpochRequest) Size(version int16) int32 {
 	var sz int32
 	if version >= 3 {
 		sz += sizeof.Int32 // ReplicaId
 	}
 	sz += sizeof.ArrayLength // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	return sz
 }
@@ -84,12 +84,12 @@ type OffsetForLeaderTopic23 struct {
 }
 
 // size of OffsetForLeaderTopic23; Versions: 0-3
-func (t OffsetForLeaderTopic23) size(version int16) int32 {
+func (t OffsetForLeaderTopic23) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.ArrayLength    // Partitions
 	for i := len(t.Partitions) - 1; i >= 0; i-- {
-		sz += t.Partitions[i].size(version)
+		sz += t.Partitions[i].Size(version)
 	}
 	return sz
 }
@@ -135,7 +135,7 @@ type OffsetForLeaderPartition23 struct {
 }
 
 // size of OffsetForLeaderPartition23; Versions: 0-3
-func (t OffsetForLeaderPartition23) size(version int16) int32 {
+func (t OffsetForLeaderPartition23) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // PartitionIndex
 	if version >= 2 {

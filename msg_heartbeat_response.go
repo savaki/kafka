@@ -28,7 +28,7 @@ type HeartbeatResponse struct {
 }
 
 // size of HeartbeatResponse; Versions: 0-4
-func (t HeartbeatResponse) size(version int16) int32 {
+func (t HeartbeatResponse) Size(version int16) int32 {
 	var sz int32
 	if version >= 1 {
 		sz += sizeof.Int32 // ThrottleTimeMs

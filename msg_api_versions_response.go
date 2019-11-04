@@ -29,12 +29,12 @@ type ApiVersionsResponse struct {
 }
 
 // size of ApiVersionsResponse; Versions: 0-3
-func (t ApiVersionsResponse) size(version int16) int32 {
+func (t ApiVersionsResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16       // ErrorCode
 	sz += sizeof.ArrayLength // ApiKeys
 	for i := len(t.ApiKeys) - 1; i >= 0; i-- {
-		sz += t.ApiKeys[i].size(version)
+		sz += t.ApiKeys[i].Size(version)
 	}
 	if version >= 1 {
 		sz += sizeof.Int32 // ThrottleTimeMs
@@ -92,7 +92,7 @@ type ApiVersionsResponseKey18 struct {
 }
 
 // size of ApiVersionsResponseKey18; Versions: 0-3
-func (t ApiVersionsResponseKey18) size(version int16) int32 {
+func (t ApiVersionsResponseKey18) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16 // ApiKey
 	sz += sizeof.Int16 // MinVersion

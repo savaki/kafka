@@ -30,7 +30,7 @@ type InitProducerIdResponse struct {
 }
 
 // size of InitProducerIdResponse; Versions: 0-2
-func (t InitProducerIdResponse) size(version int16) int32 {
+func (t InitProducerIdResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // ThrottleTimeMs
 	sz += sizeof.Int16 // ErrorCode

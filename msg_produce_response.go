@@ -28,11 +28,11 @@ type ProduceResponse struct {
 }
 
 // size of ProduceResponse; Versions: 0-8
-func (t ProduceResponse) size(version int16) int32 {
+func (t ProduceResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.ArrayLength // Responses
 	for i := len(t.Responses) - 1; i >= 0; i-- {
-		sz += t.Responses[i].size(version)
+		sz += t.Responses[i].Size(version)
 	}
 	if version >= 1 {
 		sz += sizeof.Int32 // ThrottleTimeMs
@@ -84,12 +84,12 @@ type TopicProduceResponse0 struct {
 }
 
 // size of TopicProduceResponse0; Versions: 0-8
-func (t TopicProduceResponse0) size(version int16) int32 {
+func (t TopicProduceResponse0) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.ArrayLength    // Partitions
 	for i := len(t.Partitions) - 1; i >= 0; i-- {
-		sz += t.Partitions[i].size(version)
+		sz += t.Partitions[i].Size(version)
 	}
 	return sz
 }
@@ -139,7 +139,7 @@ type PartitionProduceResponse0 struct {
 }
 
 // size of PartitionProduceResponse0; Versions: 0-8
-func (t PartitionProduceResponse0) size(version int16) int32 {
+func (t PartitionProduceResponse0) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // PartitionIndex
 	sz += sizeof.Int16 // ErrorCode
@@ -153,7 +153,7 @@ func (t PartitionProduceResponse0) size(version int16) int32 {
 	if version >= 8 {
 		sz += sizeof.ArrayLength // RecordErrors
 		for i := len(t.RecordErrors) - 1; i >= 0; i-- {
-			sz += t.RecordErrors[i].size(version)
+			sz += t.RecordErrors[i].Size(version)
 		}
 	}
 	if version >= 8 {
@@ -243,7 +243,7 @@ type BatchIndexAndErrorMessage0 struct {
 }
 
 // size of BatchIndexAndErrorMessage0; Versions: 0-8
-func (t BatchIndexAndErrorMessage0) size(version int16) int32 {
+func (t BatchIndexAndErrorMessage0) Size(version int16) int32 {
 	var sz int32
 	if version >= 8 {
 		sz += sizeof.Int32 // BatchIndex

@@ -27,11 +27,11 @@ type DeleteAclsRequest struct {
 }
 
 // size of DeleteAclsRequest; Versions: 0-1
-func (t DeleteAclsRequest) size(version int16) int32 {
+func (t DeleteAclsRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.ArrayLength // Filters
 	for i := len(t.Filters) - 1; i >= 0; i-- {
-		sz += t.Filters[i].size(version)
+		sz += t.Filters[i].Size(version)
 	}
 	return sz
 }
@@ -76,7 +76,7 @@ type DeleteAclsFilter31 struct {
 }
 
 // size of DeleteAclsFilter31; Versions: 0-1
-func (t DeleteAclsFilter31) size(version int16) int32 {
+func (t DeleteAclsFilter31) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int8                         // ResourceTypeFilter
 	sz += sizeof.String(t.ResourceNameFilter) // ResourceNameFilter

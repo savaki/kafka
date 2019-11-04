@@ -32,7 +32,7 @@ type UpdateMetadataRequest struct {
 }
 
 // size of UpdateMetadataRequest; Versions: 0-6
-func (t UpdateMetadataRequest) size(version int16) int32 {
+func (t UpdateMetadataRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // ControllerId
 	sz += sizeof.Int32 // ControllerEpoch
@@ -42,18 +42,18 @@ func (t UpdateMetadataRequest) size(version int16) int32 {
 	if version >= 0 && version <= 4 {
 		sz += sizeof.ArrayLength // UngroupedPartitionStates
 		for i := len(t.UngroupedPartitionStates) - 1; i >= 0; i-- {
-			sz += t.UngroupedPartitionStates[i].size(version)
+			sz += t.UngroupedPartitionStates[i].Size(version)
 		}
 	}
 	if version >= 5 {
 		sz += sizeof.ArrayLength // TopicStates
 		for i := len(t.TopicStates) - 1; i >= 0; i-- {
-			sz += t.TopicStates[i].size(version)
+			sz += t.TopicStates[i].Size(version)
 		}
 	}
 	sz += sizeof.ArrayLength // LiveBrokers
 	for i := len(t.LiveBrokers) - 1; i >= 0; i-- {
-		sz += t.LiveBrokers[i].size(version)
+		sz += t.LiveBrokers[i].Size(version)
 	}
 	return sz
 }
@@ -158,7 +158,7 @@ type UpdateMetadataTopicState6 struct {
 }
 
 // size of UpdateMetadataTopicState6; Versions: 0-6
-func (t UpdateMetadataTopicState6) size(version int16) int32 {
+func (t UpdateMetadataTopicState6) Size(version int16) int32 {
 	var sz int32
 	if version >= 5 {
 		sz += sizeof.String(t.TopicName) // TopicName
@@ -166,7 +166,7 @@ func (t UpdateMetadataTopicState6) size(version int16) int32 {
 	if version >= 5 {
 		sz += sizeof.ArrayLength // PartitionStates
 		for i := len(t.PartitionStates) - 1; i >= 0; i-- {
-			sz += t.PartitionStates[i].size(version)
+			sz += t.PartitionStates[i].Size(version)
 		}
 	}
 	return sz
@@ -223,7 +223,7 @@ type UpdateMetadataBroker6 struct {
 }
 
 // size of UpdateMetadataBroker6; Versions: 0-6
-func (t UpdateMetadataBroker6) size(version int16) int32 {
+func (t UpdateMetadataBroker6) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // Id
 	if version >= 0 && version <= 0 {
@@ -235,7 +235,7 @@ func (t UpdateMetadataBroker6) size(version int16) int32 {
 	if version >= 1 {
 		sz += sizeof.ArrayLength // Endpoints
 		for i := len(t.Endpoints) - 1; i >= 0; i-- {
-			sz += t.Endpoints[i].size(version)
+			sz += t.Endpoints[i].Size(version)
 		}
 	}
 	if version >= 2 {
@@ -317,7 +317,7 @@ type UpdateMetadataEndpoint6 struct {
 }
 
 // size of UpdateMetadataEndpoint6; Versions: 0-6
-func (t UpdateMetadataEndpoint6) size(version int16) int32 {
+func (t UpdateMetadataEndpoint6) Size(version int16) int32 {
 	var sz int32
 	if version >= 1 {
 		sz += sizeof.Int32 // Port
@@ -393,7 +393,7 @@ type UpdateMetadataPartitionState6 struct {
 }
 
 // size of UpdateMetadataPartitionState6; Versions: 0-6
-func (t UpdateMetadataPartitionState6) size(version int16) int32 {
+func (t UpdateMetadataPartitionState6) Size(version int16) int32 {
 	var sz int32
 	if version >= 0 && version <= 4 {
 		sz += sizeof.String(t.TopicName) // TopicName

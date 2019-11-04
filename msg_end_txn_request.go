@@ -30,7 +30,7 @@ type EndTxnRequest struct {
 }
 
 // size of EndTxnRequest; Versions: 0-1
-func (t EndTxnRequest) size(version int16) int32 {
+func (t EndTxnRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.TransactionalId) // TransactionalId
 	sz += sizeof.Int64                     // ProducerId

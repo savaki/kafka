@@ -27,11 +27,11 @@ type CreateAclsRequest struct {
 }
 
 // size of CreateAclsRequest; Versions: 0-1
-func (t CreateAclsRequest) size(version int16) int32 {
+func (t CreateAclsRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.ArrayLength // Creations
 	for i := len(t.Creations) - 1; i >= 0; i-- {
-		sz += t.Creations[i].size(version)
+		sz += t.Creations[i].Size(version)
 	}
 	return sz
 }
@@ -76,7 +76,7 @@ type CreatableAcl30 struct {
 }
 
 // size of CreatableAcl30; Versions: 0-1
-func (t CreatableAcl30) size(version int16) int32 {
+func (t CreatableAcl30) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int8                   // ResourceType
 	sz += sizeof.String(t.ResourceName) // ResourceName

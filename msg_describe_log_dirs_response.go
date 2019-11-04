@@ -28,12 +28,12 @@ type DescribeLogDirsResponse struct {
 }
 
 // size of DescribeLogDirsResponse; Versions: 0-1
-func (t DescribeLogDirsResponse) size(version int16) int32 {
+func (t DescribeLogDirsResponse) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32       // ThrottleTimeMs
 	sz += sizeof.ArrayLength // Results
 	for i := len(t.Results) - 1; i >= 0; i-- {
-		sz += t.Results[i].size(version)
+		sz += t.Results[i].Size(version)
 	}
 	return sz
 }
@@ -79,13 +79,13 @@ type DescribeLogDirsResult35 struct {
 }
 
 // size of DescribeLogDirsResult35; Versions: 0-1
-func (t DescribeLogDirsResult35) size(version int16) int32 {
+func (t DescribeLogDirsResult35) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int16            // ErrorCode
 	sz += sizeof.String(t.LogDir) // LogDir
 	sz += sizeof.ArrayLength      // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	return sz
 }
@@ -135,12 +135,12 @@ type DescribeLogDirsTopic35 struct {
 }
 
 // size of DescribeLogDirsTopic35; Versions: 0-1
-func (t DescribeLogDirsTopic35) size(version int16) int32 {
+func (t DescribeLogDirsTopic35) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.ArrayLength    // Partitions
 	for i := len(t.Partitions) - 1; i >= 0; i-- {
-		sz += t.Partitions[i].size(version)
+		sz += t.Partitions[i].Size(version)
 	}
 	return sz
 }
@@ -187,7 +187,7 @@ type DescribeLogDirsPartition35 struct {
 }
 
 // size of DescribeLogDirsPartition35; Versions: 0-1
-func (t DescribeLogDirsPartition35) size(version int16) int32 {
+func (t DescribeLogDirsPartition35) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // PartitionIndex
 	sz += sizeof.Int64 // PartitionSize

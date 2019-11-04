@@ -28,12 +28,12 @@ type OffsetDeleteRequest struct {
 }
 
 // size of OffsetDeleteRequest; Versions: 0
-func (t OffsetDeleteRequest) size(version int16) int32 {
+func (t OffsetDeleteRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.GroupId) // GroupId
 	sz += sizeof.ArrayLength       // Topics
 	for i := len(t.Topics) - 1; i >= 0; i-- {
-		sz += t.Topics[i].size(version)
+		sz += t.Topics[i].Size(version)
 	}
 	return sz
 }
@@ -78,12 +78,12 @@ type OffsetDeleteRequestTopic47 struct {
 }
 
 // size of OffsetDeleteRequestTopic47; Versions: 0
-func (t OffsetDeleteRequestTopic47) size(version int16) int32 {
+func (t OffsetDeleteRequestTopic47) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.Name) // Name
 	sz += sizeof.ArrayLength    // Partitions
 	for i := len(t.Partitions) - 1; i >= 0; i-- {
-		sz += t.Partitions[i].size(version)
+		sz += t.Partitions[i].Size(version)
 	}
 	return sz
 }
@@ -127,7 +127,7 @@ type OffsetDeleteRequestPartition47 struct {
 }
 
 // size of OffsetDeleteRequestPartition47; Versions: 0
-func (t OffsetDeleteRequestPartition47) size(version int16) int32 {
+func (t OffsetDeleteRequestPartition47) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.Int32 // PartitionIndex
 	return sz

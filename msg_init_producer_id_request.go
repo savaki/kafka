@@ -28,7 +28,7 @@ type InitProducerIdRequest struct {
 }
 
 // size of InitProducerIdRequest; Versions: 0-2
-func (t InitProducerIdRequest) size(version int16) int32 {
+func (t InitProducerIdRequest) Size(version int16) int32 {
 	var sz int32
 	sz += sizeof.String(t.TransactionalId) // TransactionalId
 	sz += sizeof.Int32                     // TransactionTimeoutMs
