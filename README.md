@@ -4,6 +4,8 @@
 
 `kafka` is a pure go Kafka library.
 
+***Warning*** - this library is under heavy construction right now.  Definitely NOT safe for use.
+
 ## Motivations
 
 The `kafka` library is intended as a base library to write Kafka tooling.  As its intended
