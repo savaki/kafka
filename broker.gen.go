@@ -18,59 +18,21 @@ package kafka
 
 import (
 	"fmt"
-	"net"
 
-	"github.com/savaki/kafka/protocol"
-	"github.com/savaki/kafka/protocol/apikey"
+	"github.com/savaki/kafka/message"
 )
-
-const defaultClientID = "github.com/savaki/kafka"
-
-type config struct {
-	brokers  []string
-	clientID string
-	dialFunc func(network, addr string) (net.Conn, error)
-}
 
 // Client provides access to Kafka
 type Broker struct {
 	apiVersion apiVersion
 	config     config
-	conn       *protocol.Conn
-}
-
-// Option provides functional options to Client
-type Option func(*config)
-
-// WithClientID allows kafka client id to be specified
-func WithClientID(id string) Option {
-	return func(c *config) {
-		if id == "" {
-			c.clientID = defaultClientID
-			return
-		}
-		c.clientID = id
-	}
-}
-
-// buildConfig builds config from provided options
-func buildConfig(opts []Option) config {
-	c := config{
-		clientID: defaultClientID,
-		dialFunc: net.Dial,
-	}
-
-	for _, opt := range opts {
-		opt(&c)
-	}
-
-	return c
+	conn       *Conn
 }
 
 // NewBroker a new Kafka Broker
 func NewBroker(addr string, opts ...Option) (*Broker, error) {
 	config := buildConfig(opts)
-	conn, err := protocol.Connect(addr)
+	conn, err := Connect(addr, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +44,7 @@ func NewBroker(addr string, opts ...Option) (*Broker, error) {
 
 	// negotiate usable api versions prior to returning broker
 	//
-	resp, err := broker.ApiVersions(ApiVersionsRequest{})
+	resp, err := broker.ApiVersions(message.ApiVersionsRequest{})
 	if err != nil {
 		return nil, fmt.Errorf("unable to create broker: %w", err)
 	}
@@ -101,13 +63,13 @@ func (b *Broker) Close() error {
 }
 
 // Produce (apiKey: 0)
-func (b *Broker) Produce(req ProduceRequest) (ProduceResponse, error) {
-	var resp ProduceResponse
-	err := b.conn.Write(
+func (b *Broker) Produce(req message.ProduceRequest) (message.ProduceResponse, error) {
+	var resp message.ProduceResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.Produce,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyProduce,
 				RequestApiVersion: b.apiVersion.Produce,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -118,7 +80,7 @@ func (b *Broker) Produce(req ProduceRequest) (ProduceResponse, error) {
 			req.Encode(e, b.apiVersion.Produce)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.Produce)
 		},
 	)
@@ -126,13 +88,13 @@ func (b *Broker) Produce(req ProduceRequest) (ProduceResponse, error) {
 }
 
 // Fetch (apiKey: 1)
-func (b *Broker) Fetch(req FetchRequest) (FetchResponse, error) {
-	var resp FetchResponse
-	err := b.conn.Write(
+func (b *Broker) Fetch(req message.FetchRequest) (message.FetchResponse, error) {
+	var resp message.FetchResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.Fetch,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyFetch,
 				RequestApiVersion: b.apiVersion.Fetch,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -143,7 +105,7 @@ func (b *Broker) Fetch(req FetchRequest) (FetchResponse, error) {
 			req.Encode(e, b.apiVersion.Fetch)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.Fetch)
 		},
 	)
@@ -151,13 +113,13 @@ func (b *Broker) Fetch(req FetchRequest) (FetchResponse, error) {
 }
 
 // ListOffset (apiKey: 2)
-func (b *Broker) ListOffset(req ListOffsetRequest) (ListOffsetResponse, error) {
-	var resp ListOffsetResponse
-	err := b.conn.Write(
+func (b *Broker) ListOffset(req message.ListOffsetRequest) (message.ListOffsetResponse, error) {
+	var resp message.ListOffsetResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.ListOffset,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyListOffset,
 				RequestApiVersion: b.apiVersion.ListOffset,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -168,7 +130,7 @@ func (b *Broker) ListOffset(req ListOffsetRequest) (ListOffsetResponse, error) {
 			req.Encode(e, b.apiVersion.ListOffset)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.ListOffset)
 		},
 	)
@@ -176,13 +138,13 @@ func (b *Broker) ListOffset(req ListOffsetRequest) (ListOffsetResponse, error) {
 }
 
 // Metadata (apiKey: 3)
-func (b *Broker) Metadata(req MetadataRequest) (MetadataResponse, error) {
-	var resp MetadataResponse
-	err := b.conn.Write(
+func (b *Broker) Metadata(req message.MetadataRequest) (message.MetadataResponse, error) {
+	var resp message.MetadataResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.Metadata,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyMetadata,
 				RequestApiVersion: b.apiVersion.Metadata,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -193,7 +155,7 @@ func (b *Broker) Metadata(req MetadataRequest) (MetadataResponse, error) {
 			req.Encode(e, b.apiVersion.Metadata)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.Metadata)
 		},
 	)
@@ -201,13 +163,13 @@ func (b *Broker) Metadata(req MetadataRequest) (MetadataResponse, error) {
 }
 
 // LeaderAndIsr (apiKey: 4)
-func (b *Broker) LeaderAndIsr(req LeaderAndIsrRequest) (LeaderAndIsrResponse, error) {
-	var resp LeaderAndIsrResponse
-	err := b.conn.Write(
+func (b *Broker) LeaderAndIsr(req message.LeaderAndIsrRequest) (message.LeaderAndIsrResponse, error) {
+	var resp message.LeaderAndIsrResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.LeaderAndIsr,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyLeaderAndIsr,
 				RequestApiVersion: b.apiVersion.LeaderAndIsr,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -218,7 +180,7 @@ func (b *Broker) LeaderAndIsr(req LeaderAndIsrRequest) (LeaderAndIsrResponse, er
 			req.Encode(e, b.apiVersion.LeaderAndIsr)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.LeaderAndIsr)
 		},
 	)
@@ -226,13 +188,13 @@ func (b *Broker) LeaderAndIsr(req LeaderAndIsrRequest) (LeaderAndIsrResponse, er
 }
 
 // StopReplica (apiKey: 5)
-func (b *Broker) StopReplica(req StopReplicaRequest) (StopReplicaResponse, error) {
-	var resp StopReplicaResponse
-	err := b.conn.Write(
+func (b *Broker) StopReplica(req message.StopReplicaRequest) (message.StopReplicaResponse, error) {
+	var resp message.StopReplicaResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.StopReplica,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyStopReplica,
 				RequestApiVersion: b.apiVersion.StopReplica,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -243,7 +205,7 @@ func (b *Broker) StopReplica(req StopReplicaRequest) (StopReplicaResponse, error
 			req.Encode(e, b.apiVersion.StopReplica)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.StopReplica)
 		},
 	)
@@ -251,13 +213,13 @@ func (b *Broker) StopReplica(req StopReplicaRequest) (StopReplicaResponse, error
 }
 
 // UpdateMetadata (apiKey: 6)
-func (b *Broker) UpdateMetadata(req UpdateMetadataRequest) (UpdateMetadataResponse, error) {
-	var resp UpdateMetadataResponse
-	err := b.conn.Write(
+func (b *Broker) UpdateMetadata(req message.UpdateMetadataRequest) (message.UpdateMetadataResponse, error) {
+	var resp message.UpdateMetadataResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.UpdateMetadata,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyUpdateMetadata,
 				RequestApiVersion: b.apiVersion.UpdateMetadata,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -268,7 +230,7 @@ func (b *Broker) UpdateMetadata(req UpdateMetadataRequest) (UpdateMetadataRespon
 			req.Encode(e, b.apiVersion.UpdateMetadata)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.UpdateMetadata)
 		},
 	)
@@ -276,13 +238,13 @@ func (b *Broker) UpdateMetadata(req UpdateMetadataRequest) (UpdateMetadataRespon
 }
 
 // ControlledShutdown (apiKey: 7)
-func (b *Broker) ControlledShutdown(req ControlledShutdownRequest) (ControlledShutdownResponse, error) {
-	var resp ControlledShutdownResponse
-	err := b.conn.Write(
+func (b *Broker) ControlledShutdown(req message.ControlledShutdownRequest) (message.ControlledShutdownResponse, error) {
+	var resp message.ControlledShutdownResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.ControlledShutdown,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyControlledShutdown,
 				RequestApiVersion: b.apiVersion.ControlledShutdown,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -293,7 +255,7 @@ func (b *Broker) ControlledShutdown(req ControlledShutdownRequest) (ControlledSh
 			req.Encode(e, b.apiVersion.ControlledShutdown)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.ControlledShutdown)
 		},
 	)
@@ -301,13 +263,13 @@ func (b *Broker) ControlledShutdown(req ControlledShutdownRequest) (ControlledSh
 }
 
 // OffsetCommit (apiKey: 8)
-func (b *Broker) OffsetCommit(req OffsetCommitRequest) (OffsetCommitResponse, error) {
-	var resp OffsetCommitResponse
-	err := b.conn.Write(
+func (b *Broker) OffsetCommit(req message.OffsetCommitRequest) (message.OffsetCommitResponse, error) {
+	var resp message.OffsetCommitResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.OffsetCommit,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyOffsetCommit,
 				RequestApiVersion: b.apiVersion.OffsetCommit,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -318,7 +280,7 @@ func (b *Broker) OffsetCommit(req OffsetCommitRequest) (OffsetCommitResponse, er
 			req.Encode(e, b.apiVersion.OffsetCommit)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.OffsetCommit)
 		},
 	)
@@ -326,13 +288,13 @@ func (b *Broker) OffsetCommit(req OffsetCommitRequest) (OffsetCommitResponse, er
 }
 
 // OffsetFetch (apiKey: 9)
-func (b *Broker) OffsetFetch(req OffsetFetchRequest) (OffsetFetchResponse, error) {
-	var resp OffsetFetchResponse
-	err := b.conn.Write(
+func (b *Broker) OffsetFetch(req message.OffsetFetchRequest) (message.OffsetFetchResponse, error) {
+	var resp message.OffsetFetchResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.OffsetFetch,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyOffsetFetch,
 				RequestApiVersion: b.apiVersion.OffsetFetch,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -343,7 +305,7 @@ func (b *Broker) OffsetFetch(req OffsetFetchRequest) (OffsetFetchResponse, error
 			req.Encode(e, b.apiVersion.OffsetFetch)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.OffsetFetch)
 		},
 	)
@@ -351,13 +313,13 @@ func (b *Broker) OffsetFetch(req OffsetFetchRequest) (OffsetFetchResponse, error
 }
 
 // FindCoordinator (apiKey: 10)
-func (b *Broker) FindCoordinator(req FindCoordinatorRequest) (FindCoordinatorResponse, error) {
-	var resp FindCoordinatorResponse
-	err := b.conn.Write(
+func (b *Broker) FindCoordinator(req message.FindCoordinatorRequest) (message.FindCoordinatorResponse, error) {
+	var resp message.FindCoordinatorResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.FindCoordinator,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyFindCoordinator,
 				RequestApiVersion: b.apiVersion.FindCoordinator,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -368,7 +330,7 @@ func (b *Broker) FindCoordinator(req FindCoordinatorRequest) (FindCoordinatorRes
 			req.Encode(e, b.apiVersion.FindCoordinator)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.FindCoordinator)
 		},
 	)
@@ -376,13 +338,13 @@ func (b *Broker) FindCoordinator(req FindCoordinatorRequest) (FindCoordinatorRes
 }
 
 // JoinGroup (apiKey: 11)
-func (b *Broker) JoinGroup(req JoinGroupRequest) (JoinGroupResponse, error) {
-	var resp JoinGroupResponse
-	err := b.conn.Write(
+func (b *Broker) JoinGroup(req message.JoinGroupRequest) (message.JoinGroupResponse, error) {
+	var resp message.JoinGroupResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.JoinGroup,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyJoinGroup,
 				RequestApiVersion: b.apiVersion.JoinGroup,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -393,7 +355,7 @@ func (b *Broker) JoinGroup(req JoinGroupRequest) (JoinGroupResponse, error) {
 			req.Encode(e, b.apiVersion.JoinGroup)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.JoinGroup)
 		},
 	)
@@ -401,13 +363,13 @@ func (b *Broker) JoinGroup(req JoinGroupRequest) (JoinGroupResponse, error) {
 }
 
 // Heartbeat (apiKey: 12)
-func (b *Broker) Heartbeat(req HeartbeatRequest) (HeartbeatResponse, error) {
-	var resp HeartbeatResponse
-	err := b.conn.Write(
+func (b *Broker) Heartbeat(req message.HeartbeatRequest) (message.HeartbeatResponse, error) {
+	var resp message.HeartbeatResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.Heartbeat,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyHeartbeat,
 				RequestApiVersion: b.apiVersion.Heartbeat,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -418,7 +380,7 @@ func (b *Broker) Heartbeat(req HeartbeatRequest) (HeartbeatResponse, error) {
 			req.Encode(e, b.apiVersion.Heartbeat)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.Heartbeat)
 		},
 	)
@@ -426,13 +388,13 @@ func (b *Broker) Heartbeat(req HeartbeatRequest) (HeartbeatResponse, error) {
 }
 
 // LeaveGroup (apiKey: 13)
-func (b *Broker) LeaveGroup(req LeaveGroupRequest) (LeaveGroupResponse, error) {
-	var resp LeaveGroupResponse
-	err := b.conn.Write(
+func (b *Broker) LeaveGroup(req message.LeaveGroupRequest) (message.LeaveGroupResponse, error) {
+	var resp message.LeaveGroupResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.LeaveGroup,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyLeaveGroup,
 				RequestApiVersion: b.apiVersion.LeaveGroup,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -443,7 +405,7 @@ func (b *Broker) LeaveGroup(req LeaveGroupRequest) (LeaveGroupResponse, error) {
 			req.Encode(e, b.apiVersion.LeaveGroup)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.LeaveGroup)
 		},
 	)
@@ -451,13 +413,13 @@ func (b *Broker) LeaveGroup(req LeaveGroupRequest) (LeaveGroupResponse, error) {
 }
 
 // SyncGroup (apiKey: 14)
-func (b *Broker) SyncGroup(req SyncGroupRequest) (SyncGroupResponse, error) {
-	var resp SyncGroupResponse
-	err := b.conn.Write(
+func (b *Broker) SyncGroup(req message.SyncGroupRequest) (message.SyncGroupResponse, error) {
+	var resp message.SyncGroupResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.SyncGroup,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeySyncGroup,
 				RequestApiVersion: b.apiVersion.SyncGroup,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -468,7 +430,7 @@ func (b *Broker) SyncGroup(req SyncGroupRequest) (SyncGroupResponse, error) {
 			req.Encode(e, b.apiVersion.SyncGroup)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.SyncGroup)
 		},
 	)
@@ -476,13 +438,13 @@ func (b *Broker) SyncGroup(req SyncGroupRequest) (SyncGroupResponse, error) {
 }
 
 // DescribeGroups (apiKey: 15)
-func (b *Broker) DescribeGroups(req DescribeGroupsRequest) (DescribeGroupsResponse, error) {
-	var resp DescribeGroupsResponse
-	err := b.conn.Write(
+func (b *Broker) DescribeGroups(req message.DescribeGroupsRequest) (message.DescribeGroupsResponse, error) {
+	var resp message.DescribeGroupsResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.DescribeGroups,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyDescribeGroups,
 				RequestApiVersion: b.apiVersion.DescribeGroups,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -493,7 +455,7 @@ func (b *Broker) DescribeGroups(req DescribeGroupsRequest) (DescribeGroupsRespon
 			req.Encode(e, b.apiVersion.DescribeGroups)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.DescribeGroups)
 		},
 	)
@@ -501,13 +463,13 @@ func (b *Broker) DescribeGroups(req DescribeGroupsRequest) (DescribeGroupsRespon
 }
 
 // ListGroups (apiKey: 16)
-func (b *Broker) ListGroups(req ListGroupsRequest) (ListGroupsResponse, error) {
-	var resp ListGroupsResponse
-	err := b.conn.Write(
+func (b *Broker) ListGroups(req message.ListGroupsRequest) (message.ListGroupsResponse, error) {
+	var resp message.ListGroupsResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.ListGroups,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyListGroups,
 				RequestApiVersion: b.apiVersion.ListGroups,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -518,7 +480,7 @@ func (b *Broker) ListGroups(req ListGroupsRequest) (ListGroupsResponse, error) {
 			req.Encode(e, b.apiVersion.ListGroups)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.ListGroups)
 		},
 	)
@@ -526,13 +488,13 @@ func (b *Broker) ListGroups(req ListGroupsRequest) (ListGroupsResponse, error) {
 }
 
 // SaslHandshake (apiKey: 17)
-func (b *Broker) SaslHandshake(req SaslHandshakeRequest) (SaslHandshakeResponse, error) {
-	var resp SaslHandshakeResponse
-	err := b.conn.Write(
+func (b *Broker) SaslHandshake(req message.SaslHandshakeRequest) (message.SaslHandshakeResponse, error) {
+	var resp message.SaslHandshakeResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.SaslHandshake,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeySaslHandshake,
 				RequestApiVersion: b.apiVersion.SaslHandshake,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -543,7 +505,7 @@ func (b *Broker) SaslHandshake(req SaslHandshakeRequest) (SaslHandshakeResponse,
 			req.Encode(e, b.apiVersion.SaslHandshake)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.SaslHandshake)
 		},
 	)
@@ -551,13 +513,13 @@ func (b *Broker) SaslHandshake(req SaslHandshakeRequest) (SaslHandshakeResponse,
 }
 
 // ApiVersions (apiKey: 18)
-func (b *Broker) ApiVersions(req ApiVersionsRequest) (ApiVersionsResponse, error) {
-	var resp ApiVersionsResponse
-	err := b.conn.Write(
+func (b *Broker) ApiVersions(req message.ApiVersionsRequest) (message.ApiVersionsResponse, error) {
+	var resp message.ApiVersionsResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.ApiVersions,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyApiVersions,
 				RequestApiVersion: b.apiVersion.ApiVersions,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -568,7 +530,7 @@ func (b *Broker) ApiVersions(req ApiVersionsRequest) (ApiVersionsResponse, error
 			req.Encode(e, b.apiVersion.ApiVersions)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.ApiVersions)
 		},
 	)
@@ -576,13 +538,13 @@ func (b *Broker) ApiVersions(req ApiVersionsRequest) (ApiVersionsResponse, error
 }
 
 // CreateTopics (apiKey: 19)
-func (b *Broker) CreateTopics(req CreateTopicsRequest) (CreateTopicsResponse, error) {
-	var resp CreateTopicsResponse
-	err := b.conn.Write(
+func (b *Broker) CreateTopics(req message.CreateTopicsRequest) (message.CreateTopicsResponse, error) {
+	var resp message.CreateTopicsResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.CreateTopics,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyCreateTopics,
 				RequestApiVersion: b.apiVersion.CreateTopics,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -593,7 +555,7 @@ func (b *Broker) CreateTopics(req CreateTopicsRequest) (CreateTopicsResponse, er
 			req.Encode(e, b.apiVersion.CreateTopics)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.CreateTopics)
 		},
 	)
@@ -601,13 +563,13 @@ func (b *Broker) CreateTopics(req CreateTopicsRequest) (CreateTopicsResponse, er
 }
 
 // DeleteTopics (apiKey: 20)
-func (b *Broker) DeleteTopics(req DeleteTopicsRequest) (DeleteTopicsResponse, error) {
-	var resp DeleteTopicsResponse
-	err := b.conn.Write(
+func (b *Broker) DeleteTopics(req message.DeleteTopicsRequest) (message.DeleteTopicsResponse, error) {
+	var resp message.DeleteTopicsResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.DeleteTopics,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyDeleteTopics,
 				RequestApiVersion: b.apiVersion.DeleteTopics,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -618,7 +580,7 @@ func (b *Broker) DeleteTopics(req DeleteTopicsRequest) (DeleteTopicsResponse, er
 			req.Encode(e, b.apiVersion.DeleteTopics)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.DeleteTopics)
 		},
 	)
@@ -626,13 +588,13 @@ func (b *Broker) DeleteTopics(req DeleteTopicsRequest) (DeleteTopicsResponse, er
 }
 
 // DeleteRecords (apiKey: 21)
-func (b *Broker) DeleteRecords(req DeleteRecordsRequest) (DeleteRecordsResponse, error) {
-	var resp DeleteRecordsResponse
-	err := b.conn.Write(
+func (b *Broker) DeleteRecords(req message.DeleteRecordsRequest) (message.DeleteRecordsResponse, error) {
+	var resp message.DeleteRecordsResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.DeleteRecords,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyDeleteRecords,
 				RequestApiVersion: b.apiVersion.DeleteRecords,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -643,7 +605,7 @@ func (b *Broker) DeleteRecords(req DeleteRecordsRequest) (DeleteRecordsResponse,
 			req.Encode(e, b.apiVersion.DeleteRecords)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.DeleteRecords)
 		},
 	)
@@ -651,13 +613,13 @@ func (b *Broker) DeleteRecords(req DeleteRecordsRequest) (DeleteRecordsResponse,
 }
 
 // InitProducerId (apiKey: 22)
-func (b *Broker) InitProducerId(req InitProducerIdRequest) (InitProducerIdResponse, error) {
-	var resp InitProducerIdResponse
-	err := b.conn.Write(
+func (b *Broker) InitProducerId(req message.InitProducerIdRequest) (message.InitProducerIdResponse, error) {
+	var resp message.InitProducerIdResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.InitProducerId,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyInitProducerId,
 				RequestApiVersion: b.apiVersion.InitProducerId,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -668,7 +630,7 @@ func (b *Broker) InitProducerId(req InitProducerIdRequest) (InitProducerIdRespon
 			req.Encode(e, b.apiVersion.InitProducerId)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.InitProducerId)
 		},
 	)
@@ -676,13 +638,13 @@ func (b *Broker) InitProducerId(req InitProducerIdRequest) (InitProducerIdRespon
 }
 
 // OffsetForLeaderEpoch (apiKey: 23)
-func (b *Broker) OffsetForLeaderEpoch(req OffsetForLeaderEpochRequest) (OffsetForLeaderEpochResponse, error) {
-	var resp OffsetForLeaderEpochResponse
-	err := b.conn.Write(
+func (b *Broker) OffsetForLeaderEpoch(req message.OffsetForLeaderEpochRequest) (message.OffsetForLeaderEpochResponse, error) {
+	var resp message.OffsetForLeaderEpochResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.OffsetForLeaderEpoch,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyOffsetForLeaderEpoch,
 				RequestApiVersion: b.apiVersion.OffsetForLeaderEpoch,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -693,7 +655,7 @@ func (b *Broker) OffsetForLeaderEpoch(req OffsetForLeaderEpochRequest) (OffsetFo
 			req.Encode(e, b.apiVersion.OffsetForLeaderEpoch)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.OffsetForLeaderEpoch)
 		},
 	)
@@ -701,13 +663,13 @@ func (b *Broker) OffsetForLeaderEpoch(req OffsetForLeaderEpochRequest) (OffsetFo
 }
 
 // AddPartitionsToTxn (apiKey: 24)
-func (b *Broker) AddPartitionsToTxn(req AddPartitionsToTxnRequest) (AddPartitionsToTxnResponse, error) {
-	var resp AddPartitionsToTxnResponse
-	err := b.conn.Write(
+func (b *Broker) AddPartitionsToTxn(req message.AddPartitionsToTxnRequest) (message.AddPartitionsToTxnResponse, error) {
+	var resp message.AddPartitionsToTxnResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.AddPartitionsToTxn,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyAddPartitionsToTxn,
 				RequestApiVersion: b.apiVersion.AddPartitionsToTxn,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -718,7 +680,7 @@ func (b *Broker) AddPartitionsToTxn(req AddPartitionsToTxnRequest) (AddPartition
 			req.Encode(e, b.apiVersion.AddPartitionsToTxn)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.AddPartitionsToTxn)
 		},
 	)
@@ -726,13 +688,13 @@ func (b *Broker) AddPartitionsToTxn(req AddPartitionsToTxnRequest) (AddPartition
 }
 
 // AddOffsetsToTxn (apiKey: 25)
-func (b *Broker) AddOffsetsToTxn(req AddOffsetsToTxnRequest) (AddOffsetsToTxnResponse, error) {
-	var resp AddOffsetsToTxnResponse
-	err := b.conn.Write(
+func (b *Broker) AddOffsetsToTxn(req message.AddOffsetsToTxnRequest) (message.AddOffsetsToTxnResponse, error) {
+	var resp message.AddOffsetsToTxnResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.AddOffsetsToTxn,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyAddOffsetsToTxn,
 				RequestApiVersion: b.apiVersion.AddOffsetsToTxn,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -743,7 +705,7 @@ func (b *Broker) AddOffsetsToTxn(req AddOffsetsToTxnRequest) (AddOffsetsToTxnRes
 			req.Encode(e, b.apiVersion.AddOffsetsToTxn)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.AddOffsetsToTxn)
 		},
 	)
@@ -751,13 +713,13 @@ func (b *Broker) AddOffsetsToTxn(req AddOffsetsToTxnRequest) (AddOffsetsToTxnRes
 }
 
 // EndTxn (apiKey: 26)
-func (b *Broker) EndTxn(req EndTxnRequest) (EndTxnResponse, error) {
-	var resp EndTxnResponse
-	err := b.conn.Write(
+func (b *Broker) EndTxn(req message.EndTxnRequest) (message.EndTxnResponse, error) {
+	var resp message.EndTxnResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.EndTxn,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyEndTxn,
 				RequestApiVersion: b.apiVersion.EndTxn,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -768,7 +730,7 @@ func (b *Broker) EndTxn(req EndTxnRequest) (EndTxnResponse, error) {
 			req.Encode(e, b.apiVersion.EndTxn)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.EndTxn)
 		},
 	)
@@ -776,13 +738,13 @@ func (b *Broker) EndTxn(req EndTxnRequest) (EndTxnResponse, error) {
 }
 
 // WriteTxnMarkers (apiKey: 27)
-func (b *Broker) WriteTxnMarkers(req WriteTxnMarkersRequest) (WriteTxnMarkersResponse, error) {
-	var resp WriteTxnMarkersResponse
-	err := b.conn.Write(
+func (b *Broker) WriteTxnMarkers(req message.WriteTxnMarkersRequest) (message.WriteTxnMarkersResponse, error) {
+	var resp message.WriteTxnMarkersResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.WriteTxnMarkers,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyWriteTxnMarkers,
 				RequestApiVersion: b.apiVersion.WriteTxnMarkers,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -793,7 +755,7 @@ func (b *Broker) WriteTxnMarkers(req WriteTxnMarkersRequest) (WriteTxnMarkersRes
 			req.Encode(e, b.apiVersion.WriteTxnMarkers)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.WriteTxnMarkers)
 		},
 	)
@@ -801,13 +763,13 @@ func (b *Broker) WriteTxnMarkers(req WriteTxnMarkersRequest) (WriteTxnMarkersRes
 }
 
 // TxnOffsetCommit (apiKey: 28)
-func (b *Broker) TxnOffsetCommit(req TxnOffsetCommitRequest) (TxnOffsetCommitResponse, error) {
-	var resp TxnOffsetCommitResponse
-	err := b.conn.Write(
+func (b *Broker) TxnOffsetCommit(req message.TxnOffsetCommitRequest) (message.TxnOffsetCommitResponse, error) {
+	var resp message.TxnOffsetCommitResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.TxnOffsetCommit,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyTxnOffsetCommit,
 				RequestApiVersion: b.apiVersion.TxnOffsetCommit,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -818,7 +780,7 @@ func (b *Broker) TxnOffsetCommit(req TxnOffsetCommitRequest) (TxnOffsetCommitRes
 			req.Encode(e, b.apiVersion.TxnOffsetCommit)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.TxnOffsetCommit)
 		},
 	)
@@ -826,13 +788,13 @@ func (b *Broker) TxnOffsetCommit(req TxnOffsetCommitRequest) (TxnOffsetCommitRes
 }
 
 // DescribeAcls (apiKey: 29)
-func (b *Broker) DescribeAcls(req DescribeAclsRequest) (DescribeAclsResponse, error) {
-	var resp DescribeAclsResponse
-	err := b.conn.Write(
+func (b *Broker) DescribeAcls(req message.DescribeAclsRequest) (message.DescribeAclsResponse, error) {
+	var resp message.DescribeAclsResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.DescribeAcls,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyDescribeAcls,
 				RequestApiVersion: b.apiVersion.DescribeAcls,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -843,7 +805,7 @@ func (b *Broker) DescribeAcls(req DescribeAclsRequest) (DescribeAclsResponse, er
 			req.Encode(e, b.apiVersion.DescribeAcls)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.DescribeAcls)
 		},
 	)
@@ -851,13 +813,13 @@ func (b *Broker) DescribeAcls(req DescribeAclsRequest) (DescribeAclsResponse, er
 }
 
 // CreateAcls (apiKey: 30)
-func (b *Broker) CreateAcls(req CreateAclsRequest) (CreateAclsResponse, error) {
-	var resp CreateAclsResponse
-	err := b.conn.Write(
+func (b *Broker) CreateAcls(req message.CreateAclsRequest) (message.CreateAclsResponse, error) {
+	var resp message.CreateAclsResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.CreateAcls,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyCreateAcls,
 				RequestApiVersion: b.apiVersion.CreateAcls,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -868,7 +830,7 @@ func (b *Broker) CreateAcls(req CreateAclsRequest) (CreateAclsResponse, error) {
 			req.Encode(e, b.apiVersion.CreateAcls)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.CreateAcls)
 		},
 	)
@@ -876,13 +838,13 @@ func (b *Broker) CreateAcls(req CreateAclsRequest) (CreateAclsResponse, error) {
 }
 
 // DeleteAcls (apiKey: 31)
-func (b *Broker) DeleteAcls(req DeleteAclsRequest) (DeleteAclsResponse, error) {
-	var resp DeleteAclsResponse
-	err := b.conn.Write(
+func (b *Broker) DeleteAcls(req message.DeleteAclsRequest) (message.DeleteAclsResponse, error) {
+	var resp message.DeleteAclsResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.DeleteAcls,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyDeleteAcls,
 				RequestApiVersion: b.apiVersion.DeleteAcls,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -893,7 +855,7 @@ func (b *Broker) DeleteAcls(req DeleteAclsRequest) (DeleteAclsResponse, error) {
 			req.Encode(e, b.apiVersion.DeleteAcls)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.DeleteAcls)
 		},
 	)
@@ -901,13 +863,13 @@ func (b *Broker) DeleteAcls(req DeleteAclsRequest) (DeleteAclsResponse, error) {
 }
 
 // DescribeConfigs (apiKey: 32)
-func (b *Broker) DescribeConfigs(req DescribeConfigsRequest) (DescribeConfigsResponse, error) {
-	var resp DescribeConfigsResponse
-	err := b.conn.Write(
+func (b *Broker) DescribeConfigs(req message.DescribeConfigsRequest) (message.DescribeConfigsResponse, error) {
+	var resp message.DescribeConfigsResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.DescribeConfigs,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyDescribeConfigs,
 				RequestApiVersion: b.apiVersion.DescribeConfigs,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -918,7 +880,7 @@ func (b *Broker) DescribeConfigs(req DescribeConfigsRequest) (DescribeConfigsRes
 			req.Encode(e, b.apiVersion.DescribeConfigs)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.DescribeConfigs)
 		},
 	)
@@ -926,13 +888,13 @@ func (b *Broker) DescribeConfigs(req DescribeConfigsRequest) (DescribeConfigsRes
 }
 
 // AlterConfigs (apiKey: 33)
-func (b *Broker) AlterConfigs(req AlterConfigsRequest) (AlterConfigsResponse, error) {
-	var resp AlterConfigsResponse
-	err := b.conn.Write(
+func (b *Broker) AlterConfigs(req message.AlterConfigsRequest) (message.AlterConfigsResponse, error) {
+	var resp message.AlterConfigsResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.AlterConfigs,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyAlterConfigs,
 				RequestApiVersion: b.apiVersion.AlterConfigs,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -943,7 +905,7 @@ func (b *Broker) AlterConfigs(req AlterConfigsRequest) (AlterConfigsResponse, er
 			req.Encode(e, b.apiVersion.AlterConfigs)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.AlterConfigs)
 		},
 	)
@@ -951,13 +913,13 @@ func (b *Broker) AlterConfigs(req AlterConfigsRequest) (AlterConfigsResponse, er
 }
 
 // AlterReplicaLogDirs (apiKey: 34)
-func (b *Broker) AlterReplicaLogDirs(req AlterReplicaLogDirsRequest) (AlterReplicaLogDirsResponse, error) {
-	var resp AlterReplicaLogDirsResponse
-	err := b.conn.Write(
+func (b *Broker) AlterReplicaLogDirs(req message.AlterReplicaLogDirsRequest) (message.AlterReplicaLogDirsResponse, error) {
+	var resp message.AlterReplicaLogDirsResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.AlterReplicaLogDirs,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyAlterReplicaLogDirs,
 				RequestApiVersion: b.apiVersion.AlterReplicaLogDirs,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -968,7 +930,7 @@ func (b *Broker) AlterReplicaLogDirs(req AlterReplicaLogDirsRequest) (AlterRepli
 			req.Encode(e, b.apiVersion.AlterReplicaLogDirs)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.AlterReplicaLogDirs)
 		},
 	)
@@ -976,13 +938,13 @@ func (b *Broker) AlterReplicaLogDirs(req AlterReplicaLogDirsRequest) (AlterRepli
 }
 
 // DescribeLogDirs (apiKey: 35)
-func (b *Broker) DescribeLogDirs(req DescribeLogDirsRequest) (DescribeLogDirsResponse, error) {
-	var resp DescribeLogDirsResponse
-	err := b.conn.Write(
+func (b *Broker) DescribeLogDirs(req message.DescribeLogDirsRequest) (message.DescribeLogDirsResponse, error) {
+	var resp message.DescribeLogDirsResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.DescribeLogDirs,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyDescribeLogDirs,
 				RequestApiVersion: b.apiVersion.DescribeLogDirs,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -993,7 +955,7 @@ func (b *Broker) DescribeLogDirs(req DescribeLogDirsRequest) (DescribeLogDirsRes
 			req.Encode(e, b.apiVersion.DescribeLogDirs)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.DescribeLogDirs)
 		},
 	)
@@ -1001,13 +963,13 @@ func (b *Broker) DescribeLogDirs(req DescribeLogDirsRequest) (DescribeLogDirsRes
 }
 
 // SaslAuthenticate (apiKey: 36)
-func (b *Broker) SaslAuthenticate(req SaslAuthenticateRequest) (SaslAuthenticateResponse, error) {
-	var resp SaslAuthenticateResponse
-	err := b.conn.Write(
+func (b *Broker) SaslAuthenticate(req message.SaslAuthenticateRequest) (message.SaslAuthenticateResponse, error) {
+	var resp message.SaslAuthenticateResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.SaslAuthenticate,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeySaslAuthenticate,
 				RequestApiVersion: b.apiVersion.SaslAuthenticate,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -1018,7 +980,7 @@ func (b *Broker) SaslAuthenticate(req SaslAuthenticateRequest) (SaslAuthenticate
 			req.Encode(e, b.apiVersion.SaslAuthenticate)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.SaslAuthenticate)
 		},
 	)
@@ -1026,13 +988,13 @@ func (b *Broker) SaslAuthenticate(req SaslAuthenticateRequest) (SaslAuthenticate
 }
 
 // CreatePartitions (apiKey: 37)
-func (b *Broker) CreatePartitions(req CreatePartitionsRequest) (CreatePartitionsResponse, error) {
-	var resp CreatePartitionsResponse
-	err := b.conn.Write(
+func (b *Broker) CreatePartitions(req message.CreatePartitionsRequest) (message.CreatePartitionsResponse, error) {
+	var resp message.CreatePartitionsResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.CreatePartitions,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyCreatePartitions,
 				RequestApiVersion: b.apiVersion.CreatePartitions,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -1043,7 +1005,7 @@ func (b *Broker) CreatePartitions(req CreatePartitionsRequest) (CreatePartitions
 			req.Encode(e, b.apiVersion.CreatePartitions)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.CreatePartitions)
 		},
 	)
@@ -1051,13 +1013,13 @@ func (b *Broker) CreatePartitions(req CreatePartitionsRequest) (CreatePartitions
 }
 
 // CreateDelegationToken (apiKey: 38)
-func (b *Broker) CreateDelegationToken(req CreateDelegationTokenRequest) (CreateDelegationTokenResponse, error) {
-	var resp CreateDelegationTokenResponse
-	err := b.conn.Write(
+func (b *Broker) CreateDelegationToken(req message.CreateDelegationTokenRequest) (message.CreateDelegationTokenResponse, error) {
+	var resp message.CreateDelegationTokenResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.CreateDelegationToken,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyCreateDelegationToken,
 				RequestApiVersion: b.apiVersion.CreateDelegationToken,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -1068,7 +1030,7 @@ func (b *Broker) CreateDelegationToken(req CreateDelegationTokenRequest) (Create
 			req.Encode(e, b.apiVersion.CreateDelegationToken)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.CreateDelegationToken)
 		},
 	)
@@ -1076,13 +1038,13 @@ func (b *Broker) CreateDelegationToken(req CreateDelegationTokenRequest) (Create
 }
 
 // RenewDelegationToken (apiKey: 39)
-func (b *Broker) RenewDelegationToken(req RenewDelegationTokenRequest) (RenewDelegationTokenResponse, error) {
-	var resp RenewDelegationTokenResponse
-	err := b.conn.Write(
+func (b *Broker) RenewDelegationToken(req message.RenewDelegationTokenRequest) (message.RenewDelegationTokenResponse, error) {
+	var resp message.RenewDelegationTokenResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.RenewDelegationToken,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyRenewDelegationToken,
 				RequestApiVersion: b.apiVersion.RenewDelegationToken,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -1093,7 +1055,7 @@ func (b *Broker) RenewDelegationToken(req RenewDelegationTokenRequest) (RenewDel
 			req.Encode(e, b.apiVersion.RenewDelegationToken)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.RenewDelegationToken)
 		},
 	)
@@ -1101,13 +1063,13 @@ func (b *Broker) RenewDelegationToken(req RenewDelegationTokenRequest) (RenewDel
 }
 
 // ExpireDelegationToken (apiKey: 40)
-func (b *Broker) ExpireDelegationToken(req ExpireDelegationTokenRequest) (ExpireDelegationTokenResponse, error) {
-	var resp ExpireDelegationTokenResponse
-	err := b.conn.Write(
+func (b *Broker) ExpireDelegationToken(req message.ExpireDelegationTokenRequest) (message.ExpireDelegationTokenResponse, error) {
+	var resp message.ExpireDelegationTokenResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.ExpireDelegationToken,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyExpireDelegationToken,
 				RequestApiVersion: b.apiVersion.ExpireDelegationToken,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -1118,7 +1080,7 @@ func (b *Broker) ExpireDelegationToken(req ExpireDelegationTokenRequest) (Expire
 			req.Encode(e, b.apiVersion.ExpireDelegationToken)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.ExpireDelegationToken)
 		},
 	)
@@ -1126,13 +1088,13 @@ func (b *Broker) ExpireDelegationToken(req ExpireDelegationTokenRequest) (Expire
 }
 
 // DescribeDelegationToken (apiKey: 41)
-func (b *Broker) DescribeDelegationToken(req DescribeDelegationTokenRequest) (DescribeDelegationTokenResponse, error) {
-	var resp DescribeDelegationTokenResponse
-	err := b.conn.Write(
+func (b *Broker) DescribeDelegationToken(req message.DescribeDelegationTokenRequest) (message.DescribeDelegationTokenResponse, error) {
+	var resp message.DescribeDelegationTokenResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.DescribeDelegationToken,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyDescribeDelegationToken,
 				RequestApiVersion: b.apiVersion.DescribeDelegationToken,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -1143,7 +1105,7 @@ func (b *Broker) DescribeDelegationToken(req DescribeDelegationTokenRequest) (De
 			req.Encode(e, b.apiVersion.DescribeDelegationToken)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.DescribeDelegationToken)
 		},
 	)
@@ -1151,13 +1113,13 @@ func (b *Broker) DescribeDelegationToken(req DescribeDelegationTokenRequest) (De
 }
 
 // DeleteGroups (apiKey: 42)
-func (b *Broker) DeleteGroups(req DeleteGroupsRequest) (DeleteGroupsResponse, error) {
-	var resp DeleteGroupsResponse
-	err := b.conn.Write(
+func (b *Broker) DeleteGroups(req message.DeleteGroupsRequest) (message.DeleteGroupsResponse, error) {
+	var resp message.DeleteGroupsResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.DeleteGroups,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyDeleteGroups,
 				RequestApiVersion: b.apiVersion.DeleteGroups,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -1168,7 +1130,7 @@ func (b *Broker) DeleteGroups(req DeleteGroupsRequest) (DeleteGroupsResponse, er
 			req.Encode(e, b.apiVersion.DeleteGroups)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.DeleteGroups)
 		},
 	)
@@ -1176,13 +1138,13 @@ func (b *Broker) DeleteGroups(req DeleteGroupsRequest) (DeleteGroupsResponse, er
 }
 
 // ElectLeaders (apiKey: 43)
-func (b *Broker) ElectLeaders(req ElectLeadersRequest) (ElectLeadersResponse, error) {
-	var resp ElectLeadersResponse
-	err := b.conn.Write(
+func (b *Broker) ElectLeaders(req message.ElectLeadersRequest) (message.ElectLeadersResponse, error) {
+	var resp message.ElectLeadersResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.ElectLeaders,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyElectLeaders,
 				RequestApiVersion: b.apiVersion.ElectLeaders,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -1193,7 +1155,7 @@ func (b *Broker) ElectLeaders(req ElectLeadersRequest) (ElectLeadersResponse, er
 			req.Encode(e, b.apiVersion.ElectLeaders)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.ElectLeaders)
 		},
 	)
@@ -1201,13 +1163,13 @@ func (b *Broker) ElectLeaders(req ElectLeadersRequest) (ElectLeadersResponse, er
 }
 
 // IncrementalAlterConfigs (apiKey: 44)
-func (b *Broker) IncrementalAlterConfigs(req IncrementalAlterConfigsRequest) (IncrementalAlterConfigsResponse, error) {
-	var resp IncrementalAlterConfigsResponse
-	err := b.conn.Write(
+func (b *Broker) IncrementalAlterConfigs(req message.IncrementalAlterConfigsRequest) (message.IncrementalAlterConfigsResponse, error) {
+	var resp message.IncrementalAlterConfigsResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.IncrementalAlterConfigs,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyIncrementalAlterConfigs,
 				RequestApiVersion: b.apiVersion.IncrementalAlterConfigs,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -1218,7 +1180,7 @@ func (b *Broker) IncrementalAlterConfigs(req IncrementalAlterConfigsRequest) (In
 			req.Encode(e, b.apiVersion.IncrementalAlterConfigs)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.IncrementalAlterConfigs)
 		},
 	)
@@ -1226,13 +1188,13 @@ func (b *Broker) IncrementalAlterConfigs(req IncrementalAlterConfigsRequest) (In
 }
 
 // AlterPartitionReassignments (apiKey: 45)
-func (b *Broker) AlterPartitionReassignments(req AlterPartitionReassignmentsRequest) (AlterPartitionReassignmentsResponse, error) {
-	var resp AlterPartitionReassignmentsResponse
-	err := b.conn.Write(
+func (b *Broker) AlterPartitionReassignments(req message.AlterPartitionReassignmentsRequest) (message.AlterPartitionReassignmentsResponse, error) {
+	var resp message.AlterPartitionReassignmentsResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.AlterPartitionReassignments,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyAlterPartitionReassignments,
 				RequestApiVersion: b.apiVersion.AlterPartitionReassignments,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -1243,7 +1205,7 @@ func (b *Broker) AlterPartitionReassignments(req AlterPartitionReassignmentsRequ
 			req.Encode(e, b.apiVersion.AlterPartitionReassignments)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.AlterPartitionReassignments)
 		},
 	)
@@ -1251,13 +1213,13 @@ func (b *Broker) AlterPartitionReassignments(req AlterPartitionReassignmentsRequ
 }
 
 // ListPartitionReassignments (apiKey: 46)
-func (b *Broker) ListPartitionReassignments(req ListPartitionReassignmentsRequest) (ListPartitionReassignmentsResponse, error) {
-	var resp ListPartitionReassignmentsResponse
-	err := b.conn.Write(
+func (b *Broker) ListPartitionReassignments(req message.ListPartitionReassignmentsRequest) (message.ListPartitionReassignmentsResponse, error) {
+	var resp message.ListPartitionReassignmentsResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.ListPartitionReassignments,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyListPartitionReassignments,
 				RequestApiVersion: b.apiVersion.ListPartitionReassignments,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -1268,7 +1230,7 @@ func (b *Broker) ListPartitionReassignments(req ListPartitionReassignmentsReques
 			req.Encode(e, b.apiVersion.ListPartitionReassignments)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.ListPartitionReassignments)
 		},
 	)
@@ -1276,13 +1238,13 @@ func (b *Broker) ListPartitionReassignments(req ListPartitionReassignmentsReques
 }
 
 // OffsetDelete (apiKey: 47)
-func (b *Broker) OffsetDelete(req OffsetDeleteRequest) (OffsetDeleteResponse, error) {
-	var resp OffsetDeleteResponse
-	err := b.conn.Write(
+func (b *Broker) OffsetDelete(req message.OffsetDeleteRequest) (message.OffsetDeleteResponse, error) {
+	var resp message.OffsetDeleteResponse
+	err := b.conn.Do(
 		// encode request
-		func(e *protocol.Encoder, correlationID int32) {
-			hdr := RequestHeader{
-				RequestApiKey:     apikey.OffsetDelete,
+		func(e *message.Encoder, correlationID int32) {
+			hdr := message.RequestHeader{
+				RequestApiKey:     message.KeyOffsetDelete,
 				RequestApiVersion: b.apiVersion.OffsetDelete,
 				CorrelationId:     correlationID,
 				ClientId:          b.config.clientID,
@@ -1293,7 +1255,7 @@ func (b *Broker) OffsetDelete(req OffsetDeleteRequest) (OffsetDeleteResponse, er
 			req.Encode(e, b.apiVersion.OffsetDelete)
 		},
 		// decode response
-		func(d *protocol.Decoder) error {
+		func(d *message.Decoder) error {
 			return (&resp).Decode(d, b.apiVersion.OffsetDelete)
 		},
 	)
@@ -1314,4 +1276,321 @@ type Subscription struct {
 
 func (b *Broker) Subscribe(topics string, handler MessageHandler) (*Subscription, error) {
 	return nil, nil
+}
+
+// apiVersion contains the negotiated versions for each api key
+type apiVersion struct {
+	Produce                     int16
+	Fetch                       int16
+	ListOffset                  int16
+	Metadata                    int16
+	LeaderAndIsr                int16
+	StopReplica                 int16
+	UpdateMetadata              int16
+	ControlledShutdown          int16
+	OffsetCommit                int16
+	OffsetFetch                 int16
+	FindCoordinator             int16
+	JoinGroup                   int16
+	Heartbeat                   int16
+	LeaveGroup                  int16
+	SyncGroup                   int16
+	DescribeGroups              int16
+	ListGroups                  int16
+	SaslHandshake               int16
+	ApiVersions                 int16
+	CreateTopics                int16
+	DeleteTopics                int16
+	DeleteRecords               int16
+	InitProducerId              int16
+	OffsetForLeaderEpoch        int16
+	AddPartitionsToTxn          int16
+	AddOffsetsToTxn             int16
+	EndTxn                      int16
+	WriteTxnMarkers             int16
+	TxnOffsetCommit             int16
+	DescribeAcls                int16
+	CreateAcls                  int16
+	DeleteAcls                  int16
+	DescribeConfigs             int16
+	AlterConfigs                int16
+	AlterReplicaLogDirs         int16
+	DescribeLogDirs             int16
+	SaslAuthenticate            int16
+	CreatePartitions            int16
+	CreateDelegationToken       int16
+	RenewDelegationToken        int16
+	ExpireDelegationToken       int16
+	DescribeDelegationToken     int16
+	DeleteGroups                int16
+	ElectLeaders                int16
+	IncrementalAlterConfigs     int16
+	AlterPartitionReassignments int16
+	ListPartitionReassignments  int16
+	OffsetDelete                int16
+}
+
+// negotiateApiVersions accepts the apiKeys from the broker and negotiates
+// acceptable versions for each api based on the versions supported by
+// this library.
+func negotiateApiVersions(apiKeys []message.ApiVersionsResponseKey18) (apiVersion, error) {
+	// Since this file is generated, there's no need to externalize the supported
+	// versions elsewhere.  We can simply inline the values into the call to matchVersion
+	var av apiVersion
+	var err error
+	for _, apiKey := range apiKeys {
+		switch apiKey.ApiKey {
+		case message.KeyProduce:
+			av.Produce, err = matchVersion(apiKey, 0, 8)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyFetch:
+			av.Fetch, err = matchVersion(apiKey, 0, 11)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyListOffset:
+			av.ListOffset, err = matchVersion(apiKey, 0, 5)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyMetadata:
+			av.Metadata, err = matchVersion(apiKey, 0, 9)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyLeaderAndIsr:
+			av.LeaderAndIsr, err = matchVersion(apiKey, 0, 4)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyStopReplica:
+			av.StopReplica, err = matchVersion(apiKey, 0, 2)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyUpdateMetadata:
+			av.UpdateMetadata, err = matchVersion(apiKey, 0, 6)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyControlledShutdown:
+			av.ControlledShutdown, err = matchVersion(apiKey, 0, 3)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyOffsetCommit:
+			av.OffsetCommit, err = matchVersion(apiKey, 0, 8)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyOffsetFetch:
+			av.OffsetFetch, err = matchVersion(apiKey, 0, 6)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyFindCoordinator:
+			av.FindCoordinator, err = matchVersion(apiKey, 0, 3)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyJoinGroup:
+			av.JoinGroup, err = matchVersion(apiKey, 0, 6)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyHeartbeat:
+			av.Heartbeat, err = matchVersion(apiKey, 0, 4)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyLeaveGroup:
+			av.LeaveGroup, err = matchVersion(apiKey, 0, 4)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeySyncGroup:
+			av.SyncGroup, err = matchVersion(apiKey, 0, 4)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyDescribeGroups:
+			av.DescribeGroups, err = matchVersion(apiKey, 0, 5)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyListGroups:
+			av.ListGroups, err = matchVersion(apiKey, 0, 3)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeySaslHandshake:
+			av.SaslHandshake, err = matchVersion(apiKey, 0, 1)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyApiVersions:
+			av.ApiVersions, err = matchVersion(apiKey, 0, 3)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyCreateTopics:
+			av.CreateTopics, err = matchVersion(apiKey, 0, 5)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyDeleteTopics:
+			av.DeleteTopics, err = matchVersion(apiKey, 0, 4)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyDeleteRecords:
+			av.DeleteRecords, err = matchVersion(apiKey, 0, 1)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyInitProducerId:
+			av.InitProducerId, err = matchVersion(apiKey, 0, 2)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyOffsetForLeaderEpoch:
+			av.OffsetForLeaderEpoch, err = matchVersion(apiKey, 0, 3)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyAddPartitionsToTxn:
+			av.AddPartitionsToTxn, err = matchVersion(apiKey, 0, 1)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyAddOffsetsToTxn:
+			av.AddOffsetsToTxn, err = matchVersion(apiKey, 0, 1)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyEndTxn:
+			av.EndTxn, err = matchVersion(apiKey, 0, 1)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyWriteTxnMarkers:
+			av.WriteTxnMarkers, err = matchVersion(apiKey, 0, 0)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyTxnOffsetCommit:
+			av.TxnOffsetCommit, err = matchVersion(apiKey, 0, 2)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyDescribeAcls:
+			av.DescribeAcls, err = matchVersion(apiKey, 0, 1)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyCreateAcls:
+			av.CreateAcls, err = matchVersion(apiKey, 0, 1)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyDeleteAcls:
+			av.DeleteAcls, err = matchVersion(apiKey, 0, 1)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyDescribeConfigs:
+			av.DescribeConfigs, err = matchVersion(apiKey, 0, 2)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyAlterConfigs:
+			av.AlterConfigs, err = matchVersion(apiKey, 0, 1)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyAlterReplicaLogDirs:
+			av.AlterReplicaLogDirs, err = matchVersion(apiKey, 0, 1)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyDescribeLogDirs:
+			av.DescribeLogDirs, err = matchVersion(apiKey, 0, 1)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeySaslAuthenticate:
+			av.SaslAuthenticate, err = matchVersion(apiKey, 0, 1)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyCreatePartitions:
+			av.CreatePartitions, err = matchVersion(apiKey, 0, 1)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyCreateDelegationToken:
+			av.CreateDelegationToken, err = matchVersion(apiKey, 0, 2)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyRenewDelegationToken:
+			av.RenewDelegationToken, err = matchVersion(apiKey, 0, 1)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyExpireDelegationToken:
+			av.ExpireDelegationToken, err = matchVersion(apiKey, 0, 1)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyDescribeDelegationToken:
+			av.DescribeDelegationToken, err = matchVersion(apiKey, 0, 1)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyDeleteGroups:
+			av.DeleteGroups, err = matchVersion(apiKey, 0, 2)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyElectLeaders:
+			av.ElectLeaders, err = matchVersion(apiKey, 0, 2)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyIncrementalAlterConfigs:
+			av.IncrementalAlterConfigs, err = matchVersion(apiKey, 0, 1)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyAlterPartitionReassignments:
+			av.AlterPartitionReassignments, err = matchVersion(apiKey, 0, 0)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyListPartitionReassignments:
+			av.ListPartitionReassignments, err = matchVersion(apiKey, 0, 0)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		case message.KeyOffsetDelete:
+			av.OffsetDelete, err = matchVersion(apiKey, 0, 0)
+			if err != nil {
+				return apiVersion{}, err
+			}
+		}
+	}
+	return av, nil
+}
+
+// matchVersion determines which version of the api to use
+func matchVersion(apiKey message.ApiVersionsResponseKey18, minVersion, maxVersion int16) (int16, error) {
+	for version := apiKey.MaxVersion; version >= apiKey.MinVersion; version-- {
+		if version := apiKey.MaxVersion; version >= minVersion && version <= maxVersion {
+			return version, nil
+		}
+	}
+	return 0, fmt.Errorf("unable to negotiate version for api key, %v", apiKey.ApiKey)
 }

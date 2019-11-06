@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package protocol
+package ring
 
 import (
 	"context"
@@ -25,8 +25,8 @@ import (
 	"time"
 )
 
-func TestRingBuffer_WriteN(t *testing.T) {
-	ring := NewRingBuffer(15)
+func TestBuffer_WriteN(t *testing.T) {
+	ring := New(15)
 	content := []byte("hello world")
 	ring.WriteN(content, len(content))
 	fmt.Println(string(ring.data))
@@ -89,7 +89,7 @@ func TestMutex(t *testing.T) {
 func TestConcurrent(t *testing.T) {
 	const total = 1e4
 
-	buffer := NewRingBuffer(1e2)
+	buffer := New(1e2)
 	go func() {
 		data := make([]byte, 10)
 		iter := &iterator{}
@@ -120,7 +120,7 @@ func Test_newRingBuffer(t *testing.T) {
 	var (
 		n       = int(1e4)
 		content = make([]byte, n)
-		buffer  = NewRingBuffer(1e6)
+		buffer  = New(1e6)
 		counter int
 	)
 
@@ -164,7 +164,7 @@ func BenchmarkRingBuffer(t *testing.B) {
 	var (
 		n      = int(1e3)
 		buffer = make([]byte, n)
-		rb     = NewRingBuffer(1e6)
+		rb     = New(1e6)
 	)
 
 	for i := 0; i < t.N; i++ {

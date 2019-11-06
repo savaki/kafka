@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package protocol
+package ring
 
 import (
 	"context"
@@ -52,9 +52,9 @@ func (m *mutex) Release() {
 	}
 }
 
-// RingBuffer implements a ring buffer that supports a single reader and
+// Buffer implements a ring buffer that supports a single reader and
 // single writer.
-type RingBuffer struct {
+type Buffer struct {
 	ctx       context.Context
 	cancel    context.CancelFunc
 	data      []byte // data provides a temporary internal buffer
@@ -66,9 +66,9 @@ type RingBuffer struct {
 }
 
 // NewRingBuffer returns a new ringBuffer suitable for a single reader and a single writer
-func NewRingBuffer(size int) *RingBuffer {
+func New(size int) *Buffer {
 	ctx, cancel := context.WithCancel(context.Background())
-	return &RingBuffer{
+	return &Buffer{
 		ctx:       ctx,
 		cancel:    cancel,
 		data:      make([]byte, size),
@@ -78,14 +78,14 @@ func NewRingBuffer(size int) *RingBuffer {
 	}
 }
 
-func (r *RingBuffer) Close() error {
+func (r *Buffer) Close() error {
 	r.cancel()
 	return nil
 }
 
 // WriteN writes the first n bytes from data to the buffer.  If buffer is full, WriteN
 // blocks until ReadN clears space
-func (r *RingBuffer) WriteN(data []byte, n int) {
+func (r *Buffer) WriteN(data []byte, n int) {
 	var (
 		pos   = atomic.LoadInt32(&r.next)  // position next byte should be written
 		start = atomic.LoadInt32(&r.start) // start of data
@@ -126,7 +126,7 @@ func (r *RingBuffer) WriteN(data []byte, n int) {
 
 // ReadN reads n bytes in the byte array provided.  If insufficient bytes
 // are available, blocks until WriteN refills the buffer.
-func (r *RingBuffer) ReadN(data []byte, n int) {
+func (r *Buffer) ReadN(data []byte, n int) {
 	var (
 		pos  = atomic.LoadInt32(&r.start)
 		next = atomic.LoadInt32(&r.next)

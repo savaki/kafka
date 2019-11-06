@@ -14,67 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package kafka
+package message
 
 import (
-	"fmt"
-
-	"github.com/savaki/kafka/protocol"
-	"github.com/savaki/kafka/protocol/apikey"
-	"github.com/savaki/kafka/sizeof"
+	"github.com/savaki/kafka/message/sizeof"
 )
-
-// apiVersion contains the negotiated versions for each api key
-type apiVersion struct {
-	Produce                     int16
-	Fetch                       int16
-	ListOffset                  int16
-	Metadata                    int16
-	LeaderAndIsr                int16
-	StopReplica                 int16
-	UpdateMetadata              int16
-	ControlledShutdown          int16
-	OffsetCommit                int16
-	OffsetFetch                 int16
-	FindCoordinator             int16
-	JoinGroup                   int16
-	Heartbeat                   int16
-	LeaveGroup                  int16
-	SyncGroup                   int16
-	DescribeGroups              int16
-	ListGroups                  int16
-	SaslHandshake               int16
-	ApiVersions                 int16
-	CreateTopics                int16
-	DeleteTopics                int16
-	DeleteRecords               int16
-	InitProducerId              int16
-	OffsetForLeaderEpoch        int16
-	AddPartitionsToTxn          int16
-	AddOffsetsToTxn             int16
-	EndTxn                      int16
-	WriteTxnMarkers             int16
-	TxnOffsetCommit             int16
-	DescribeAcls                int16
-	CreateAcls                  int16
-	DeleteAcls                  int16
-	DescribeConfigs             int16
-	AlterConfigs                int16
-	AlterReplicaLogDirs         int16
-	DescribeLogDirs             int16
-	SaslAuthenticate            int16
-	CreatePartitions            int16
-	CreateDelegationToken       int16
-	RenewDelegationToken        int16
-	ExpireDelegationToken       int16
-	DescribeDelegationToken     int16
-	DeleteGroups                int16
-	ElectLeaders                int16
-	IncrementalAlterConfigs     int16
-	AlterPartitionReassignments int16
-	ListPartitionReassignments  int16
-	OffsetDelete                int16
-}
 
 // ProduceRequest; ApiKey: 0, Versions: 0-8
 type ProduceRequest struct {
@@ -100,7 +44,7 @@ func (t ProduceRequest) Size(version int16) int32 {
 }
 
 // encode ProduceRequest; Versions: 0-8
-func (t ProduceRequest) Encode(e *protocol.Encoder, version int16) {
+func (t ProduceRequest) Encode(e *Encoder, version int16) {
 	if version >= 3 {
 		e.PutString(t.TransactionalId) // TransactionalId
 	}
@@ -115,7 +59,7 @@ func (t ProduceRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ProduceRequest; Versions: 0-8
-func (t *ProduceRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *ProduceRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 3 {
 		t.TransactionalId, err = d.String()
@@ -164,7 +108,7 @@ func (t TopicProduceData0) Size(version int16) int32 {
 }
 
 // encode TopicProduceData0; Versions: 0-8
-func (t TopicProduceData0) Encode(e *protocol.Encoder, version int16) {
+func (t TopicProduceData0) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -175,7 +119,7 @@ func (t TopicProduceData0) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode TopicProduceData0; Versions: 0-8
-func (t *TopicProduceData0) Decode(d *protocol.Decoder, version int16) error {
+func (t *TopicProduceData0) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -211,13 +155,13 @@ func (t PartitionProduceData0) Size(version int16) int32 {
 }
 
 // encode PartitionProduceData0; Versions: 0-8
-func (t PartitionProduceData0) Encode(e *protocol.Encoder, version int16) {
+func (t PartitionProduceData0) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutBytes(t.Records)        // Records
 }
 
 // decode PartitionProduceData0; Versions: 0-8
-func (t *PartitionProduceData0) Decode(d *protocol.Decoder, version int16) error {
+func (t *PartitionProduceData0) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -250,7 +194,7 @@ func (t ProduceResponse) Size(version int16) int32 {
 }
 
 // encode ProduceResponse; Versions: 0-8
-func (t ProduceResponse) Encode(e *protocol.Encoder, version int16) {
+func (t ProduceResponse) Encode(e *Encoder, version int16) {
 	// Responses
 	len0 := len(t.Responses)
 	e.PutArrayLength(len0)
@@ -263,7 +207,7 @@ func (t ProduceResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ProduceResponse; Versions: 0-8
-func (t *ProduceResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *ProduceResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	// Responses
 	if n, err := d.ArrayLength(); err != nil {
@@ -304,7 +248,7 @@ func (t TopicProduceResponse0) Size(version int16) int32 {
 }
 
 // encode TopicProduceResponse0; Versions: 0-8
-func (t TopicProduceResponse0) Encode(e *protocol.Encoder, version int16) {
+func (t TopicProduceResponse0) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -315,7 +259,7 @@ func (t TopicProduceResponse0) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode TopicProduceResponse0; Versions: 0-8
-func (t *TopicProduceResponse0) Decode(d *protocol.Decoder, version int16) error {
+func (t *TopicProduceResponse0) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -372,7 +316,7 @@ func (t PartitionProduceResponse0) Size(version int16) int32 {
 }
 
 // encode PartitionProduceResponse0; Versions: 0-8
-func (t PartitionProduceResponse0) Encode(e *protocol.Encoder, version int16) {
+func (t PartitionProduceResponse0) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	e.PutInt64(t.BaseOffset)     // BaseOffset
@@ -396,7 +340,7 @@ func (t PartitionProduceResponse0) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode PartitionProduceResponse0; Versions: 0-8
-func (t *PartitionProduceResponse0) Decode(d *protocol.Decoder, version int16) error {
+func (t *PartitionProduceResponse0) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -464,7 +408,7 @@ func (t BatchIndexAndErrorMessage0) Size(version int16) int32 {
 }
 
 // encode BatchIndexAndErrorMessage0; Versions: 0-8
-func (t BatchIndexAndErrorMessage0) Encode(e *protocol.Encoder, version int16) {
+func (t BatchIndexAndErrorMessage0) Encode(e *Encoder, version int16) {
 	if version >= 8 {
 		e.PutInt32(t.BatchIndex) // BatchIndex
 	}
@@ -474,7 +418,7 @@ func (t BatchIndexAndErrorMessage0) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode BatchIndexAndErrorMessage0; Versions: 0-8
-func (t *BatchIndexAndErrorMessage0) Decode(d *protocol.Decoder, version int16) error {
+func (t *BatchIndexAndErrorMessage0) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 8 {
 		t.BatchIndex, err = d.Int32()
@@ -512,7 +456,7 @@ func (t RequestHeader) Size(version int16) int32 {
 }
 
 // encode RequestHeader; Versions: 0-2
-func (t RequestHeader) Encode(e *protocol.Encoder, version int16) {
+func (t RequestHeader) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.RequestApiKey)     // RequestApiKey
 	e.PutInt16(t.RequestApiVersion) // RequestApiVersion
 	e.PutInt32(t.CorrelationId)     // CorrelationId
@@ -522,7 +466,7 @@ func (t RequestHeader) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode RequestHeader; Versions: 0-2
-func (t *RequestHeader) Decode(d *protocol.Decoder, version int16) error {
+func (t *RequestHeader) Decode(d *Decoder, version int16) error {
 	var err error
 	t.RequestApiKey, err = d.Int16()
 	if err != nil {
@@ -558,12 +502,12 @@ func (t ResponseHeader) Size(version int16) int32 {
 }
 
 // encode ResponseHeader; Versions: 0-1
-func (t ResponseHeader) Encode(e *protocol.Encoder, version int16) {
+func (t ResponseHeader) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.CorrelationId) // CorrelationId
 }
 
 // decode ResponseHeader; Versions: 0-1
-func (t *ResponseHeader) Decode(d *protocol.Decoder, version int16) error {
+func (t *ResponseHeader) Decode(d *Decoder, version int16) error {
 	var err error
 	t.CorrelationId, err = d.Int32()
 	if err != nil {
@@ -621,7 +565,7 @@ func (t FetchRequest) Size(version int16) int32 {
 }
 
 // encode FetchRequest; Versions: 0-11
-func (t FetchRequest) Encode(e *protocol.Encoder, version int16) {
+func (t FetchRequest) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ReplicaId) // ReplicaId
 	e.PutInt32(t.MaxWait)   // MaxWait
 	e.PutInt32(t.MinBytes)  // MinBytes
@@ -657,7 +601,7 @@ func (t FetchRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode FetchRequest; Versions: 0-11
-func (t *FetchRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *FetchRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ReplicaId, err = d.Int32()
 	if err != nil {
@@ -749,7 +693,7 @@ func (t FetchableTopic1) Size(version int16) int32 {
 }
 
 // encode FetchableTopic1; Versions: 0-11
-func (t FetchableTopic1) Encode(e *protocol.Encoder, version int16) {
+func (t FetchableTopic1) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// FetchPartitions
 	len1 := len(t.FetchPartitions)
@@ -760,7 +704,7 @@ func (t FetchableTopic1) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode FetchableTopic1; Versions: 0-11
-func (t *FetchableTopic1) Decode(d *protocol.Decoder, version int16) error {
+func (t *FetchableTopic1) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -806,7 +750,7 @@ func (t FetchPartition1) Size(version int16) int32 {
 }
 
 // encode FetchPartition1; Versions: 0-11
-func (t FetchPartition1) Encode(e *protocol.Encoder, version int16) {
+func (t FetchPartition1) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	if version >= 9 {
 		e.PutInt32(t.CurrentLeaderEpoch) // CurrentLeaderEpoch
@@ -819,7 +763,7 @@ func (t FetchPartition1) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode FetchPartition1; Versions: 0-11
-func (t *FetchPartition1) Decode(d *protocol.Decoder, version int16) error {
+func (t *FetchPartition1) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -866,7 +810,7 @@ func (t ForgottenTopic1) Size(version int16) int32 {
 }
 
 // encode ForgottenTopic1; Versions: 0-11
-func (t ForgottenTopic1) Encode(e *protocol.Encoder, version int16) {
+func (t ForgottenTopic1) Encode(e *Encoder, version int16) {
 	if version >= 7 {
 		e.PutString(t.Name) // Name
 	}
@@ -876,7 +820,7 @@ func (t ForgottenTopic1) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ForgottenTopic1; Versions: 0-11
-func (t *ForgottenTopic1) Decode(d *protocol.Decoder, version int16) error {
+func (t *ForgottenTopic1) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 7 {
 		t.Name, err = d.String()
@@ -921,7 +865,7 @@ func (t FetchResponse) Size(version int16) int32 {
 }
 
 // encode FetchResponse; Versions: 0-11
-func (t FetchResponse) Encode(e *protocol.Encoder, version int16) {
+func (t FetchResponse) Encode(e *Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -940,7 +884,7 @@ func (t FetchResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode FetchResponse; Versions: 0-11
-func (t *FetchResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *FetchResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -993,7 +937,7 @@ func (t FetchableTopicResponse1) Size(version int16) int32 {
 }
 
 // encode FetchableTopicResponse1; Versions: 0-11
-func (t FetchableTopicResponse1) Encode(e *protocol.Encoder, version int16) {
+func (t FetchableTopicResponse1) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -1004,7 +948,7 @@ func (t FetchableTopicResponse1) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode FetchableTopicResponse1; Versions: 0-11
-func (t *FetchableTopicResponse1) Decode(d *protocol.Decoder, version int16) error {
+func (t *FetchableTopicResponse1) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -1063,7 +1007,7 @@ func (t FetchablePartitionResponse1) Size(version int16) int32 {
 }
 
 // encode FetchablePartitionResponse1; Versions: 0-11
-func (t FetchablePartitionResponse1) Encode(e *protocol.Encoder, version int16) {
+func (t FetchablePartitionResponse1) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	e.PutInt64(t.HighWatermark)  // HighWatermark
@@ -1088,7 +1032,7 @@ func (t FetchablePartitionResponse1) Encode(e *protocol.Encoder, version int16) 
 }
 
 // decode FetchablePartitionResponse1; Versions: 0-11
-func (t *FetchablePartitionResponse1) Decode(d *protocol.Decoder, version int16) error {
+func (t *FetchablePartitionResponse1) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -1160,7 +1104,7 @@ func (t AbortedTransaction1) Size(version int16) int32 {
 }
 
 // encode AbortedTransaction1; Versions: 0-11
-func (t AbortedTransaction1) Encode(e *protocol.Encoder, version int16) {
+func (t AbortedTransaction1) Encode(e *Encoder, version int16) {
 	if version >= 4 {
 		e.PutInt64(t.ProducerId) // ProducerId
 	}
@@ -1170,7 +1114,7 @@ func (t AbortedTransaction1) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode AbortedTransaction1; Versions: 0-11
-func (t *AbortedTransaction1) Decode(d *protocol.Decoder, version int16) error {
+func (t *AbortedTransaction1) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 4 {
 		t.ProducerId, err = d.Int64()
@@ -1209,7 +1153,7 @@ func (t ListOffsetRequest) Size(version int16) int32 {
 }
 
 // encode ListOffsetRequest; Versions: 0-5
-func (t ListOffsetRequest) Encode(e *protocol.Encoder, version int16) {
+func (t ListOffsetRequest) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ReplicaId) // ReplicaId
 	if version >= 2 {
 		e.PutInt8(t.IsolationLevel) // IsolationLevel
@@ -1223,7 +1167,7 @@ func (t ListOffsetRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ListOffsetRequest; Versions: 0-5
-func (t *ListOffsetRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *ListOffsetRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ReplicaId, err = d.Int32()
 	if err != nil {
@@ -1268,7 +1212,7 @@ func (t ListOffsetTopic2) Size(version int16) int32 {
 }
 
 // encode ListOffsetTopic2; Versions: 0-5
-func (t ListOffsetTopic2) Encode(e *protocol.Encoder, version int16) {
+func (t ListOffsetTopic2) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -1279,7 +1223,7 @@ func (t ListOffsetTopic2) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ListOffsetTopic2; Versions: 0-5
-func (t *ListOffsetTopic2) Decode(d *protocol.Decoder, version int16) error {
+func (t *ListOffsetTopic2) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -1323,7 +1267,7 @@ func (t ListOffsetPartition2) Size(version int16) int32 {
 }
 
 // encode ListOffsetPartition2; Versions: 0-5
-func (t ListOffsetPartition2) Encode(e *protocol.Encoder, version int16) {
+func (t ListOffsetPartition2) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	if version >= 4 {
 		e.PutInt32(t.CurrentLeaderEpoch) // CurrentLeaderEpoch
@@ -1335,7 +1279,7 @@ func (t ListOffsetPartition2) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ListOffsetPartition2; Versions: 0-5
-func (t *ListOffsetPartition2) Decode(d *protocol.Decoder, version int16) error {
+func (t *ListOffsetPartition2) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -1380,7 +1324,7 @@ func (t ListOffsetResponse) Size(version int16) int32 {
 }
 
 // encode ListOffsetResponse; Versions: 0-5
-func (t ListOffsetResponse) Encode(e *protocol.Encoder, version int16) {
+func (t ListOffsetResponse) Encode(e *Encoder, version int16) {
 	if version >= 2 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -1393,7 +1337,7 @@ func (t ListOffsetResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ListOffsetResponse; Versions: 0-5
-func (t *ListOffsetResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *ListOffsetResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 2 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -1434,7 +1378,7 @@ func (t ListOffsetTopicResponse2) Size(version int16) int32 {
 }
 
 // encode ListOffsetTopicResponse2; Versions: 0-5
-func (t ListOffsetTopicResponse2) Encode(e *protocol.Encoder, version int16) {
+func (t ListOffsetTopicResponse2) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -1445,7 +1389,7 @@ func (t ListOffsetTopicResponse2) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ListOffsetTopicResponse2; Versions: 0-5
-func (t *ListOffsetTopicResponse2) Decode(d *protocol.Decoder, version int16) error {
+func (t *ListOffsetTopicResponse2) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -1497,7 +1441,7 @@ func (t ListOffsetPartitionResponse2) Size(version int16) int32 {
 }
 
 // encode ListOffsetPartitionResponse2; Versions: 0-5
-func (t ListOffsetPartitionResponse2) Encode(e *protocol.Encoder, version int16) {
+func (t ListOffsetPartitionResponse2) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	if version >= 0 && version <= 0 {
@@ -1515,7 +1459,7 @@ func (t ListOffsetPartitionResponse2) Encode(e *protocol.Encoder, version int16)
 }
 
 // decode ListOffsetPartitionResponse2; Versions: 0-5
-func (t *ListOffsetPartitionResponse2) Decode(d *protocol.Decoder, version int16) error {
+func (t *ListOffsetPartitionResponse2) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -1580,7 +1524,7 @@ func (t MetadataRequest) Size(version int16) int32 {
 }
 
 // encode MetadataRequest; Versions: 0-9
-func (t MetadataRequest) Encode(e *protocol.Encoder, version int16) {
+func (t MetadataRequest) Encode(e *Encoder, version int16) {
 	// Topics
 	len0 := len(t.Topics)
 	e.PutArrayLength(len0)
@@ -1599,7 +1543,7 @@ func (t MetadataRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode MetadataRequest; Versions: 0-9
-func (t *MetadataRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *MetadataRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	// Topics
 	if n, err := d.ArrayLength(); err != nil {
@@ -1647,12 +1591,12 @@ func (t MetadataRequestTopic3) Size(version int16) int32 {
 }
 
 // encode MetadataRequestTopic3; Versions: 0-9
-func (t MetadataRequestTopic3) Encode(e *protocol.Encoder, version int16) {
+func (t MetadataRequestTopic3) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 }
 
 // decode MetadataRequestTopic3; Versions: 0-9
-func (t *MetadataRequestTopic3) Decode(d *protocol.Decoder, version int16) error {
+func (t *MetadataRequestTopic3) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -1698,7 +1642,7 @@ func (t MetadataResponse) Size(version int16) int32 {
 }
 
 // encode MetadataResponse; Versions: 0-9
-func (t MetadataResponse) Encode(e *protocol.Encoder, version int16) {
+func (t MetadataResponse) Encode(e *Encoder, version int16) {
 	if version >= 3 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -1726,7 +1670,7 @@ func (t MetadataResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode MetadataResponse; Versions: 0-9
-func (t *MetadataResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *MetadataResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 3 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -1801,7 +1745,7 @@ func (t MetadataResponseBroker3) Size(version int16) int32 {
 }
 
 // encode MetadataResponseBroker3; Versions: 0-9
-func (t MetadataResponseBroker3) Encode(e *protocol.Encoder, version int16) {
+func (t MetadataResponseBroker3) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.NodeId) // NodeId
 	e.PutString(t.Host)  // Host
 	e.PutInt32(t.Port)   // Port
@@ -1811,7 +1755,7 @@ func (t MetadataResponseBroker3) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode MetadataResponseBroker3; Versions: 0-9
-func (t *MetadataResponseBroker3) Decode(d *protocol.Decoder, version int16) error {
+func (t *MetadataResponseBroker3) Decode(d *Decoder, version int16) error {
 	var err error
 	t.NodeId, err = d.Int32()
 	if err != nil {
@@ -1861,7 +1805,7 @@ func (t MetadataResponseTopic3) Size(version int16) int32 {
 }
 
 // encode MetadataResponseTopic3; Versions: 0-9
-func (t MetadataResponseTopic3) Encode(e *protocol.Encoder, version int16) {
+func (t MetadataResponseTopic3) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode) // ErrorCode
 	e.PutString(t.Name)     // Name
 	if version >= 1 {
@@ -1879,7 +1823,7 @@ func (t MetadataResponseTopic3) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode MetadataResponseTopic3; Versions: 0-9
-func (t *MetadataResponseTopic3) Decode(d *protocol.Decoder, version int16) error {
+func (t *MetadataResponseTopic3) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -1945,7 +1889,7 @@ func (t MetadataResponsePartition3) Size(version int16) int32 {
 }
 
 // encode MetadataResponsePartition3; Versions: 0-9
-func (t MetadataResponsePartition3) Encode(e *protocol.Encoder, version int16) {
+func (t MetadataResponsePartition3) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt32(t.LeaderId)       // LeaderId
@@ -1960,7 +1904,7 @@ func (t MetadataResponsePartition3) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode MetadataResponsePartition3; Versions: 0-9
-func (t *MetadataResponsePartition3) Decode(d *protocol.Decoder, version int16) error {
+func (t *MetadataResponsePartition3) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -2035,7 +1979,7 @@ func (t LeaderAndIsrRequest) Size(version int16) int32 {
 }
 
 // encode LeaderAndIsrRequest; Versions: 0-4
-func (t LeaderAndIsrRequest) Encode(e *protocol.Encoder, version int16) {
+func (t LeaderAndIsrRequest) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ControllerId)    // ControllerId
 	e.PutInt32(t.ControllerEpoch) // ControllerEpoch
 	if version >= 2 {
@@ -2066,7 +2010,7 @@ func (t LeaderAndIsrRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode LeaderAndIsrRequest; Versions: 0-4
-func (t *LeaderAndIsrRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *LeaderAndIsrRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ControllerId, err = d.Int32()
 	if err != nil {
@@ -2149,7 +2093,7 @@ func (t LeaderAndIsrTopicState4) Size(version int16) int32 {
 }
 
 // encode LeaderAndIsrTopicState4; Versions: 0-4
-func (t LeaderAndIsrTopicState4) Encode(e *protocol.Encoder, version int16) {
+func (t LeaderAndIsrTopicState4) Encode(e *Encoder, version int16) {
 	if version >= 2 {
 		e.PutString(t.TopicName) // TopicName
 	}
@@ -2164,7 +2108,7 @@ func (t LeaderAndIsrTopicState4) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode LeaderAndIsrTopicState4; Versions: 0-4
-func (t *LeaderAndIsrTopicState4) Decode(d *protocol.Decoder, version int16) error {
+func (t *LeaderAndIsrTopicState4) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 2 {
 		t.TopicName, err = d.String()
@@ -2206,14 +2150,14 @@ func (t LeaderAndIsrLiveLeader4) Size(version int16) int32 {
 }
 
 // encode LeaderAndIsrLiveLeader4; Versions: 0-4
-func (t LeaderAndIsrLiveLeader4) Encode(e *protocol.Encoder, version int16) {
+func (t LeaderAndIsrLiveLeader4) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.BrokerId)  // BrokerId
 	e.PutString(t.HostName) // HostName
 	e.PutInt32(t.Port)      // Port
 }
 
 // decode LeaderAndIsrLiveLeader4; Versions: 0-4
-func (t *LeaderAndIsrLiveLeader4) Decode(d *protocol.Decoder, version int16) error {
+func (t *LeaderAndIsrLiveLeader4) Decode(d *Decoder, version int16) error {
 	var err error
 	t.BrokerId, err = d.Int32()
 	if err != nil {
@@ -2270,7 +2214,7 @@ func (t LeaderAndIsrPartitionState4) Size(version int16) int32 {
 }
 
 // encode LeaderAndIsrPartitionState4; Versions: 0-4
-func (t LeaderAndIsrPartitionState4) Encode(e *protocol.Encoder, version int16) {
+func (t LeaderAndIsrPartitionState4) Encode(e *Encoder, version int16) {
 	if version >= 0 && version <= 1 {
 		e.PutString(t.TopicName) // TopicName
 	}
@@ -2293,7 +2237,7 @@ func (t LeaderAndIsrPartitionState4) Encode(e *protocol.Encoder, version int16) 
 }
 
 // decode LeaderAndIsrPartitionState4; Versions: 0-4
-func (t *LeaderAndIsrPartitionState4) Decode(d *protocol.Decoder, version int16) error {
+func (t *LeaderAndIsrPartitionState4) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 0 && version <= 1 {
 		t.TopicName, err = d.String()
@@ -2368,7 +2312,7 @@ func (t LeaderAndIsrResponse) Size(version int16) int32 {
 }
 
 // encode LeaderAndIsrResponse; Versions: 0-4
-func (t LeaderAndIsrResponse) Encode(e *protocol.Encoder, version int16) {
+func (t LeaderAndIsrResponse) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode) // ErrorCode
 	// PartitionErrors
 	len1 := len(t.PartitionErrors)
@@ -2379,7 +2323,7 @@ func (t LeaderAndIsrResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode LeaderAndIsrResponse; Versions: 0-4
-func (t *LeaderAndIsrResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *LeaderAndIsrResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -2417,14 +2361,14 @@ func (t LeaderAndIsrPartitionError4) Size(version int16) int32 {
 }
 
 // encode LeaderAndIsrPartitionError4; Versions: 0-4
-func (t LeaderAndIsrPartitionError4) Encode(e *protocol.Encoder, version int16) {
+func (t LeaderAndIsrPartitionError4) Encode(e *Encoder, version int16) {
 	e.PutString(t.TopicName)     // TopicName
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 }
 
 // decode LeaderAndIsrPartitionError4; Versions: 0-4
-func (t *LeaderAndIsrPartitionError4) Decode(d *protocol.Decoder, version int16) error {
+func (t *LeaderAndIsrPartitionError4) Decode(d *Decoder, version int16) error {
 	var err error
 	t.TopicName, err = d.String()
 	if err != nil {
@@ -2476,7 +2420,7 @@ func (t StopReplicaRequest) Size(version int16) int32 {
 }
 
 // encode StopReplicaRequest; Versions: 0-2
-func (t StopReplicaRequest) Encode(e *protocol.Encoder, version int16) {
+func (t StopReplicaRequest) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ControllerId)    // ControllerId
 	e.PutInt32(t.ControllerEpoch) // ControllerEpoch
 	if version >= 1 {
@@ -2502,7 +2446,7 @@ func (t StopReplicaRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode StopReplicaRequest; Versions: 0-2
-func (t *StopReplicaRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *StopReplicaRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ControllerId, err = d.Int32()
 	if err != nil {
@@ -2573,7 +2517,7 @@ func (t StopReplicaPartitionV05) Size(version int16) int32 {
 }
 
 // encode StopReplicaPartitionV05; Versions: 0-2
-func (t StopReplicaPartitionV05) Encode(e *protocol.Encoder, version int16) {
+func (t StopReplicaPartitionV05) Encode(e *Encoder, version int16) {
 	if version >= 0 && version <= 0 {
 		e.PutString(t.TopicName) // TopicName
 	}
@@ -2583,7 +2527,7 @@ func (t StopReplicaPartitionV05) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode StopReplicaPartitionV05; Versions: 0-2
-func (t *StopReplicaPartitionV05) Decode(d *protocol.Decoder, version int16) error {
+func (t *StopReplicaPartitionV05) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 0 && version <= 0 {
 		t.TopicName, err = d.String()
@@ -2618,7 +2562,7 @@ func (t StopReplicaTopic5) Size(version int16) int32 {
 }
 
 // encode StopReplicaTopic5; Versions: 0-2
-func (t StopReplicaTopic5) Encode(e *protocol.Encoder, version int16) {
+func (t StopReplicaTopic5) Encode(e *Encoder, version int16) {
 	if version >= 1 {
 		e.PutString(t.Name) // Name
 	}
@@ -2628,7 +2572,7 @@ func (t StopReplicaTopic5) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode StopReplicaTopic5; Versions: 0-2
-func (t *StopReplicaTopic5) Decode(d *protocol.Decoder, version int16) error {
+func (t *StopReplicaTopic5) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.Name, err = d.String()
@@ -2663,7 +2607,7 @@ func (t StopReplicaResponse) Size(version int16) int32 {
 }
 
 // encode StopReplicaResponse; Versions: 0-2
-func (t StopReplicaResponse) Encode(e *protocol.Encoder, version int16) {
+func (t StopReplicaResponse) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode) // ErrorCode
 	// PartitionErrors
 	len1 := len(t.PartitionErrors)
@@ -2674,7 +2618,7 @@ func (t StopReplicaResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode StopReplicaResponse; Versions: 0-2
-func (t *StopReplicaResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *StopReplicaResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -2712,14 +2656,14 @@ func (t StopReplicaPartitionError5) Size(version int16) int32 {
 }
 
 // encode StopReplicaPartitionError5; Versions: 0-2
-func (t StopReplicaPartitionError5) Encode(e *protocol.Encoder, version int16) {
+func (t StopReplicaPartitionError5) Encode(e *Encoder, version int16) {
 	e.PutString(t.TopicName)     // TopicName
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 }
 
 // decode StopReplicaPartitionError5; Versions: 0-2
-func (t *StopReplicaPartitionError5) Decode(d *protocol.Decoder, version int16) error {
+func (t *StopReplicaPartitionError5) Decode(d *Decoder, version int16) error {
 	var err error
 	t.TopicName, err = d.String()
 	if err != nil {
@@ -2774,7 +2718,7 @@ func (t UpdateMetadataRequest) Size(version int16) int32 {
 }
 
 // encode UpdateMetadataRequest; Versions: 0-6
-func (t UpdateMetadataRequest) Encode(e *protocol.Encoder, version int16) {
+func (t UpdateMetadataRequest) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ControllerId)    // ControllerId
 	e.PutInt32(t.ControllerEpoch) // ControllerEpoch
 	if version >= 5 {
@@ -2805,7 +2749,7 @@ func (t UpdateMetadataRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode UpdateMetadataRequest; Versions: 0-6
-func (t *UpdateMetadataRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *UpdateMetadataRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ControllerId, err = d.Int32()
 	if err != nil {
@@ -2888,7 +2832,7 @@ func (t UpdateMetadataTopicState6) Size(version int16) int32 {
 }
 
 // encode UpdateMetadataTopicState6; Versions: 0-6
-func (t UpdateMetadataTopicState6) Encode(e *protocol.Encoder, version int16) {
+func (t UpdateMetadataTopicState6) Encode(e *Encoder, version int16) {
 	if version >= 5 {
 		e.PutString(t.TopicName) // TopicName
 	}
@@ -2903,7 +2847,7 @@ func (t UpdateMetadataTopicState6) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode UpdateMetadataTopicState6; Versions: 0-6
-func (t *UpdateMetadataTopicState6) Decode(d *protocol.Decoder, version int16) error {
+func (t *UpdateMetadataTopicState6) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 5 {
 		t.TopicName, err = d.String()
@@ -2960,7 +2904,7 @@ func (t UpdateMetadataBroker6) Size(version int16) int32 {
 }
 
 // encode UpdateMetadataBroker6; Versions: 0-6
-func (t UpdateMetadataBroker6) Encode(e *protocol.Encoder, version int16) {
+func (t UpdateMetadataBroker6) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.Id) // Id
 	if version >= 0 && version <= 0 {
 		e.PutString(t.V0Host) // V0Host
@@ -2982,7 +2926,7 @@ func (t UpdateMetadataBroker6) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode UpdateMetadataBroker6; Versions: 0-6
-func (t *UpdateMetadataBroker6) Decode(d *protocol.Decoder, version int16) error {
+func (t *UpdateMetadataBroker6) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Id, err = d.Int32()
 	if err != nil {
@@ -3050,7 +2994,7 @@ func (t UpdateMetadataEndpoint6) Size(version int16) int32 {
 }
 
 // encode UpdateMetadataEndpoint6; Versions: 0-6
-func (t UpdateMetadataEndpoint6) Encode(e *protocol.Encoder, version int16) {
+func (t UpdateMetadataEndpoint6) Encode(e *Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt32(t.Port) // Port
 	}
@@ -3066,7 +3010,7 @@ func (t UpdateMetadataEndpoint6) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode UpdateMetadataEndpoint6; Versions: 0-6
-func (t *UpdateMetadataEndpoint6) Decode(d *protocol.Decoder, version int16) error {
+func (t *UpdateMetadataEndpoint6) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.Port, err = d.Int32()
@@ -3127,7 +3071,7 @@ func (t UpdateMetadataPartitionState6) Size(version int16) int32 {
 }
 
 // encode UpdateMetadataPartitionState6; Versions: 0-6
-func (t UpdateMetadataPartitionState6) Encode(e *protocol.Encoder, version int16) {
+func (t UpdateMetadataPartitionState6) Encode(e *Encoder, version int16) {
 	if version >= 0 && version <= 4 {
 		e.PutString(t.TopicName) // TopicName
 	}
@@ -3144,7 +3088,7 @@ func (t UpdateMetadataPartitionState6) Encode(e *protocol.Encoder, version int16
 }
 
 // decode UpdateMetadataPartitionState6; Versions: 0-6
-func (t *UpdateMetadataPartitionState6) Decode(d *protocol.Decoder, version int16) error {
+func (t *UpdateMetadataPartitionState6) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 0 && version <= 4 {
 		t.TopicName, err = d.String()
@@ -3202,12 +3146,12 @@ func (t UpdateMetadataResponse) Size(version int16) int32 {
 }
 
 // encode UpdateMetadataResponse; Versions: 0-6
-func (t UpdateMetadataResponse) Encode(e *protocol.Encoder, version int16) {
+func (t UpdateMetadataResponse) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode) // ErrorCode
 }
 
 // decode UpdateMetadataResponse; Versions: 0-6
-func (t *UpdateMetadataResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *UpdateMetadataResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -3233,7 +3177,7 @@ func (t ControlledShutdownRequest) Size(version int16) int32 {
 }
 
 // encode ControlledShutdownRequest; Versions: 0-3
-func (t ControlledShutdownRequest) Encode(e *protocol.Encoder, version int16) {
+func (t ControlledShutdownRequest) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.BrokerId) // BrokerId
 	if version >= 2 {
 		e.PutInt64(t.BrokerEpoch) // BrokerEpoch
@@ -3241,7 +3185,7 @@ func (t ControlledShutdownRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ControlledShutdownRequest; Versions: 0-3
-func (t *ControlledShutdownRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *ControlledShutdownRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.BrokerId, err = d.Int32()
 	if err != nil {
@@ -3274,7 +3218,7 @@ func (t ControlledShutdownResponse) Size(version int16) int32 {
 }
 
 // encode ControlledShutdownResponse; Versions: 0-3
-func (t ControlledShutdownResponse) Encode(e *protocol.Encoder, version int16) {
+func (t ControlledShutdownResponse) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode) // ErrorCode
 	// RemainingPartitions
 	len1 := len(t.RemainingPartitions)
@@ -3285,7 +3229,7 @@ func (t ControlledShutdownResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ControlledShutdownResponse; Versions: 0-3
-func (t *ControlledShutdownResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *ControlledShutdownResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -3321,13 +3265,13 @@ func (t RemainingPartition7) Size(version int16) int32 {
 }
 
 // encode RemainingPartition7; Versions: 0-3
-func (t RemainingPartition7) Encode(e *protocol.Encoder, version int16) {
+func (t RemainingPartition7) Encode(e *Encoder, version int16) {
 	e.PutString(t.TopicName)     // TopicName
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 }
 
 // decode RemainingPartition7; Versions: 0-3
-func (t *RemainingPartition7) Decode(d *protocol.Decoder, version int16) error {
+func (t *RemainingPartition7) Decode(d *Decoder, version int16) error {
 	var err error
 	t.TopicName, err = d.String()
 	if err != nil {
@@ -3374,7 +3318,7 @@ func (t OffsetCommitRequest) Size(version int16) int32 {
 }
 
 // encode OffsetCommitRequest; Versions: 0-8
-func (t OffsetCommitRequest) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetCommitRequest) Encode(e *Encoder, version int16) {
 	e.PutString(t.GroupId) // GroupId
 	if version >= 1 {
 		e.PutInt32(t.GenerationId) // GenerationId
@@ -3397,7 +3341,7 @@ func (t OffsetCommitRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode OffsetCommitRequest; Versions: 0-8
-func (t *OffsetCommitRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetCommitRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.GroupId, err = d.String()
 	if err != nil {
@@ -3460,7 +3404,7 @@ func (t OffsetCommitRequestTopic8) Size(version int16) int32 {
 }
 
 // encode OffsetCommitRequestTopic8; Versions: 0-8
-func (t OffsetCommitRequestTopic8) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetCommitRequestTopic8) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -3471,7 +3415,7 @@ func (t OffsetCommitRequestTopic8) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode OffsetCommitRequestTopic8; Versions: 0-8
-func (t *OffsetCommitRequestTopic8) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetCommitRequestTopic8) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -3513,7 +3457,7 @@ func (t OffsetCommitRequestPartition8) Size(version int16) int32 {
 }
 
 // encode OffsetCommitRequestPartition8; Versions: 0-8
-func (t OffsetCommitRequestPartition8) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetCommitRequestPartition8) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex)  // PartitionIndex
 	e.PutInt64(t.CommittedOffset) // CommittedOffset
 	if version >= 6 {
@@ -3523,7 +3467,7 @@ func (t OffsetCommitRequestPartition8) Encode(e *protocol.Encoder, version int16
 }
 
 // decode OffsetCommitRequestPartition8; Versions: 0-8
-func (t *OffsetCommitRequestPartition8) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetCommitRequestPartition8) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -3566,7 +3510,7 @@ func (t OffsetCommitResponse) Size(version int16) int32 {
 }
 
 // encode OffsetCommitResponse; Versions: 0-8
-func (t OffsetCommitResponse) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetCommitResponse) Encode(e *Encoder, version int16) {
 	if version >= 3 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -3579,7 +3523,7 @@ func (t OffsetCommitResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode OffsetCommitResponse; Versions: 0-8
-func (t *OffsetCommitResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetCommitResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 3 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -3620,7 +3564,7 @@ func (t OffsetCommitResponseTopic8) Size(version int16) int32 {
 }
 
 // encode OffsetCommitResponseTopic8; Versions: 0-8
-func (t OffsetCommitResponseTopic8) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetCommitResponseTopic8) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -3631,7 +3575,7 @@ func (t OffsetCommitResponseTopic8) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode OffsetCommitResponseTopic8; Versions: 0-8
-func (t *OffsetCommitResponseTopic8) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetCommitResponseTopic8) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -3667,13 +3611,13 @@ func (t OffsetCommitResponsePartition8) Size(version int16) int32 {
 }
 
 // encode OffsetCommitResponsePartition8; Versions: 0-8
-func (t OffsetCommitResponsePartition8) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetCommitResponsePartition8) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 }
 
 // decode OffsetCommitResponsePartition8; Versions: 0-8
-func (t *OffsetCommitResponsePartition8) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetCommitResponsePartition8) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -3704,7 +3648,7 @@ func (t OffsetFetchRequest) Size(version int16) int32 {
 }
 
 // encode OffsetFetchRequest; Versions: 0-6
-func (t OffsetFetchRequest) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetFetchRequest) Encode(e *Encoder, version int16) {
 	e.PutString(t.GroupId) // GroupId
 	// Topics
 	len1 := len(t.Topics)
@@ -3715,7 +3659,7 @@ func (t OffsetFetchRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode OffsetFetchRequest; Versions: 0-6
-func (t *OffsetFetchRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetFetchRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.GroupId, err = d.String()
 	if err != nil {
@@ -3751,13 +3695,13 @@ func (t OffsetFetchRequestTopic9) Size(version int16) int32 {
 }
 
 // encode OffsetFetchRequestTopic9; Versions: 0-6
-func (t OffsetFetchRequestTopic9) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetFetchRequestTopic9) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name)                 // Name
 	e.PutInt32Array(t.PartitionIndexes) // PartitionIndexes
 }
 
 // decode OffsetFetchRequestTopic9; Versions: 0-6
-func (t *OffsetFetchRequestTopic9) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetFetchRequestTopic9) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -3794,7 +3738,7 @@ func (t OffsetFetchResponse) Size(version int16) int32 {
 }
 
 // encode OffsetFetchResponse; Versions: 0-6
-func (t OffsetFetchResponse) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetFetchResponse) Encode(e *Encoder, version int16) {
 	if version >= 3 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -3810,7 +3754,7 @@ func (t OffsetFetchResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode OffsetFetchResponse; Versions: 0-6
-func (t *OffsetFetchResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetFetchResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 3 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -3857,7 +3801,7 @@ func (t OffsetFetchResponseTopic9) Size(version int16) int32 {
 }
 
 // encode OffsetFetchResponseTopic9; Versions: 0-6
-func (t OffsetFetchResponseTopic9) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetFetchResponseTopic9) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -3868,7 +3812,7 @@ func (t OffsetFetchResponseTopic9) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode OffsetFetchResponseTopic9; Versions: 0-6
-func (t *OffsetFetchResponseTopic9) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetFetchResponseTopic9) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -3912,7 +3856,7 @@ func (t OffsetFetchResponsePartition9) Size(version int16) int32 {
 }
 
 // encode OffsetFetchResponsePartition9; Versions: 0-6
-func (t OffsetFetchResponsePartition9) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetFetchResponsePartition9) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex)  // PartitionIndex
 	e.PutInt64(t.CommittedOffset) // CommittedOffset
 	if version >= 5 {
@@ -3923,7 +3867,7 @@ func (t OffsetFetchResponsePartition9) Encode(e *protocol.Encoder, version int16
 }
 
 // decode OffsetFetchResponsePartition9; Versions: 0-6
-func (t *OffsetFetchResponsePartition9) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetFetchResponsePartition9) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -3967,7 +3911,7 @@ func (t FindCoordinatorRequest) Size(version int16) int32 {
 }
 
 // encode FindCoordinatorRequest; Versions: 0-3
-func (t FindCoordinatorRequest) Encode(e *protocol.Encoder, version int16) {
+func (t FindCoordinatorRequest) Encode(e *Encoder, version int16) {
 	e.PutString(t.Key) // Key
 	if version >= 1 {
 		e.PutInt8(t.KeyType) // KeyType
@@ -3975,7 +3919,7 @@ func (t FindCoordinatorRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode FindCoordinatorRequest; Versions: 0-3
-func (t *FindCoordinatorRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *FindCoordinatorRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Key, err = d.String()
 	if err != nil {
@@ -4017,7 +3961,7 @@ func (t FindCoordinatorResponse) Size(version int16) int32 {
 }
 
 // encode FindCoordinatorResponse; Versions: 0-3
-func (t FindCoordinatorResponse) Encode(e *protocol.Encoder, version int16) {
+func (t FindCoordinatorResponse) Encode(e *Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -4031,7 +3975,7 @@ func (t FindCoordinatorResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode FindCoordinatorResponse; Versions: 0-3
-func (t *FindCoordinatorResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *FindCoordinatorResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -4096,7 +4040,7 @@ func (t JoinGroupRequest) Size(version int16) int32 {
 }
 
 // encode JoinGroupRequest; Versions: 0-6
-func (t JoinGroupRequest) Encode(e *protocol.Encoder, version int16) {
+func (t JoinGroupRequest) Encode(e *Encoder, version int16) {
 	e.PutString(t.GroupId)         // GroupId
 	e.PutInt32(t.SessionTimeoutMs) // SessionTimeoutMs
 	if version >= 1 {
@@ -4116,7 +4060,7 @@ func (t JoinGroupRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode JoinGroupRequest; Versions: 0-6
-func (t *JoinGroupRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *JoinGroupRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.GroupId, err = d.String()
 	if err != nil {
@@ -4176,13 +4120,13 @@ func (t JoinGroupRequestProtocol11) Size(version int16) int32 {
 }
 
 // encode JoinGroupRequestProtocol11; Versions: 0-6
-func (t JoinGroupRequestProtocol11) Encode(e *protocol.Encoder, version int16) {
+func (t JoinGroupRequestProtocol11) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name)    // Name
 	e.PutBytes(t.Metadata) // Metadata
 }
 
 // decode JoinGroupRequestProtocol11; Versions: 0-6
-func (t *JoinGroupRequestProtocol11) Decode(d *protocol.Decoder, version int16) error {
+func (t *JoinGroupRequestProtocol11) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -4225,7 +4169,7 @@ func (t JoinGroupResponse) Size(version int16) int32 {
 }
 
 // encode JoinGroupResponse; Versions: 0-6
-func (t JoinGroupResponse) Encode(e *protocol.Encoder, version int16) {
+func (t JoinGroupResponse) Encode(e *Encoder, version int16) {
 	if version >= 2 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -4243,7 +4187,7 @@ func (t JoinGroupResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode JoinGroupResponse; Versions: 0-6
-func (t *JoinGroupResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *JoinGroupResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 2 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -4305,7 +4249,7 @@ func (t JoinGroupResponseMember11) Size(version int16) int32 {
 }
 
 // encode JoinGroupResponseMember11; Versions: 0-6
-func (t JoinGroupResponseMember11) Encode(e *protocol.Encoder, version int16) {
+func (t JoinGroupResponseMember11) Encode(e *Encoder, version int16) {
 	e.PutString(t.MemberId) // MemberId
 	if version >= 5 {
 		e.PutString(t.GroupInstanceId) // GroupInstanceId
@@ -4314,7 +4258,7 @@ func (t JoinGroupResponseMember11) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode JoinGroupResponseMember11; Versions: 0-6
-func (t *JoinGroupResponseMember11) Decode(d *protocol.Decoder, version int16) error {
+func (t *JoinGroupResponseMember11) Decode(d *Decoder, version int16) error {
 	var err error
 	t.MemberId, err = d.String()
 	if err != nil {
@@ -4354,7 +4298,7 @@ func (t HeartbeatRequest) Size(version int16) int32 {
 }
 
 // encode HeartbeatRequest; Versions: 0-4
-func (t HeartbeatRequest) Encode(e *protocol.Encoder, version int16) {
+func (t HeartbeatRequest) Encode(e *Encoder, version int16) {
 	e.PutString(t.GroupId)     // GroupId
 	e.PutInt32(t.GenerationId) // GenerationId
 	e.PutString(t.MemberId)    // MemberId
@@ -4364,7 +4308,7 @@ func (t HeartbeatRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode HeartbeatRequest; Versions: 0-4
-func (t *HeartbeatRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *HeartbeatRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.GroupId, err = d.String()
 	if err != nil {
@@ -4404,7 +4348,7 @@ func (t HeartbeatResponse) Size(version int16) int32 {
 }
 
 // encode HeartbeatResponse; Versions: 0-4
-func (t HeartbeatResponse) Encode(e *protocol.Encoder, version int16) {
+func (t HeartbeatResponse) Encode(e *Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -4412,7 +4356,7 @@ func (t HeartbeatResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode HeartbeatResponse; Versions: 0-4
-func (t *HeartbeatResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *HeartbeatResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -4451,7 +4395,7 @@ func (t LeaveGroupRequest) Size(version int16) int32 {
 }
 
 // encode LeaveGroupRequest; Versions: 0-4
-func (t LeaveGroupRequest) Encode(e *protocol.Encoder, version int16) {
+func (t LeaveGroupRequest) Encode(e *Encoder, version int16) {
 	e.PutString(t.GroupId) // GroupId
 	if version >= 0 && version <= 2 {
 		e.PutString(t.MemberId) // MemberId
@@ -4467,7 +4411,7 @@ func (t LeaveGroupRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode LeaveGroupRequest; Versions: 0-4
-func (t *LeaveGroupRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *LeaveGroupRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.GroupId, err = d.String()
 	if err != nil {
@@ -4515,7 +4459,7 @@ func (t MemberIdentity13) Size(version int16) int32 {
 }
 
 // encode MemberIdentity13; Versions: 0-4
-func (t MemberIdentity13) Encode(e *protocol.Encoder, version int16) {
+func (t MemberIdentity13) Encode(e *Encoder, version int16) {
 	if version >= 3 {
 		e.PutString(t.MemberId) // MemberId
 	}
@@ -4525,7 +4469,7 @@ func (t MemberIdentity13) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode MemberIdentity13; Versions: 0-4
-func (t *MemberIdentity13) Decode(d *protocol.Decoder, version int16) error {
+func (t *MemberIdentity13) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 3 {
 		t.MemberId, err = d.String()
@@ -4566,7 +4510,7 @@ func (t LeaveGroupResponse) Size(version int16) int32 {
 }
 
 // encode LeaveGroupResponse; Versions: 0-4
-func (t LeaveGroupResponse) Encode(e *protocol.Encoder, version int16) {
+func (t LeaveGroupResponse) Encode(e *Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -4582,7 +4526,7 @@ func (t LeaveGroupResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode LeaveGroupResponse; Versions: 0-4
-func (t *LeaveGroupResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *LeaveGroupResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -4634,7 +4578,7 @@ func (t MemberResponse13) Size(version int16) int32 {
 }
 
 // encode MemberResponse13; Versions: 0-4
-func (t MemberResponse13) Encode(e *protocol.Encoder, version int16) {
+func (t MemberResponse13) Encode(e *Encoder, version int16) {
 	if version >= 3 {
 		e.PutString(t.MemberId) // MemberId
 	}
@@ -4647,7 +4591,7 @@ func (t MemberResponse13) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode MemberResponse13; Versions: 0-4
-func (t *MemberResponse13) Decode(d *protocol.Decoder, version int16) error {
+func (t *MemberResponse13) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 3 {
 		t.MemberId, err = d.String()
@@ -4696,7 +4640,7 @@ func (t SyncGroupRequest) Size(version int16) int32 {
 }
 
 // encode SyncGroupRequest; Versions: 0-4
-func (t SyncGroupRequest) Encode(e *protocol.Encoder, version int16) {
+func (t SyncGroupRequest) Encode(e *Encoder, version int16) {
 	e.PutString(t.GroupId)     // GroupId
 	e.PutInt32(t.GenerationId) // GenerationId
 	e.PutString(t.MemberId)    // MemberId
@@ -4712,7 +4656,7 @@ func (t SyncGroupRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode SyncGroupRequest; Versions: 0-4
-func (t *SyncGroupRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *SyncGroupRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.GroupId, err = d.String()
 	if err != nil {
@@ -4762,13 +4706,13 @@ func (t SyncGroupRequestAssignment14) Size(version int16) int32 {
 }
 
 // encode SyncGroupRequestAssignment14; Versions: 0-4
-func (t SyncGroupRequestAssignment14) Encode(e *protocol.Encoder, version int16) {
+func (t SyncGroupRequestAssignment14) Encode(e *Encoder, version int16) {
 	e.PutString(t.MemberId)  // MemberId
 	e.PutBytes(t.Assignment) // Assignment
 }
 
 // decode SyncGroupRequestAssignment14; Versions: 0-4
-func (t *SyncGroupRequestAssignment14) Decode(d *protocol.Decoder, version int16) error {
+func (t *SyncGroupRequestAssignment14) Decode(d *Decoder, version int16) error {
 	var err error
 	t.MemberId, err = d.String()
 	if err != nil {
@@ -4800,7 +4744,7 @@ func (t SyncGroupResponse) Size(version int16) int32 {
 }
 
 // encode SyncGroupResponse; Versions: 0-4
-func (t SyncGroupResponse) Encode(e *protocol.Encoder, version int16) {
+func (t SyncGroupResponse) Encode(e *Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -4809,7 +4753,7 @@ func (t SyncGroupResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode SyncGroupResponse; Versions: 0-4
-func (t *SyncGroupResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *SyncGroupResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -4845,7 +4789,7 @@ func (t DescribeGroupsRequest) Size(version int16) int32 {
 }
 
 // encode DescribeGroupsRequest; Versions: 0-5
-func (t DescribeGroupsRequest) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeGroupsRequest) Encode(e *Encoder, version int16) {
 	e.PutStringArray(t.Groups) // Groups
 	if version >= 3 {
 		e.PutBool(t.IncludeAuthorizedOperations) // IncludeAuthorizedOperations
@@ -4853,7 +4797,7 @@ func (t DescribeGroupsRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeGroupsRequest; Versions: 0-5
-func (t *DescribeGroupsRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeGroupsRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Groups, err = d.StringArray()
 	if err != nil {
@@ -4888,7 +4832,7 @@ func (t DescribeGroupsResponse) Size(version int16) int32 {
 }
 
 // encode DescribeGroupsResponse; Versions: 0-5
-func (t DescribeGroupsResponse) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeGroupsResponse) Encode(e *Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -4901,7 +4845,7 @@ func (t DescribeGroupsResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeGroupsResponse; Versions: 0-5
-func (t *DescribeGroupsResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeGroupsResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -4954,7 +4898,7 @@ func (t DescribedGroup15) Size(version int16) int32 {
 }
 
 // encode DescribedGroup15; Versions: 0-5
-func (t DescribedGroup15) Encode(e *protocol.Encoder, version int16) {
+func (t DescribedGroup15) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)     // ErrorCode
 	e.PutString(t.GroupId)      // GroupId
 	e.PutString(t.GroupState)   // GroupState
@@ -4972,7 +4916,7 @@ func (t DescribedGroup15) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribedGroup15; Versions: 0-5
-func (t *DescribedGroup15) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribedGroup15) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -5040,7 +4984,7 @@ func (t DescribedGroupMember15) Size(version int16) int32 {
 }
 
 // encode DescribedGroupMember15; Versions: 0-5
-func (t DescribedGroupMember15) Encode(e *protocol.Encoder, version int16) {
+func (t DescribedGroupMember15) Encode(e *Encoder, version int16) {
 	e.PutString(t.MemberId) // MemberId
 	if version >= 4 {
 		e.PutString(t.GroupInstanceId) // GroupInstanceId
@@ -5052,7 +4996,7 @@ func (t DescribedGroupMember15) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribedGroupMember15; Versions: 0-5
-func (t *DescribedGroupMember15) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribedGroupMember15) Decode(d *Decoder, version int16) error {
 	var err error
 	t.MemberId, err = d.String()
 	if err != nil {
@@ -5094,11 +5038,11 @@ func (t ListGroupsRequest) Size(version int16) int32 {
 }
 
 // encode ListGroupsRequest; Versions: 0-3
-func (t ListGroupsRequest) Encode(e *protocol.Encoder, version int16) {
+func (t ListGroupsRequest) Encode(e *Encoder, version int16) {
 }
 
 // decode ListGroupsRequest; Versions: 0-3
-func (t *ListGroupsRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *ListGroupsRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	return err
 }
@@ -5125,7 +5069,7 @@ func (t ListGroupsResponse) Size(version int16) int32 {
 }
 
 // encode ListGroupsResponse; Versions: 0-3
-func (t ListGroupsResponse) Encode(e *protocol.Encoder, version int16) {
+func (t ListGroupsResponse) Encode(e *Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -5139,7 +5083,7 @@ func (t ListGroupsResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ListGroupsResponse; Versions: 0-3
-func (t *ListGroupsResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *ListGroupsResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -5181,13 +5125,13 @@ func (t ListedGroup16) Size(version int16) int32 {
 }
 
 // encode ListedGroup16; Versions: 0-3
-func (t ListedGroup16) Encode(e *protocol.Encoder, version int16) {
+func (t ListedGroup16) Encode(e *Encoder, version int16) {
 	e.PutString(t.GroupId)      // GroupId
 	e.PutString(t.ProtocolType) // ProtocolType
 }
 
 // decode ListedGroup16; Versions: 0-3
-func (t *ListedGroup16) Decode(d *protocol.Decoder, version int16) error {
+func (t *ListedGroup16) Decode(d *Decoder, version int16) error {
 	var err error
 	t.GroupId, err = d.String()
 	if err != nil {
@@ -5213,12 +5157,12 @@ func (t SaslHandshakeRequest) Size(version int16) int32 {
 }
 
 // encode SaslHandshakeRequest; Versions: 0-1
-func (t SaslHandshakeRequest) Encode(e *protocol.Encoder, version int16) {
+func (t SaslHandshakeRequest) Encode(e *Encoder, version int16) {
 	e.PutString(t.Mechanism) // Mechanism
 }
 
 // decode SaslHandshakeRequest; Versions: 0-1
-func (t *SaslHandshakeRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *SaslHandshakeRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Mechanism, err = d.String()
 	if err != nil {
@@ -5242,13 +5186,13 @@ func (t SaslHandshakeResponse) Size(version int16) int32 {
 }
 
 // encode SaslHandshakeResponse; Versions: 0-1
-func (t SaslHandshakeResponse) Encode(e *protocol.Encoder, version int16) {
+func (t SaslHandshakeResponse) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)        // ErrorCode
 	e.PutStringArray(t.Mechanisms) // Mechanisms
 }
 
 // decode SaslHandshakeResponse; Versions: 0-1
-func (t *SaslHandshakeResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *SaslHandshakeResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -5280,7 +5224,7 @@ func (t ApiVersionsRequest) Size(version int16) int32 {
 }
 
 // encode ApiVersionsRequest; Versions: 0-3
-func (t ApiVersionsRequest) Encode(e *protocol.Encoder, version int16) {
+func (t ApiVersionsRequest) Encode(e *Encoder, version int16) {
 	if version >= 3 {
 		e.PutString(t.ClientSoftwareName) // ClientSoftwareName
 	}
@@ -5290,7 +5234,7 @@ func (t ApiVersionsRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ApiVersionsRequest; Versions: 0-3
-func (t *ApiVersionsRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *ApiVersionsRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 3 {
 		t.ClientSoftwareName, err = d.String()
@@ -5329,7 +5273,7 @@ func (t ApiVersionsResponse) Size(version int16) int32 {
 }
 
 // encode ApiVersionsResponse; Versions: 0-3
-func (t ApiVersionsResponse) Encode(e *protocol.Encoder, version int16) {
+func (t ApiVersionsResponse) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode) // ErrorCode
 	// ApiKeys
 	len1 := len(t.ApiKeys)
@@ -5343,7 +5287,7 @@ func (t ApiVersionsResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ApiVersionsResponse; Versions: 0-3
-func (t *ApiVersionsResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *ApiVersionsResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -5387,14 +5331,14 @@ func (t ApiVersionsResponseKey18) Size(version int16) int32 {
 }
 
 // encode ApiVersionsResponseKey18; Versions: 0-3
-func (t ApiVersionsResponseKey18) Encode(e *protocol.Encoder, version int16) {
+func (t ApiVersionsResponseKey18) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ApiKey)     // ApiKey
 	e.PutInt16(t.MinVersion) // MinVersion
 	e.PutInt16(t.MaxVersion) // MaxVersion
 }
 
 // decode ApiVersionsResponseKey18; Versions: 0-3
-func (t *ApiVersionsResponseKey18) Decode(d *protocol.Decoder, version int16) error {
+func (t *ApiVersionsResponseKey18) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ApiKey, err = d.Int16()
 	if err != nil {
@@ -5433,7 +5377,7 @@ func (t CreateTopicsRequest) Size(version int16) int32 {
 }
 
 // encode CreateTopicsRequest; Versions: 0-5
-func (t CreateTopicsRequest) Encode(e *protocol.Encoder, version int16) {
+func (t CreateTopicsRequest) Encode(e *Encoder, version int16) {
 	// Topics
 	len0 := len(t.Topics)
 	e.PutArrayLength(len0)
@@ -5447,7 +5391,7 @@ func (t CreateTopicsRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode CreateTopicsRequest; Versions: 0-5
-func (t *CreateTopicsRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreateTopicsRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	// Topics
 	if n, err := d.ArrayLength(); err != nil {
@@ -5501,7 +5445,7 @@ func (t CreatableTopic19) Size(version int16) int32 {
 }
 
 // encode CreatableTopic19; Versions: 0-5
-func (t CreatableTopic19) Encode(e *protocol.Encoder, version int16) {
+func (t CreatableTopic19) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name)             // Name
 	e.PutInt32(t.NumPartitions)     // NumPartitions
 	e.PutInt16(t.ReplicationFactor) // ReplicationFactor
@@ -5520,7 +5464,7 @@ func (t CreatableTopic19) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode CreatableTopic19; Versions: 0-5
-func (t *CreatableTopic19) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreatableTopic19) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -5577,13 +5521,13 @@ func (t CreatableReplicaAssignment19) Size(version int16) int32 {
 }
 
 // encode CreatableReplicaAssignment19; Versions: 0-5
-func (t CreatableReplicaAssignment19) Encode(e *protocol.Encoder, version int16) {
+func (t CreatableReplicaAssignment19) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt32Array(t.BrokerIds) // BrokerIds
 }
 
 // decode CreatableReplicaAssignment19; Versions: 0-5
-func (t *CreatableReplicaAssignment19) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreatableReplicaAssignment19) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -5610,13 +5554,13 @@ func (t CreateableTopicConfig19) Size(version int16) int32 {
 }
 
 // encode CreateableTopicConfig19; Versions: 0-5
-func (t CreateableTopicConfig19) Encode(e *protocol.Encoder, version int16) {
+func (t CreateableTopicConfig19) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name)  // Name
 	e.PutString(t.Value) // Value
 }
 
 // decode CreateableTopicConfig19; Versions: 0-5
-func (t *CreateableTopicConfig19) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreateableTopicConfig19) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -5649,7 +5593,7 @@ func (t CreateTopicsResponse) Size(version int16) int32 {
 }
 
 // encode CreateTopicsResponse; Versions: 0-5
-func (t CreateTopicsResponse) Encode(e *protocol.Encoder, version int16) {
+func (t CreateTopicsResponse) Encode(e *Encoder, version int16) {
 	if version >= 2 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -5662,7 +5606,7 @@ func (t CreateTopicsResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode CreateTopicsResponse; Versions: 0-5
-func (t *CreateTopicsResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreateTopicsResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 2 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -5723,7 +5667,7 @@ func (t CreatableTopicResult19) Size(version int16) int32 {
 }
 
 // encode CreatableTopicResult19; Versions: 0-5
-func (t CreatableTopicResult19) Encode(e *protocol.Encoder, version int16) {
+func (t CreatableTopicResult19) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name)     // Name
 	e.PutInt16(t.ErrorCode) // ErrorCode
 	if version >= 1 {
@@ -5749,7 +5693,7 @@ func (t CreatableTopicResult19) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode CreatableTopicResult19; Versions: 0-5
-func (t *CreatableTopicResult19) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreatableTopicResult19) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -5831,7 +5775,7 @@ func (t CreatableTopicConfigs19) Size(version int16) int32 {
 }
 
 // encode CreatableTopicConfigs19; Versions: 0-5
-func (t CreatableTopicConfigs19) Encode(e *protocol.Encoder, version int16) {
+func (t CreatableTopicConfigs19) Encode(e *Encoder, version int16) {
 	if version >= 5 {
 		e.PutString(t.Name) // Name
 	}
@@ -5850,7 +5794,7 @@ func (t CreatableTopicConfigs19) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode CreatableTopicConfigs19; Versions: 0-5
-func (t *CreatableTopicConfigs19) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreatableTopicConfigs19) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 5 {
 		t.Name, err = d.String()
@@ -5900,13 +5844,13 @@ func (t DeleteTopicsRequest) Size(version int16) int32 {
 }
 
 // encode DeleteTopicsRequest; Versions: 0-4
-func (t DeleteTopicsRequest) Encode(e *protocol.Encoder, version int16) {
+func (t DeleteTopicsRequest) Encode(e *Encoder, version int16) {
 	e.PutStringArray(t.TopicNames) // TopicNames
 	e.PutInt32(t.TimeoutMs)        // TimeoutMs
 }
 
 // decode DeleteTopicsRequest; Versions: 0-4
-func (t *DeleteTopicsRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteTopicsRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.TopicNames, err = d.StringArray()
 	if err != nil {
@@ -5939,7 +5883,7 @@ func (t DeleteTopicsResponse) Size(version int16) int32 {
 }
 
 // encode DeleteTopicsResponse; Versions: 0-4
-func (t DeleteTopicsResponse) Encode(e *protocol.Encoder, version int16) {
+func (t DeleteTopicsResponse) Encode(e *Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -5952,7 +5896,7 @@ func (t DeleteTopicsResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DeleteTopicsResponse; Versions: 0-4
-func (t *DeleteTopicsResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteTopicsResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -5990,13 +5934,13 @@ func (t DeletableTopicResult20) Size(version int16) int32 {
 }
 
 // encode DeletableTopicResult20; Versions: 0-4
-func (t DeletableTopicResult20) Encode(e *protocol.Encoder, version int16) {
+func (t DeletableTopicResult20) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name)     // Name
 	e.PutInt16(t.ErrorCode) // ErrorCode
 }
 
 // decode DeletableTopicResult20; Versions: 0-4
-func (t *DeletableTopicResult20) Decode(d *protocol.Decoder, version int16) error {
+func (t *DeletableTopicResult20) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -6027,7 +5971,7 @@ func (t DeleteRecordsRequest) Size(version int16) int32 {
 }
 
 // encode DeleteRecordsRequest; Versions: 0-1
-func (t DeleteRecordsRequest) Encode(e *protocol.Encoder, version int16) {
+func (t DeleteRecordsRequest) Encode(e *Encoder, version int16) {
 	// Topics
 	len0 := len(t.Topics)
 	e.PutArrayLength(len0)
@@ -6038,7 +5982,7 @@ func (t DeleteRecordsRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DeleteRecordsRequest; Versions: 0-1
-func (t *DeleteRecordsRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteRecordsRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	// Topics
 	if n, err := d.ArrayLength(); err != nil {
@@ -6077,7 +6021,7 @@ func (t DeleteRecordsTopic21) Size(version int16) int32 {
 }
 
 // encode DeleteRecordsTopic21; Versions: 0-1
-func (t DeleteRecordsTopic21) Encode(e *protocol.Encoder, version int16) {
+func (t DeleteRecordsTopic21) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -6088,7 +6032,7 @@ func (t DeleteRecordsTopic21) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DeleteRecordsTopic21; Versions: 0-1
-func (t *DeleteRecordsTopic21) Decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteRecordsTopic21) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -6124,13 +6068,13 @@ func (t DeleteRecordsPartition21) Size(version int16) int32 {
 }
 
 // encode DeleteRecordsPartition21; Versions: 0-1
-func (t DeleteRecordsPartition21) Encode(e *protocol.Encoder, version int16) {
+func (t DeleteRecordsPartition21) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt64(t.Offset)         // Offset
 }
 
 // decode DeleteRecordsPartition21; Versions: 0-1
-func (t *DeleteRecordsPartition21) Decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteRecordsPartition21) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -6161,7 +6105,7 @@ func (t DeleteRecordsResponse) Size(version int16) int32 {
 }
 
 // encode DeleteRecordsResponse; Versions: 0-1
-func (t DeleteRecordsResponse) Encode(e *protocol.Encoder, version int16) {
+func (t DeleteRecordsResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Topics
 	len1 := len(t.Topics)
@@ -6172,7 +6116,7 @@ func (t DeleteRecordsResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DeleteRecordsResponse; Versions: 0-1
-func (t *DeleteRecordsResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteRecordsResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -6211,7 +6155,7 @@ func (t DeleteRecordsTopicResult21) Size(version int16) int32 {
 }
 
 // encode DeleteRecordsTopicResult21; Versions: 0-1
-func (t DeleteRecordsTopicResult21) Encode(e *protocol.Encoder, version int16) {
+func (t DeleteRecordsTopicResult21) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -6222,7 +6166,7 @@ func (t DeleteRecordsTopicResult21) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DeleteRecordsTopicResult21; Versions: 0-1
-func (t *DeleteRecordsTopicResult21) Decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteRecordsTopicResult21) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -6260,14 +6204,14 @@ func (t DeleteRecordsPartitionResult21) Size(version int16) int32 {
 }
 
 // encode DeleteRecordsPartitionResult21; Versions: 0-1
-func (t DeleteRecordsPartitionResult21) Encode(e *protocol.Encoder, version int16) {
+func (t DeleteRecordsPartitionResult21) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt64(t.LowWatermark)   // LowWatermark
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 }
 
 // decode DeleteRecordsPartitionResult21; Versions: 0-1
-func (t *DeleteRecordsPartitionResult21) Decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteRecordsPartitionResult21) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -6299,13 +6243,13 @@ func (t InitProducerIdRequest) Size(version int16) int32 {
 }
 
 // encode InitProducerIdRequest; Versions: 0-2
-func (t InitProducerIdRequest) Encode(e *protocol.Encoder, version int16) {
+func (t InitProducerIdRequest) Encode(e *Encoder, version int16) {
 	e.PutString(t.TransactionalId)     // TransactionalId
 	e.PutInt32(t.TransactionTimeoutMs) // TransactionTimeoutMs
 }
 
 // decode InitProducerIdRequest; Versions: 0-2
-func (t *InitProducerIdRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *InitProducerIdRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.TransactionalId, err = d.String()
 	if err != nil {
@@ -6337,7 +6281,7 @@ func (t InitProducerIdResponse) Size(version int16) int32 {
 }
 
 // encode InitProducerIdResponse; Versions: 0-2
-func (t InitProducerIdResponse) Encode(e *protocol.Encoder, version int16) {
+func (t InitProducerIdResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	e.PutInt64(t.ProducerId)     // ProducerId
@@ -6345,7 +6289,7 @@ func (t InitProducerIdResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode InitProducerIdResponse; Versions: 0-2
-func (t *InitProducerIdResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *InitProducerIdResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -6386,7 +6330,7 @@ func (t OffsetForLeaderEpochRequest) Size(version int16) int32 {
 }
 
 // encode OffsetForLeaderEpochRequest; Versions: 0-3
-func (t OffsetForLeaderEpochRequest) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetForLeaderEpochRequest) Encode(e *Encoder, version int16) {
 	if version >= 3 {
 		e.PutInt32(t.ReplicaId) // ReplicaId
 	}
@@ -6399,7 +6343,7 @@ func (t OffsetForLeaderEpochRequest) Encode(e *protocol.Encoder, version int16) 
 }
 
 // decode OffsetForLeaderEpochRequest; Versions: 0-3
-func (t *OffsetForLeaderEpochRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetForLeaderEpochRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 3 {
 		t.ReplicaId, err = d.Int32()
@@ -6440,7 +6384,7 @@ func (t OffsetForLeaderTopic23) Size(version int16) int32 {
 }
 
 // encode OffsetForLeaderTopic23; Versions: 0-3
-func (t OffsetForLeaderTopic23) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetForLeaderTopic23) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -6451,7 +6395,7 @@ func (t OffsetForLeaderTopic23) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode OffsetForLeaderTopic23; Versions: 0-3
-func (t *OffsetForLeaderTopic23) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetForLeaderTopic23) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -6491,7 +6435,7 @@ func (t OffsetForLeaderPartition23) Size(version int16) int32 {
 }
 
 // encode OffsetForLeaderPartition23; Versions: 0-3
-func (t OffsetForLeaderPartition23) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetForLeaderPartition23) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	if version >= 2 {
 		e.PutInt32(t.CurrentLeaderEpoch) // CurrentLeaderEpoch
@@ -6500,7 +6444,7 @@ func (t OffsetForLeaderPartition23) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode OffsetForLeaderPartition23; Versions: 0-3
-func (t *OffsetForLeaderPartition23) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetForLeaderPartition23) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -6539,7 +6483,7 @@ func (t OffsetForLeaderEpochResponse) Size(version int16) int32 {
 }
 
 // encode OffsetForLeaderEpochResponse; Versions: 0-3
-func (t OffsetForLeaderEpochResponse) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetForLeaderEpochResponse) Encode(e *Encoder, version int16) {
 	if version >= 2 {
 		e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	}
@@ -6552,7 +6496,7 @@ func (t OffsetForLeaderEpochResponse) Encode(e *protocol.Encoder, version int16)
 }
 
 // decode OffsetForLeaderEpochResponse; Versions: 0-3
-func (t *OffsetForLeaderEpochResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetForLeaderEpochResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 2 {
 		t.ThrottleTimeMs, err = d.Int32()
@@ -6593,7 +6537,7 @@ func (t OffsetForLeaderTopicResult23) Size(version int16) int32 {
 }
 
 // encode OffsetForLeaderTopicResult23; Versions: 0-3
-func (t OffsetForLeaderTopicResult23) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetForLeaderTopicResult23) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -6604,7 +6548,7 @@ func (t OffsetForLeaderTopicResult23) Encode(e *protocol.Encoder, version int16)
 }
 
 // decode OffsetForLeaderTopicResult23; Versions: 0-3
-func (t *OffsetForLeaderTopicResult23) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetForLeaderTopicResult23) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -6646,7 +6590,7 @@ func (t OffsetForLeaderPartitionResult23) Size(version int16) int32 {
 }
 
 // encode OffsetForLeaderPartitionResult23; Versions: 0-3
-func (t OffsetForLeaderPartitionResult23) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetForLeaderPartitionResult23) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	if version >= 1 {
@@ -6656,7 +6600,7 @@ func (t OffsetForLeaderPartitionResult23) Encode(e *protocol.Encoder, version in
 }
 
 // decode OffsetForLeaderPartitionResult23; Versions: 0-3
-func (t *OffsetForLeaderPartitionResult23) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetForLeaderPartitionResult23) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -6701,7 +6645,7 @@ func (t AddPartitionsToTxnRequest) Size(version int16) int32 {
 }
 
 // encode AddPartitionsToTxnRequest; Versions: 0-1
-func (t AddPartitionsToTxnRequest) Encode(e *protocol.Encoder, version int16) {
+func (t AddPartitionsToTxnRequest) Encode(e *Encoder, version int16) {
 	e.PutString(t.TransactionalId) // TransactionalId
 	e.PutInt64(t.ProducerId)       // ProducerId
 	e.PutInt16(t.ProducerEpoch)    // ProducerEpoch
@@ -6714,7 +6658,7 @@ func (t AddPartitionsToTxnRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode AddPartitionsToTxnRequest; Versions: 0-1
-func (t *AddPartitionsToTxnRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *AddPartitionsToTxnRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.TransactionalId, err = d.String()
 	if err != nil {
@@ -6758,13 +6702,13 @@ func (t AddPartitionsToTxnTopic24) Size(version int16) int32 {
 }
 
 // encode AddPartitionsToTxnTopic24; Versions: 0-1
-func (t AddPartitionsToTxnTopic24) Encode(e *protocol.Encoder, version int16) {
+func (t AddPartitionsToTxnTopic24) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name)           // Name
 	e.PutInt32Array(t.Partitions) // Partitions
 }
 
 // decode AddPartitionsToTxnTopic24; Versions: 0-1
-func (t *AddPartitionsToTxnTopic24) Decode(d *protocol.Decoder, version int16) error {
+func (t *AddPartitionsToTxnTopic24) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -6795,7 +6739,7 @@ func (t AddPartitionsToTxnResponse) Size(version int16) int32 {
 }
 
 // encode AddPartitionsToTxnResponse; Versions: 0-1
-func (t AddPartitionsToTxnResponse) Encode(e *protocol.Encoder, version int16) {
+func (t AddPartitionsToTxnResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Results
 	len1 := len(t.Results)
@@ -6806,7 +6750,7 @@ func (t AddPartitionsToTxnResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode AddPartitionsToTxnResponse; Versions: 0-1
-func (t *AddPartitionsToTxnResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *AddPartitionsToTxnResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -6845,7 +6789,7 @@ func (t AddPartitionsToTxnTopicResult24) Size(version int16) int32 {
 }
 
 // encode AddPartitionsToTxnTopicResult24; Versions: 0-1
-func (t AddPartitionsToTxnTopicResult24) Encode(e *protocol.Encoder, version int16) {
+func (t AddPartitionsToTxnTopicResult24) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Results
 	len1 := len(t.Results)
@@ -6856,7 +6800,7 @@ func (t AddPartitionsToTxnTopicResult24) Encode(e *protocol.Encoder, version int
 }
 
 // decode AddPartitionsToTxnTopicResult24; Versions: 0-1
-func (t *AddPartitionsToTxnTopicResult24) Decode(d *protocol.Decoder, version int16) error {
+func (t *AddPartitionsToTxnTopicResult24) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -6892,13 +6836,13 @@ func (t AddPartitionsToTxnPartitionResult24) Size(version int16) int32 {
 }
 
 // encode AddPartitionsToTxnPartitionResult24; Versions: 0-1
-func (t AddPartitionsToTxnPartitionResult24) Encode(e *protocol.Encoder, version int16) {
+func (t AddPartitionsToTxnPartitionResult24) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 }
 
 // decode AddPartitionsToTxnPartitionResult24; Versions: 0-1
-func (t *AddPartitionsToTxnPartitionResult24) Decode(d *protocol.Decoder, version int16) error {
+func (t *AddPartitionsToTxnPartitionResult24) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -6930,7 +6874,7 @@ func (t AddOffsetsToTxnRequest) Size(version int16) int32 {
 }
 
 // encode AddOffsetsToTxnRequest; Versions: 0-1
-func (t AddOffsetsToTxnRequest) Encode(e *protocol.Encoder, version int16) {
+func (t AddOffsetsToTxnRequest) Encode(e *Encoder, version int16) {
 	e.PutString(t.TransactionalId) // TransactionalId
 	e.PutInt64(t.ProducerId)       // ProducerId
 	e.PutInt16(t.ProducerEpoch)    // ProducerEpoch
@@ -6938,7 +6882,7 @@ func (t AddOffsetsToTxnRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode AddOffsetsToTxnRequest; Versions: 0-1
-func (t *AddOffsetsToTxnRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *AddOffsetsToTxnRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.TransactionalId, err = d.String()
 	if err != nil {
@@ -6974,13 +6918,13 @@ func (t AddOffsetsToTxnResponse) Size(version int16) int32 {
 }
 
 // encode AddOffsetsToTxnResponse; Versions: 0-1
-func (t AddOffsetsToTxnResponse) Encode(e *protocol.Encoder, version int16) {
+func (t AddOffsetsToTxnResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 }
 
 // decode AddOffsetsToTxnResponse; Versions: 0-1
-func (t *AddOffsetsToTxnResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *AddOffsetsToTxnResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -7012,7 +6956,7 @@ func (t EndTxnRequest) Size(version int16) int32 {
 }
 
 // encode EndTxnRequest; Versions: 0-1
-func (t EndTxnRequest) Encode(e *protocol.Encoder, version int16) {
+func (t EndTxnRequest) Encode(e *Encoder, version int16) {
 	e.PutString(t.TransactionalId) // TransactionalId
 	e.PutInt64(t.ProducerId)       // ProducerId
 	e.PutInt16(t.ProducerEpoch)    // ProducerEpoch
@@ -7020,7 +6964,7 @@ func (t EndTxnRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode EndTxnRequest; Versions: 0-1
-func (t *EndTxnRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *EndTxnRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.TransactionalId, err = d.String()
 	if err != nil {
@@ -7056,13 +7000,13 @@ func (t EndTxnResponse) Size(version int16) int32 {
 }
 
 // encode EndTxnResponse; Versions: 0-1
-func (t EndTxnResponse) Encode(e *protocol.Encoder, version int16) {
+func (t EndTxnResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 }
 
 // decode EndTxnResponse; Versions: 0-1
-func (t *EndTxnResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *EndTxnResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -7091,7 +7035,7 @@ func (t WriteTxnMarkersRequest) Size(version int16) int32 {
 }
 
 // encode WriteTxnMarkersRequest; Versions: 0
-func (t WriteTxnMarkersRequest) Encode(e *protocol.Encoder, version int16) {
+func (t WriteTxnMarkersRequest) Encode(e *Encoder, version int16) {
 	// Markers
 	len0 := len(t.Markers)
 	e.PutArrayLength(len0)
@@ -7101,7 +7045,7 @@ func (t WriteTxnMarkersRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode WriteTxnMarkersRequest; Versions: 0
-func (t *WriteTxnMarkersRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *WriteTxnMarkersRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	// Markers
 	if n, err := d.ArrayLength(); err != nil {
@@ -7142,7 +7086,7 @@ func (t WritableTxnMarker27) Size(version int16) int32 {
 }
 
 // encode WritableTxnMarker27; Versions: 0
-func (t WritableTxnMarker27) Encode(e *protocol.Encoder, version int16) {
+func (t WritableTxnMarker27) Encode(e *Encoder, version int16) {
 	e.PutInt64(t.ProducerId)       // ProducerId
 	e.PutInt16(t.ProducerEpoch)    // ProducerEpoch
 	e.PutBool(t.TransactionResult) // TransactionResult
@@ -7156,7 +7100,7 @@ func (t WritableTxnMarker27) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode WritableTxnMarker27; Versions: 0
-func (t *WritableTxnMarker27) Decode(d *protocol.Decoder, version int16) error {
+func (t *WritableTxnMarker27) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ProducerId, err = d.Int64()
 	if err != nil {
@@ -7204,13 +7148,13 @@ func (t WritableTxnMarkerTopic27) Size(version int16) int32 {
 }
 
 // encode WritableTxnMarkerTopic27; Versions: 0
-func (t WritableTxnMarkerTopic27) Encode(e *protocol.Encoder, version int16) {
+func (t WritableTxnMarkerTopic27) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name)                 // Name
 	e.PutInt32Array(t.PartitionIndexes) // PartitionIndexes
 }
 
 // decode WritableTxnMarkerTopic27; Versions: 0
-func (t *WritableTxnMarkerTopic27) Decode(d *protocol.Decoder, version int16) error {
+func (t *WritableTxnMarkerTopic27) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -7239,7 +7183,7 @@ func (t WriteTxnMarkersResponse) Size(version int16) int32 {
 }
 
 // encode WriteTxnMarkersResponse; Versions: 0
-func (t WriteTxnMarkersResponse) Encode(e *protocol.Encoder, version int16) {
+func (t WriteTxnMarkersResponse) Encode(e *Encoder, version int16) {
 	// Markers
 	len0 := len(t.Markers)
 	e.PutArrayLength(len0)
@@ -7249,7 +7193,7 @@ func (t WriteTxnMarkersResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode WriteTxnMarkersResponse; Versions: 0
-func (t *WriteTxnMarkersResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *WriteTxnMarkersResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	// Markers
 	if n, err := d.ArrayLength(); err != nil {
@@ -7284,7 +7228,7 @@ func (t WritableTxnMarkerResult27) Size(version int16) int32 {
 }
 
 // encode WritableTxnMarkerResult27; Versions: 0
-func (t WritableTxnMarkerResult27) Encode(e *protocol.Encoder, version int16) {
+func (t WritableTxnMarkerResult27) Encode(e *Encoder, version int16) {
 	e.PutInt64(t.ProducerId) // ProducerId
 	// Topics
 	len1 := len(t.Topics)
@@ -7295,7 +7239,7 @@ func (t WritableTxnMarkerResult27) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode WritableTxnMarkerResult27; Versions: 0
-func (t *WritableTxnMarkerResult27) Decode(d *protocol.Decoder, version int16) error {
+func (t *WritableTxnMarkerResult27) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ProducerId, err = d.Int64()
 	if err != nil {
@@ -7334,7 +7278,7 @@ func (t WritableTxnMarkerTopicResult27) Size(version int16) int32 {
 }
 
 // encode WritableTxnMarkerTopicResult27; Versions: 0
-func (t WritableTxnMarkerTopicResult27) Encode(e *protocol.Encoder, version int16) {
+func (t WritableTxnMarkerTopicResult27) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -7345,7 +7289,7 @@ func (t WritableTxnMarkerTopicResult27) Encode(e *protocol.Encoder, version int1
 }
 
 // decode WritableTxnMarkerTopicResult27; Versions: 0
-func (t *WritableTxnMarkerTopicResult27) Decode(d *protocol.Decoder, version int16) error {
+func (t *WritableTxnMarkerTopicResult27) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -7381,13 +7325,13 @@ func (t WritableTxnMarkerPartitionResult27) Size(version int16) int32 {
 }
 
 // encode WritableTxnMarkerPartitionResult27; Versions: 0
-func (t WritableTxnMarkerPartitionResult27) Encode(e *protocol.Encoder, version int16) {
+func (t WritableTxnMarkerPartitionResult27) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 }
 
 // decode WritableTxnMarkerPartitionResult27; Versions: 0
-func (t *WritableTxnMarkerPartitionResult27) Decode(d *protocol.Decoder, version int16) error {
+func (t *WritableTxnMarkerPartitionResult27) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -7424,7 +7368,7 @@ func (t TxnOffsetCommitRequest) Size(version int16) int32 {
 }
 
 // encode TxnOffsetCommitRequest; Versions: 0-2
-func (t TxnOffsetCommitRequest) Encode(e *protocol.Encoder, version int16) {
+func (t TxnOffsetCommitRequest) Encode(e *Encoder, version int16) {
 	e.PutString(t.TransactionalId) // TransactionalId
 	e.PutString(t.GroupId)         // GroupId
 	e.PutInt64(t.ProducerId)       // ProducerId
@@ -7438,7 +7382,7 @@ func (t TxnOffsetCommitRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode TxnOffsetCommitRequest; Versions: 0-2
-func (t *TxnOffsetCommitRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *TxnOffsetCommitRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.TransactionalId, err = d.String()
 	if err != nil {
@@ -7489,7 +7433,7 @@ func (t TxnOffsetCommitRequestTopic28) Size(version int16) int32 {
 }
 
 // encode TxnOffsetCommitRequestTopic28; Versions: 0-2
-func (t TxnOffsetCommitRequestTopic28) Encode(e *protocol.Encoder, version int16) {
+func (t TxnOffsetCommitRequestTopic28) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -7500,7 +7444,7 @@ func (t TxnOffsetCommitRequestTopic28) Encode(e *protocol.Encoder, version int16
 }
 
 // decode TxnOffsetCommitRequestTopic28; Versions: 0-2
-func (t *TxnOffsetCommitRequestTopic28) Decode(d *protocol.Decoder, version int16) error {
+func (t *TxnOffsetCommitRequestTopic28) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -7542,7 +7486,7 @@ func (t TxnOffsetCommitRequestPartition28) Size(version int16) int32 {
 }
 
 // encode TxnOffsetCommitRequestPartition28; Versions: 0-2
-func (t TxnOffsetCommitRequestPartition28) Encode(e *protocol.Encoder, version int16) {
+func (t TxnOffsetCommitRequestPartition28) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex)  // PartitionIndex
 	e.PutInt64(t.CommittedOffset) // CommittedOffset
 	if version >= 2 {
@@ -7552,7 +7496,7 @@ func (t TxnOffsetCommitRequestPartition28) Encode(e *protocol.Encoder, version i
 }
 
 // decode TxnOffsetCommitRequestPartition28; Versions: 0-2
-func (t *TxnOffsetCommitRequestPartition28) Decode(d *protocol.Decoder, version int16) error {
+func (t *TxnOffsetCommitRequestPartition28) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -7593,7 +7537,7 @@ func (t TxnOffsetCommitResponse) Size(version int16) int32 {
 }
 
 // encode TxnOffsetCommitResponse; Versions: 0-2
-func (t TxnOffsetCommitResponse) Encode(e *protocol.Encoder, version int16) {
+func (t TxnOffsetCommitResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Topics
 	len1 := len(t.Topics)
@@ -7604,7 +7548,7 @@ func (t TxnOffsetCommitResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode TxnOffsetCommitResponse; Versions: 0-2
-func (t *TxnOffsetCommitResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *TxnOffsetCommitResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -7643,7 +7587,7 @@ func (t TxnOffsetCommitResponseTopic28) Size(version int16) int32 {
 }
 
 // encode TxnOffsetCommitResponseTopic28; Versions: 0-2
-func (t TxnOffsetCommitResponseTopic28) Encode(e *protocol.Encoder, version int16) {
+func (t TxnOffsetCommitResponseTopic28) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -7654,7 +7598,7 @@ func (t TxnOffsetCommitResponseTopic28) Encode(e *protocol.Encoder, version int1
 }
 
 // decode TxnOffsetCommitResponseTopic28; Versions: 0-2
-func (t *TxnOffsetCommitResponseTopic28) Decode(d *protocol.Decoder, version int16) error {
+func (t *TxnOffsetCommitResponseTopic28) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -7690,13 +7634,13 @@ func (t TxnOffsetCommitResponsePartition28) Size(version int16) int32 {
 }
 
 // encode TxnOffsetCommitResponsePartition28; Versions: 0-2
-func (t TxnOffsetCommitResponsePartition28) Encode(e *protocol.Encoder, version int16) {
+func (t TxnOffsetCommitResponsePartition28) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 }
 
 // decode TxnOffsetCommitResponsePartition28; Versions: 0-2
-func (t *TxnOffsetCommitResponsePartition28) Decode(d *protocol.Decoder, version int16) error {
+func (t *TxnOffsetCommitResponsePartition28) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -7736,7 +7680,7 @@ func (t DescribeAclsRequest) Size(version int16) int32 {
 }
 
 // encode DescribeAclsRequest; Versions: 0-1
-func (t DescribeAclsRequest) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeAclsRequest) Encode(e *Encoder, version int16) {
 	e.PutInt8(t.ResourceType)         // ResourceType
 	e.PutString(t.ResourceNameFilter) // ResourceNameFilter
 	if version >= 1 {
@@ -7749,7 +7693,7 @@ func (t DescribeAclsRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeAclsRequest; Versions: 0-1
-func (t *DescribeAclsRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeAclsRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ResourceType, err = d.Int8()
 	if err != nil {
@@ -7806,7 +7750,7 @@ func (t DescribeAclsResponse) Size(version int16) int32 {
 }
 
 // encode DescribeAclsResponse; Versions: 0-1
-func (t DescribeAclsResponse) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeAclsResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	e.PutString(t.ErrorMessage)  // ErrorMessage
@@ -7819,7 +7763,7 @@ func (t DescribeAclsResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeAclsResponse; Versions: 0-1
-func (t *DescribeAclsResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeAclsResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -7872,7 +7816,7 @@ func (t DescribeAclsResource29) Size(version int16) int32 {
 }
 
 // encode DescribeAclsResource29; Versions: 0-1
-func (t DescribeAclsResource29) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeAclsResource29) Encode(e *Encoder, version int16) {
 	e.PutInt8(t.Type)   // Type
 	e.PutString(t.Name) // Name
 	if version >= 1 {
@@ -7887,7 +7831,7 @@ func (t DescribeAclsResource29) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeAclsResource29; Versions: 0-1
-func (t *DescribeAclsResource29) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeAclsResource29) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Type, err = d.Int8()
 	if err != nil {
@@ -7937,7 +7881,7 @@ func (t AclDescription29) Size(version int16) int32 {
 }
 
 // encode AclDescription29; Versions: 0-1
-func (t AclDescription29) Encode(e *protocol.Encoder, version int16) {
+func (t AclDescription29) Encode(e *Encoder, version int16) {
 	e.PutString(t.Principal)    // Principal
 	e.PutString(t.Host)         // Host
 	e.PutInt8(t.Operation)      // Operation
@@ -7945,7 +7889,7 @@ func (t AclDescription29) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode AclDescription29; Versions: 0-1
-func (t *AclDescription29) Decode(d *protocol.Decoder, version int16) error {
+func (t *AclDescription29) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Principal, err = d.String()
 	if err != nil {
@@ -7982,7 +7926,7 @@ func (t CreateAclsRequest) Size(version int16) int32 {
 }
 
 // encode CreateAclsRequest; Versions: 0-1
-func (t CreateAclsRequest) Encode(e *protocol.Encoder, version int16) {
+func (t CreateAclsRequest) Encode(e *Encoder, version int16) {
 	// Creations
 	len0 := len(t.Creations)
 	e.PutArrayLength(len0)
@@ -7992,7 +7936,7 @@ func (t CreateAclsRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode CreateAclsRequest; Versions: 0-1
-func (t *CreateAclsRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreateAclsRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	// Creations
 	if n, err := d.ArrayLength(); err != nil {
@@ -8036,7 +7980,7 @@ func (t CreatableAcl30) Size(version int16) int32 {
 }
 
 // encode CreatableAcl30; Versions: 0-1
-func (t CreatableAcl30) Encode(e *protocol.Encoder, version int16) {
+func (t CreatableAcl30) Encode(e *Encoder, version int16) {
 	e.PutInt8(t.ResourceType)   // ResourceType
 	e.PutString(t.ResourceName) // ResourceName
 	if version >= 1 {
@@ -8049,7 +7993,7 @@ func (t CreatableAcl30) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode CreatableAcl30; Versions: 0-1
-func (t *CreatableAcl30) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreatableAcl30) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ResourceType, err = d.Int8()
 	if err != nil {
@@ -8102,7 +8046,7 @@ func (t CreateAclsResponse) Size(version int16) int32 {
 }
 
 // encode CreateAclsResponse; Versions: 0-1
-func (t CreateAclsResponse) Encode(e *protocol.Encoder, version int16) {
+func (t CreateAclsResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Results
 	len1 := len(t.Results)
@@ -8113,7 +8057,7 @@ func (t CreateAclsResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode CreateAclsResponse; Versions: 0-1
-func (t *CreateAclsResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreateAclsResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -8149,13 +8093,13 @@ func (t CreatableAclResult30) Size(version int16) int32 {
 }
 
 // encode CreatableAclResult30; Versions: 0-1
-func (t CreatableAclResult30) Encode(e *protocol.Encoder, version int16) {
+func (t CreatableAclResult30) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)     // ErrorCode
 	e.PutString(t.ErrorMessage) // ErrorMessage
 }
 
 // decode CreatableAclResult30; Versions: 0-1
-func (t *CreatableAclResult30) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreatableAclResult30) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -8184,7 +8128,7 @@ func (t DeleteAclsRequest) Size(version int16) int32 {
 }
 
 // encode DeleteAclsRequest; Versions: 0-1
-func (t DeleteAclsRequest) Encode(e *protocol.Encoder, version int16) {
+func (t DeleteAclsRequest) Encode(e *Encoder, version int16) {
 	// Filters
 	len0 := len(t.Filters)
 	e.PutArrayLength(len0)
@@ -8194,7 +8138,7 @@ func (t DeleteAclsRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DeleteAclsRequest; Versions: 0-1
-func (t *DeleteAclsRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteAclsRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	// Filters
 	if n, err := d.ArrayLength(); err != nil {
@@ -8238,7 +8182,7 @@ func (t DeleteAclsFilter31) Size(version int16) int32 {
 }
 
 // encode DeleteAclsFilter31; Versions: 0-1
-func (t DeleteAclsFilter31) Encode(e *protocol.Encoder, version int16) {
+func (t DeleteAclsFilter31) Encode(e *Encoder, version int16) {
 	e.PutInt8(t.ResourceTypeFilter)   // ResourceTypeFilter
 	e.PutString(t.ResourceNameFilter) // ResourceNameFilter
 	if version >= 1 {
@@ -8251,7 +8195,7 @@ func (t DeleteAclsFilter31) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DeleteAclsFilter31; Versions: 0-1
-func (t *DeleteAclsFilter31) Decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteAclsFilter31) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ResourceTypeFilter, err = d.Int8()
 	if err != nil {
@@ -8304,7 +8248,7 @@ func (t DeleteAclsResponse) Size(version int16) int32 {
 }
 
 // encode DeleteAclsResponse; Versions: 0-1
-func (t DeleteAclsResponse) Encode(e *protocol.Encoder, version int16) {
+func (t DeleteAclsResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// FilterResults
 	len1 := len(t.FilterResults)
@@ -8315,7 +8259,7 @@ func (t DeleteAclsResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DeleteAclsResponse; Versions: 0-1
-func (t *DeleteAclsResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteAclsResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -8356,7 +8300,7 @@ func (t DeleteAclsFilterResult31) Size(version int16) int32 {
 }
 
 // encode DeleteAclsFilterResult31; Versions: 0-1
-func (t DeleteAclsFilterResult31) Encode(e *protocol.Encoder, version int16) {
+func (t DeleteAclsFilterResult31) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)     // ErrorCode
 	e.PutString(t.ErrorMessage) // ErrorMessage
 	// MatchingAcls
@@ -8368,7 +8312,7 @@ func (t DeleteAclsFilterResult31) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DeleteAclsFilterResult31; Versions: 0-1
-func (t *DeleteAclsFilterResult31) Decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteAclsFilterResult31) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -8424,7 +8368,7 @@ func (t DeleteAclsMatchingAcl31) Size(version int16) int32 {
 }
 
 // encode DeleteAclsMatchingAcl31; Versions: 0-1
-func (t DeleteAclsMatchingAcl31) Encode(e *protocol.Encoder, version int16) {
+func (t DeleteAclsMatchingAcl31) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)     // ErrorCode
 	e.PutString(t.ErrorMessage) // ErrorMessage
 	e.PutInt8(t.ResourceType)   // ResourceType
@@ -8439,7 +8383,7 @@ func (t DeleteAclsMatchingAcl31) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DeleteAclsMatchingAcl31; Versions: 0-1
-func (t *DeleteAclsMatchingAcl31) Decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteAclsMatchingAcl31) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -8502,7 +8446,7 @@ func (t DescribeConfigsRequest) Size(version int16) int32 {
 }
 
 // encode DescribeConfigsRequest; Versions: 0-2
-func (t DescribeConfigsRequest) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeConfigsRequest) Encode(e *Encoder, version int16) {
 	// Resources
 	len0 := len(t.Resources)
 	e.PutArrayLength(len0)
@@ -8515,7 +8459,7 @@ func (t DescribeConfigsRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeConfigsRequest; Versions: 0-2
-func (t *DescribeConfigsRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeConfigsRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	// Resources
 	if n, err := d.ArrayLength(); err != nil {
@@ -8555,14 +8499,14 @@ func (t DescribeConfigsResource32) Size(version int16) int32 {
 }
 
 // encode DescribeConfigsResource32; Versions: 0-2
-func (t DescribeConfigsResource32) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeConfigsResource32) Encode(e *Encoder, version int16) {
 	e.PutInt8(t.ResourceType)             // ResourceType
 	e.PutString(t.ResourceName)           // ResourceName
 	e.PutStringArray(t.ConfigurationKeys) // ConfigurationKeys
 }
 
 // decode DescribeConfigsResource32; Versions: 0-2
-func (t *DescribeConfigsResource32) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeConfigsResource32) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ResourceType, err = d.Int8()
 	if err != nil {
@@ -8597,7 +8541,7 @@ func (t DescribeConfigsResponse) Size(version int16) int32 {
 }
 
 // encode DescribeConfigsResponse; Versions: 0-2
-func (t DescribeConfigsResponse) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeConfigsResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Results
 	len1 := len(t.Results)
@@ -8608,7 +8552,7 @@ func (t DescribeConfigsResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeConfigsResponse; Versions: 0-2
-func (t *DescribeConfigsResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeConfigsResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -8653,7 +8597,7 @@ func (t DescribeConfigsResult32) Size(version int16) int32 {
 }
 
 // encode DescribeConfigsResult32; Versions: 0-2
-func (t DescribeConfigsResult32) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeConfigsResult32) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)     // ErrorCode
 	e.PutString(t.ErrorMessage) // ErrorMessage
 	e.PutInt8(t.ResourceType)   // ResourceType
@@ -8667,7 +8611,7 @@ func (t DescribeConfigsResult32) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeConfigsResult32; Versions: 0-2
-func (t *DescribeConfigsResult32) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeConfigsResult32) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -8734,7 +8678,7 @@ func (t DescribeConfigsResourceResult32) Size(version int16) int32 {
 }
 
 // encode DescribeConfigsResourceResult32; Versions: 0-2
-func (t DescribeConfigsResourceResult32) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeConfigsResourceResult32) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name)   // Name
 	e.PutString(t.Value)  // Value
 	e.PutBool(t.ReadOnly) // ReadOnly
@@ -8756,7 +8700,7 @@ func (t DescribeConfigsResourceResult32) Encode(e *protocol.Encoder, version int
 }
 
 // decode DescribeConfigsResourceResult32; Versions: 0-2
-func (t *DescribeConfigsResourceResult32) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeConfigsResourceResult32) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -8826,7 +8770,7 @@ func (t DescribeConfigsSynonym32) Size(version int16) int32 {
 }
 
 // encode DescribeConfigsSynonym32; Versions: 0-2
-func (t DescribeConfigsSynonym32) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeConfigsSynonym32) Encode(e *Encoder, version int16) {
 	if version >= 1 {
 		e.PutString(t.Name) // Name
 	}
@@ -8839,7 +8783,7 @@ func (t DescribeConfigsSynonym32) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeConfigsSynonym32; Versions: 0-2
-func (t *DescribeConfigsSynonym32) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeConfigsSynonym32) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.Name, err = d.String()
@@ -8880,7 +8824,7 @@ func (t AlterConfigsRequest) Size(version int16) int32 {
 }
 
 // encode AlterConfigsRequest; Versions: 0-1
-func (t AlterConfigsRequest) Encode(e *protocol.Encoder, version int16) {
+func (t AlterConfigsRequest) Encode(e *Encoder, version int16) {
 	// Resources
 	len0 := len(t.Resources)
 	e.PutArrayLength(len0)
@@ -8891,7 +8835,7 @@ func (t AlterConfigsRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode AlterConfigsRequest; Versions: 0-1
-func (t *AlterConfigsRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *AlterConfigsRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	// Resources
 	if n, err := d.ArrayLength(); err != nil {
@@ -8932,7 +8876,7 @@ func (t AlterConfigsResource33) Size(version int16) int32 {
 }
 
 // encode AlterConfigsResource33; Versions: 0-1
-func (t AlterConfigsResource33) Encode(e *protocol.Encoder, version int16) {
+func (t AlterConfigsResource33) Encode(e *Encoder, version int16) {
 	e.PutInt8(t.ResourceType)   // ResourceType
 	e.PutString(t.ResourceName) // ResourceName
 	// Configs
@@ -8944,7 +8888,7 @@ func (t AlterConfigsResource33) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode AlterConfigsResource33; Versions: 0-1
-func (t *AlterConfigsResource33) Decode(d *protocol.Decoder, version int16) error {
+func (t *AlterConfigsResource33) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ResourceType, err = d.Int8()
 	if err != nil {
@@ -8984,13 +8928,13 @@ func (t AlterableConfig33) Size(version int16) int32 {
 }
 
 // encode AlterableConfig33; Versions: 0-1
-func (t AlterableConfig33) Encode(e *protocol.Encoder, version int16) {
+func (t AlterableConfig33) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name)  // Name
 	e.PutString(t.Value) // Value
 }
 
 // decode AlterableConfig33; Versions: 0-1
-func (t *AlterableConfig33) Decode(d *protocol.Decoder, version int16) error {
+func (t *AlterableConfig33) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -9021,7 +8965,7 @@ func (t AlterConfigsResponse) Size(version int16) int32 {
 }
 
 // encode AlterConfigsResponse; Versions: 0-1
-func (t AlterConfigsResponse) Encode(e *protocol.Encoder, version int16) {
+func (t AlterConfigsResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Responses
 	len1 := len(t.Responses)
@@ -9032,7 +8976,7 @@ func (t AlterConfigsResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode AlterConfigsResponse; Versions: 0-1
-func (t *AlterConfigsResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *AlterConfigsResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -9072,7 +9016,7 @@ func (t AlterConfigsResourceResponse33) Size(version int16) int32 {
 }
 
 // encode AlterConfigsResourceResponse33; Versions: 0-1
-func (t AlterConfigsResourceResponse33) Encode(e *protocol.Encoder, version int16) {
+func (t AlterConfigsResourceResponse33) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)     // ErrorCode
 	e.PutString(t.ErrorMessage) // ErrorMessage
 	e.PutInt8(t.ResourceType)   // ResourceType
@@ -9080,7 +9024,7 @@ func (t AlterConfigsResourceResponse33) Encode(e *protocol.Encoder, version int1
 }
 
 // decode AlterConfigsResourceResponse33; Versions: 0-1
-func (t *AlterConfigsResourceResponse33) Decode(d *protocol.Decoder, version int16) error {
+func (t *AlterConfigsResourceResponse33) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -9117,7 +9061,7 @@ func (t AlterReplicaLogDirsRequest) Size(version int16) int32 {
 }
 
 // encode AlterReplicaLogDirsRequest; Versions: 0-1
-func (t AlterReplicaLogDirsRequest) Encode(e *protocol.Encoder, version int16) {
+func (t AlterReplicaLogDirsRequest) Encode(e *Encoder, version int16) {
 	// Dirs
 	len0 := len(t.Dirs)
 	e.PutArrayLength(len0)
@@ -9127,7 +9071,7 @@ func (t AlterReplicaLogDirsRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode AlterReplicaLogDirsRequest; Versions: 0-1
-func (t *AlterReplicaLogDirsRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *AlterReplicaLogDirsRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	// Dirs
 	if n, err := d.ArrayLength(); err != nil {
@@ -9162,7 +9106,7 @@ func (t AlterReplicaLogDir34) Size(version int16) int32 {
 }
 
 // encode AlterReplicaLogDir34; Versions: 0-1
-func (t AlterReplicaLogDir34) Encode(e *protocol.Encoder, version int16) {
+func (t AlterReplicaLogDir34) Encode(e *Encoder, version int16) {
 	e.PutString(t.Path) // Path
 	// Topics
 	len1 := len(t.Topics)
@@ -9173,7 +9117,7 @@ func (t AlterReplicaLogDir34) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode AlterReplicaLogDir34; Versions: 0-1
-func (t *AlterReplicaLogDir34) Decode(d *protocol.Decoder, version int16) error {
+func (t *AlterReplicaLogDir34) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Path, err = d.String()
 	if err != nil {
@@ -9209,13 +9153,13 @@ func (t AlterReplicaLogDirTopic34) Size(version int16) int32 {
 }
 
 // encode AlterReplicaLogDirTopic34; Versions: 0-1
-func (t AlterReplicaLogDirTopic34) Encode(e *protocol.Encoder, version int16) {
+func (t AlterReplicaLogDirTopic34) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name)           // Name
 	e.PutInt32Array(t.Partitions) // Partitions
 }
 
 // decode AlterReplicaLogDirTopic34; Versions: 0-1
-func (t *AlterReplicaLogDirTopic34) Decode(d *protocol.Decoder, version int16) error {
+func (t *AlterReplicaLogDirTopic34) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -9246,7 +9190,7 @@ func (t AlterReplicaLogDirsResponse) Size(version int16) int32 {
 }
 
 // encode AlterReplicaLogDirsResponse; Versions: 0-1
-func (t AlterReplicaLogDirsResponse) Encode(e *protocol.Encoder, version int16) {
+func (t AlterReplicaLogDirsResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Results
 	len1 := len(t.Results)
@@ -9257,7 +9201,7 @@ func (t AlterReplicaLogDirsResponse) Encode(e *protocol.Encoder, version int16) 
 }
 
 // decode AlterReplicaLogDirsResponse; Versions: 0-1
-func (t *AlterReplicaLogDirsResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *AlterReplicaLogDirsResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -9296,7 +9240,7 @@ func (t AlterReplicaLogDirTopicResult34) Size(version int16) int32 {
 }
 
 // encode AlterReplicaLogDirTopicResult34; Versions: 0-1
-func (t AlterReplicaLogDirTopicResult34) Encode(e *protocol.Encoder, version int16) {
+func (t AlterReplicaLogDirTopicResult34) Encode(e *Encoder, version int16) {
 	e.PutString(t.TopicName) // TopicName
 	// Partitions
 	len1 := len(t.Partitions)
@@ -9307,7 +9251,7 @@ func (t AlterReplicaLogDirTopicResult34) Encode(e *protocol.Encoder, version int
 }
 
 // decode AlterReplicaLogDirTopicResult34; Versions: 0-1
-func (t *AlterReplicaLogDirTopicResult34) Decode(d *protocol.Decoder, version int16) error {
+func (t *AlterReplicaLogDirTopicResult34) Decode(d *Decoder, version int16) error {
 	var err error
 	t.TopicName, err = d.String()
 	if err != nil {
@@ -9343,13 +9287,13 @@ func (t AlterReplicaLogDirPartitionResult34) Size(version int16) int32 {
 }
 
 // encode AlterReplicaLogDirPartitionResult34; Versions: 0-1
-func (t AlterReplicaLogDirPartitionResult34) Encode(e *protocol.Encoder, version int16) {
+func (t AlterReplicaLogDirPartitionResult34) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 }
 
 // decode AlterReplicaLogDirPartitionResult34; Versions: 0-1
-func (t *AlterReplicaLogDirPartitionResult34) Decode(d *protocol.Decoder, version int16) error {
+func (t *AlterReplicaLogDirPartitionResult34) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -9378,7 +9322,7 @@ func (t DescribeLogDirsRequest) Size(version int16) int32 {
 }
 
 // encode DescribeLogDirsRequest; Versions: 0-1
-func (t DescribeLogDirsRequest) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeLogDirsRequest) Encode(e *Encoder, version int16) {
 	// Topics
 	len0 := len(t.Topics)
 	e.PutArrayLength(len0)
@@ -9388,7 +9332,7 @@ func (t DescribeLogDirsRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeLogDirsRequest; Versions: 0-1
-func (t *DescribeLogDirsRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeLogDirsRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	// Topics
 	if n, err := d.ArrayLength(); err != nil {
@@ -9420,13 +9364,13 @@ func (t DescribableLogDirTopic35) Size(version int16) int32 {
 }
 
 // encode DescribableLogDirTopic35; Versions: 0-1
-func (t DescribableLogDirTopic35) Encode(e *protocol.Encoder, version int16) {
+func (t DescribableLogDirTopic35) Encode(e *Encoder, version int16) {
 	e.PutString(t.Topic)              // Topic
 	e.PutInt32Array(t.PartitionIndex) // PartitionIndex
 }
 
 // decode DescribableLogDirTopic35; Versions: 0-1
-func (t *DescribableLogDirTopic35) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribableLogDirTopic35) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Topic, err = d.String()
 	if err != nil {
@@ -9457,7 +9401,7 @@ func (t DescribeLogDirsResponse) Size(version int16) int32 {
 }
 
 // encode DescribeLogDirsResponse; Versions: 0-1
-func (t DescribeLogDirsResponse) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeLogDirsResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Results
 	len1 := len(t.Results)
@@ -9468,7 +9412,7 @@ func (t DescribeLogDirsResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeLogDirsResponse; Versions: 0-1
-func (t *DescribeLogDirsResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeLogDirsResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -9509,7 +9453,7 @@ func (t DescribeLogDirsResult35) Size(version int16) int32 {
 }
 
 // encode DescribeLogDirsResult35; Versions: 0-1
-func (t DescribeLogDirsResult35) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeLogDirsResult35) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode) // ErrorCode
 	e.PutString(t.LogDir)   // LogDir
 	// Topics
@@ -9521,7 +9465,7 @@ func (t DescribeLogDirsResult35) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeLogDirsResult35; Versions: 0-1
-func (t *DescribeLogDirsResult35) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeLogDirsResult35) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -9564,7 +9508,7 @@ func (t DescribeLogDirsTopic35) Size(version int16) int32 {
 }
 
 // encode DescribeLogDirsTopic35; Versions: 0-1
-func (t DescribeLogDirsTopic35) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeLogDirsTopic35) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -9575,7 +9519,7 @@ func (t DescribeLogDirsTopic35) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeLogDirsTopic35; Versions: 0-1
-func (t *DescribeLogDirsTopic35) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeLogDirsTopic35) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -9615,7 +9559,7 @@ func (t DescribeLogDirsPartition35) Size(version int16) int32 {
 }
 
 // encode DescribeLogDirsPartition35; Versions: 0-1
-func (t DescribeLogDirsPartition35) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeLogDirsPartition35) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt64(t.PartitionSize)  // PartitionSize
 	e.PutInt64(t.OffsetLag)      // OffsetLag
@@ -9623,7 +9567,7 @@ func (t DescribeLogDirsPartition35) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribeLogDirsPartition35; Versions: 0-1
-func (t *DescribeLogDirsPartition35) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeLogDirsPartition35) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -9657,12 +9601,12 @@ func (t SaslAuthenticateRequest) Size(version int16) int32 {
 }
 
 // encode SaslAuthenticateRequest; Versions: 0-1
-func (t SaslAuthenticateRequest) Encode(e *protocol.Encoder, version int16) {
+func (t SaslAuthenticateRequest) Encode(e *Encoder, version int16) {
 	e.PutBytes(t.AuthBytes) // AuthBytes
 }
 
 // decode SaslAuthenticateRequest; Versions: 0-1
-func (t *SaslAuthenticateRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *SaslAuthenticateRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.AuthBytes, err = d.Bytes()
 	if err != nil {
@@ -9692,7 +9636,7 @@ func (t SaslAuthenticateResponse) Size(version int16) int32 {
 }
 
 // encode SaslAuthenticateResponse; Versions: 0-1
-func (t SaslAuthenticateResponse) Encode(e *protocol.Encoder, version int16) {
+func (t SaslAuthenticateResponse) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)     // ErrorCode
 	e.PutString(t.ErrorMessage) // ErrorMessage
 	e.PutBytes(t.AuthBytes)     // AuthBytes
@@ -9702,7 +9646,7 @@ func (t SaslAuthenticateResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode SaslAuthenticateResponse; Versions: 0-1
-func (t *SaslAuthenticateResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *SaslAuthenticateResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -9745,7 +9689,7 @@ func (t CreatePartitionsRequest) Size(version int16) int32 {
 }
 
 // encode CreatePartitionsRequest; Versions: 0-1
-func (t CreatePartitionsRequest) Encode(e *protocol.Encoder, version int16) {
+func (t CreatePartitionsRequest) Encode(e *Encoder, version int16) {
 	// Topics
 	len0 := len(t.Topics)
 	e.PutArrayLength(len0)
@@ -9757,7 +9701,7 @@ func (t CreatePartitionsRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode CreatePartitionsRequest; Versions: 0-1
-func (t *CreatePartitionsRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreatePartitionsRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	// Topics
 	if n, err := d.ArrayLength(); err != nil {
@@ -9802,7 +9746,7 @@ func (t CreatePartitionsTopic37) Size(version int16) int32 {
 }
 
 // encode CreatePartitionsTopic37; Versions: 0-1
-func (t CreatePartitionsTopic37) Encode(e *protocol.Encoder, version int16) {
+func (t CreatePartitionsTopic37) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	e.PutInt32(t.Count) // Count
 	// Assignments
@@ -9814,7 +9758,7 @@ func (t CreatePartitionsTopic37) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode CreatePartitionsTopic37; Versions: 0-1
-func (t *CreatePartitionsTopic37) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreatePartitionsTopic37) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -9852,12 +9796,12 @@ func (t CreatePartitionsAssignment37) Size(version int16) int32 {
 }
 
 // encode CreatePartitionsAssignment37; Versions: 0-1
-func (t CreatePartitionsAssignment37) Encode(e *protocol.Encoder, version int16) {
+func (t CreatePartitionsAssignment37) Encode(e *Encoder, version int16) {
 	e.PutInt32Array(t.BrokerIds) // BrokerIds
 }
 
 // decode CreatePartitionsAssignment37; Versions: 0-1
-func (t *CreatePartitionsAssignment37) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreatePartitionsAssignment37) Decode(d *Decoder, version int16) error {
 	var err error
 	t.BrokerIds, err = d.Int32Array()
 	if err != nil {
@@ -9884,7 +9828,7 @@ func (t CreatePartitionsResponse) Size(version int16) int32 {
 }
 
 // encode CreatePartitionsResponse; Versions: 0-1
-func (t CreatePartitionsResponse) Encode(e *protocol.Encoder, version int16) {
+func (t CreatePartitionsResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Results
 	len1 := len(t.Results)
@@ -9895,7 +9839,7 @@ func (t CreatePartitionsResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode CreatePartitionsResponse; Versions: 0-1
-func (t *CreatePartitionsResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreatePartitionsResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -9933,14 +9877,14 @@ func (t CreatePartitionsTopicResult37) Size(version int16) int32 {
 }
 
 // encode CreatePartitionsTopicResult37; Versions: 0-1
-func (t CreatePartitionsTopicResult37) Encode(e *protocol.Encoder, version int16) {
+func (t CreatePartitionsTopicResult37) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name)         // Name
 	e.PutInt16(t.ErrorCode)     // ErrorCode
 	e.PutString(t.ErrorMessage) // ErrorMessage
 }
 
 // decode CreatePartitionsTopicResult37; Versions: 0-1
-func (t *CreatePartitionsTopicResult37) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreatePartitionsTopicResult37) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -9975,7 +9919,7 @@ func (t CreateDelegationTokenRequest) Size(version int16) int32 {
 }
 
 // encode CreateDelegationTokenRequest; Versions: 0-2
-func (t CreateDelegationTokenRequest) Encode(e *protocol.Encoder, version int16) {
+func (t CreateDelegationTokenRequest) Encode(e *Encoder, version int16) {
 	// Renewers
 	len0 := len(t.Renewers)
 	e.PutArrayLength(len0)
@@ -9986,7 +9930,7 @@ func (t CreateDelegationTokenRequest) Encode(e *protocol.Encoder, version int16)
 }
 
 // decode CreateDelegationTokenRequest; Versions: 0-2
-func (t *CreateDelegationTokenRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreateDelegationTokenRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	// Renewers
 	if n, err := d.ArrayLength(); err != nil {
@@ -10022,13 +9966,13 @@ func (t CreatableRenewers38) Size(version int16) int32 {
 }
 
 // encode CreatableRenewers38; Versions: 0-2
-func (t CreatableRenewers38) Encode(e *protocol.Encoder, version int16) {
+func (t CreatableRenewers38) Encode(e *Encoder, version int16) {
 	e.PutString(t.PrincipalType) // PrincipalType
 	e.PutString(t.PrincipalName) // PrincipalName
 }
 
 // decode CreatableRenewers38; Versions: 0-2
-func (t *CreatableRenewers38) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreatableRenewers38) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PrincipalType, err = d.String()
 	if err != nil {
@@ -10070,7 +10014,7 @@ func (t CreateDelegationTokenResponse) Size(version int16) int32 {
 }
 
 // encode CreateDelegationTokenResponse; Versions: 0-2
-func (t CreateDelegationTokenResponse) Encode(e *protocol.Encoder, version int16) {
+func (t CreateDelegationTokenResponse) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)         // ErrorCode
 	e.PutString(t.PrincipalType)    // PrincipalType
 	e.PutString(t.PrincipalName)    // PrincipalName
@@ -10083,7 +10027,7 @@ func (t CreateDelegationTokenResponse) Encode(e *protocol.Encoder, version int16
 }
 
 // decode CreateDelegationTokenResponse; Versions: 0-2
-func (t *CreateDelegationTokenResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *CreateDelegationTokenResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -10139,13 +10083,13 @@ func (t RenewDelegationTokenRequest) Size(version int16) int32 {
 }
 
 // encode RenewDelegationTokenRequest; Versions: 0-1
-func (t RenewDelegationTokenRequest) Encode(e *protocol.Encoder, version int16) {
+func (t RenewDelegationTokenRequest) Encode(e *Encoder, version int16) {
 	e.PutBytes(t.Hmac)          // Hmac
 	e.PutInt64(t.RenewPeriodMs) // RenewPeriodMs
 }
 
 // decode RenewDelegationTokenRequest; Versions: 0-1
-func (t *RenewDelegationTokenRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *RenewDelegationTokenRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Hmac, err = d.Bytes()
 	if err != nil {
@@ -10175,14 +10119,14 @@ func (t RenewDelegationTokenResponse) Size(version int16) int32 {
 }
 
 // encode RenewDelegationTokenResponse; Versions: 0-1
-func (t RenewDelegationTokenResponse) Encode(e *protocol.Encoder, version int16) {
+func (t RenewDelegationTokenResponse) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)         // ErrorCode
 	e.PutInt64(t.ExpiryTimestampMs) // ExpiryTimestampMs
 	e.PutInt32(t.ThrottleTimeMs)    // ThrottleTimeMs
 }
 
 // decode RenewDelegationTokenResponse; Versions: 0-1
-func (t *RenewDelegationTokenResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *RenewDelegationTokenResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -10214,13 +10158,13 @@ func (t ExpireDelegationTokenRequest) Size(version int16) int32 {
 }
 
 // encode ExpireDelegationTokenRequest; Versions: 0-1
-func (t ExpireDelegationTokenRequest) Encode(e *protocol.Encoder, version int16) {
+func (t ExpireDelegationTokenRequest) Encode(e *Encoder, version int16) {
 	e.PutBytes(t.Hmac)               // Hmac
 	e.PutInt64(t.ExpiryTimePeriodMs) // ExpiryTimePeriodMs
 }
 
 // decode ExpireDelegationTokenRequest; Versions: 0-1
-func (t *ExpireDelegationTokenRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *ExpireDelegationTokenRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Hmac, err = d.Bytes()
 	if err != nil {
@@ -10250,14 +10194,14 @@ func (t ExpireDelegationTokenResponse) Size(version int16) int32 {
 }
 
 // encode ExpireDelegationTokenResponse; Versions: 0-1
-func (t ExpireDelegationTokenResponse) Encode(e *protocol.Encoder, version int16) {
+func (t ExpireDelegationTokenResponse) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)         // ErrorCode
 	e.PutInt64(t.ExpiryTimestampMs) // ExpiryTimestampMs
 	e.PutInt32(t.ThrottleTimeMs)    // ThrottleTimeMs
 }
 
 // decode ExpireDelegationTokenResponse; Versions: 0-1
-func (t *ExpireDelegationTokenResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *ExpireDelegationTokenResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -10290,7 +10234,7 @@ func (t DescribeDelegationTokenRequest) Size(version int16) int32 {
 }
 
 // encode DescribeDelegationTokenRequest; Versions: 0-1
-func (t DescribeDelegationTokenRequest) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeDelegationTokenRequest) Encode(e *Encoder, version int16) {
 	// Owners
 	len0 := len(t.Owners)
 	e.PutArrayLength(len0)
@@ -10300,7 +10244,7 @@ func (t DescribeDelegationTokenRequest) Encode(e *protocol.Encoder, version int1
 }
 
 // decode DescribeDelegationTokenRequest; Versions: 0-1
-func (t *DescribeDelegationTokenRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeDelegationTokenRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	// Owners
 	if n, err := d.ArrayLength(); err != nil {
@@ -10332,13 +10276,13 @@ func (t DescribeDelegationTokenOwner41) Size(version int16) int32 {
 }
 
 // encode DescribeDelegationTokenOwner41; Versions: 0-1
-func (t DescribeDelegationTokenOwner41) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeDelegationTokenOwner41) Encode(e *Encoder, version int16) {
 	e.PutString(t.PrincipalType) // PrincipalType
 	e.PutString(t.PrincipalName) // PrincipalName
 }
 
 // decode DescribeDelegationTokenOwner41; Versions: 0-1
-func (t *DescribeDelegationTokenOwner41) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeDelegationTokenOwner41) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PrincipalType, err = d.String()
 	if err != nil {
@@ -10371,7 +10315,7 @@ func (t DescribeDelegationTokenResponse) Size(version int16) int32 {
 }
 
 // encode DescribeDelegationTokenResponse; Versions: 0-1
-func (t DescribeDelegationTokenResponse) Encode(e *protocol.Encoder, version int16) {
+func (t DescribeDelegationTokenResponse) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode) // ErrorCode
 	// Tokens
 	len1 := len(t.Tokens)
@@ -10383,7 +10327,7 @@ func (t DescribeDelegationTokenResponse) Encode(e *protocol.Encoder, version int
 }
 
 // decode DescribeDelegationTokenResponse; Versions: 0-1
-func (t *DescribeDelegationTokenResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribeDelegationTokenResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -10438,7 +10382,7 @@ func (t DescribedDelegationToken41) Size(version int16) int32 {
 }
 
 // encode DescribedDelegationToken41; Versions: 0-1
-func (t DescribedDelegationToken41) Encode(e *protocol.Encoder, version int16) {
+func (t DescribedDelegationToken41) Encode(e *Encoder, version int16) {
 	e.PutString(t.PrincipalType)  // PrincipalType
 	e.PutString(t.PrincipalName)  // PrincipalName
 	e.PutInt64(t.IssueTimestamp)  // IssueTimestamp
@@ -10455,7 +10399,7 @@ func (t DescribedDelegationToken41) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DescribedDelegationToken41; Versions: 0-1
-func (t *DescribedDelegationToken41) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribedDelegationToken41) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PrincipalType, err = d.String()
 	if err != nil {
@@ -10515,13 +10459,13 @@ func (t DescribedDelegationTokenRenewer41) Size(version int16) int32 {
 }
 
 // encode DescribedDelegationTokenRenewer41; Versions: 0-1
-func (t DescribedDelegationTokenRenewer41) Encode(e *protocol.Encoder, version int16) {
+func (t DescribedDelegationTokenRenewer41) Encode(e *Encoder, version int16) {
 	e.PutString(t.PrincipalType) // PrincipalType
 	e.PutString(t.PrincipalName) // PrincipalName
 }
 
 // decode DescribedDelegationTokenRenewer41; Versions: 0-1
-func (t *DescribedDelegationTokenRenewer41) Decode(d *protocol.Decoder, version int16) error {
+func (t *DescribedDelegationTokenRenewer41) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PrincipalType, err = d.String()
 	if err != nil {
@@ -10547,12 +10491,12 @@ func (t DeleteGroupsRequest) Size(version int16) int32 {
 }
 
 // encode DeleteGroupsRequest; Versions: 0-2
-func (t DeleteGroupsRequest) Encode(e *protocol.Encoder, version int16) {
+func (t DeleteGroupsRequest) Encode(e *Encoder, version int16) {
 	e.PutStringArray(t.GroupsNames) // GroupsNames
 }
 
 // decode DeleteGroupsRequest; Versions: 0-2
-func (t *DeleteGroupsRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteGroupsRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.GroupsNames, err = d.StringArray()
 	if err != nil {
@@ -10579,7 +10523,7 @@ func (t DeleteGroupsResponse) Size(version int16) int32 {
 }
 
 // encode DeleteGroupsResponse; Versions: 0-2
-func (t DeleteGroupsResponse) Encode(e *protocol.Encoder, version int16) {
+func (t DeleteGroupsResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Results
 	len1 := len(t.Results)
@@ -10590,7 +10534,7 @@ func (t DeleteGroupsResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode DeleteGroupsResponse; Versions: 0-2
-func (t *DeleteGroupsResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *DeleteGroupsResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -10626,13 +10570,13 @@ func (t DeletableGroupResult42) Size(version int16) int32 {
 }
 
 // encode DeletableGroupResult42; Versions: 0-2
-func (t DeletableGroupResult42) Encode(e *protocol.Encoder, version int16) {
+func (t DeletableGroupResult42) Encode(e *Encoder, version int16) {
 	e.PutString(t.GroupId)  // GroupId
 	e.PutInt16(t.ErrorCode) // ErrorCode
 }
 
 // decode DeletableGroupResult42; Versions: 0-2
-func (t *DeletableGroupResult42) Decode(d *protocol.Decoder, version int16) error {
+func (t *DeletableGroupResult42) Decode(d *Decoder, version int16) error {
 	var err error
 	t.GroupId, err = d.String()
 	if err != nil {
@@ -10667,7 +10611,7 @@ func (t ElectLeadersRequest) Size(version int16) int32 {
 }
 
 // encode ElectLeadersRequest; Versions: 0-2
-func (t ElectLeadersRequest) Encode(e *protocol.Encoder, version int16) {
+func (t ElectLeadersRequest) Encode(e *Encoder, version int16) {
 	if version >= 1 {
 		e.PutInt8(t.ElectionType) // ElectionType
 	}
@@ -10681,7 +10625,7 @@ func (t ElectLeadersRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ElectLeadersRequest; Versions: 0-2
-func (t *ElectLeadersRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *ElectLeadersRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	if version >= 1 {
 		t.ElectionType, err = d.Int8()
@@ -10723,13 +10667,13 @@ func (t TopicPartitions43) Size(version int16) int32 {
 }
 
 // encode TopicPartitions43; Versions: 0-2
-func (t TopicPartitions43) Encode(e *protocol.Encoder, version int16) {
+func (t TopicPartitions43) Encode(e *Encoder, version int16) {
 	e.PutString(t.Topic)           // Topic
 	e.PutInt32Array(t.PartitionId) // PartitionId
 }
 
 // decode TopicPartitions43; Versions: 0-2
-func (t *TopicPartitions43) Decode(d *protocol.Decoder, version int16) error {
+func (t *TopicPartitions43) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Topic, err = d.String()
 	if err != nil {
@@ -10764,7 +10708,7 @@ func (t ElectLeadersResponse) Size(version int16) int32 {
 }
 
 // encode ElectLeadersResponse; Versions: 0-2
-func (t ElectLeadersResponse) Encode(e *protocol.Encoder, version int16) {
+func (t ElectLeadersResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	if version >= 1 {
 		e.PutInt16(t.ErrorCode) // ErrorCode
@@ -10778,7 +10722,7 @@ func (t ElectLeadersResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ElectLeadersResponse; Versions: 0-2
-func (t *ElectLeadersResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *ElectLeadersResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -10823,7 +10767,7 @@ func (t ReplicaElectionResult43) Size(version int16) int32 {
 }
 
 // encode ReplicaElectionResult43; Versions: 0-2
-func (t ReplicaElectionResult43) Encode(e *protocol.Encoder, version int16) {
+func (t ReplicaElectionResult43) Encode(e *Encoder, version int16) {
 	e.PutString(t.Topic) // Topic
 	// PartitionResult
 	len1 := len(t.PartitionResult)
@@ -10834,7 +10778,7 @@ func (t ReplicaElectionResult43) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ReplicaElectionResult43; Versions: 0-2
-func (t *ReplicaElectionResult43) Decode(d *protocol.Decoder, version int16) error {
+func (t *ReplicaElectionResult43) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Topic, err = d.String()
 	if err != nil {
@@ -10872,14 +10816,14 @@ func (t PartitionResult43) Size(version int16) int32 {
 }
 
 // encode PartitionResult43; Versions: 0-2
-func (t PartitionResult43) Encode(e *protocol.Encoder, version int16) {
+func (t PartitionResult43) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionId)   // PartitionId
 	e.PutInt16(t.ErrorCode)     // ErrorCode
 	e.PutString(t.ErrorMessage) // ErrorMessage
 }
 
 // decode PartitionResult43; Versions: 0-2
-func (t *PartitionResult43) Decode(d *protocol.Decoder, version int16) error {
+func (t *PartitionResult43) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionId, err = d.Int32()
 	if err != nil {
@@ -10914,7 +10858,7 @@ func (t IncrementalAlterConfigsRequest) Size(version int16) int32 {
 }
 
 // encode IncrementalAlterConfigsRequest; Versions: 0-1
-func (t IncrementalAlterConfigsRequest) Encode(e *protocol.Encoder, version int16) {
+func (t IncrementalAlterConfigsRequest) Encode(e *Encoder, version int16) {
 	// Resources
 	len0 := len(t.Resources)
 	e.PutArrayLength(len0)
@@ -10925,7 +10869,7 @@ func (t IncrementalAlterConfigsRequest) Encode(e *protocol.Encoder, version int1
 }
 
 // decode IncrementalAlterConfigsRequest; Versions: 0-1
-func (t *IncrementalAlterConfigsRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *IncrementalAlterConfigsRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	// Resources
 	if n, err := d.ArrayLength(); err != nil {
@@ -10966,7 +10910,7 @@ func (t AlterConfigsResource44) Size(version int16) int32 {
 }
 
 // encode AlterConfigsResource44; Versions: 0-1
-func (t AlterConfigsResource44) Encode(e *protocol.Encoder, version int16) {
+func (t AlterConfigsResource44) Encode(e *Encoder, version int16) {
 	e.PutInt8(t.ResourceType)   // ResourceType
 	e.PutString(t.ResourceName) // ResourceName
 	// Configs
@@ -10978,7 +10922,7 @@ func (t AlterConfigsResource44) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode AlterConfigsResource44; Versions: 0-1
-func (t *AlterConfigsResource44) Decode(d *protocol.Decoder, version int16) error {
+func (t *AlterConfigsResource44) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ResourceType, err = d.Int8()
 	if err != nil {
@@ -11020,14 +10964,14 @@ func (t AlterableConfig44) Size(version int16) int32 {
 }
 
 // encode AlterableConfig44; Versions: 0-1
-func (t AlterableConfig44) Encode(e *protocol.Encoder, version int16) {
+func (t AlterableConfig44) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name)          // Name
 	e.PutInt8(t.ConfigOperation) // ConfigOperation
 	e.PutString(t.Value)         // Value
 }
 
 // decode AlterableConfig44; Versions: 0-1
-func (t *AlterableConfig44) Decode(d *protocol.Decoder, version int16) error {
+func (t *AlterableConfig44) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -11062,7 +11006,7 @@ func (t IncrementalAlterConfigsResponse) Size(version int16) int32 {
 }
 
 // encode IncrementalAlterConfigsResponse; Versions: 0-1
-func (t IncrementalAlterConfigsResponse) Encode(e *protocol.Encoder, version int16) {
+func (t IncrementalAlterConfigsResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Responses
 	len1 := len(t.Responses)
@@ -11073,7 +11017,7 @@ func (t IncrementalAlterConfigsResponse) Encode(e *protocol.Encoder, version int
 }
 
 // decode IncrementalAlterConfigsResponse; Versions: 0-1
-func (t *IncrementalAlterConfigsResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *IncrementalAlterConfigsResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -11113,7 +11057,7 @@ func (t AlterConfigsResourceResponse44) Size(version int16) int32 {
 }
 
 // encode AlterConfigsResourceResponse44; Versions: 0-1
-func (t AlterConfigsResourceResponse44) Encode(e *protocol.Encoder, version int16) {
+func (t AlterConfigsResourceResponse44) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)     // ErrorCode
 	e.PutString(t.ErrorMessage) // ErrorMessage
 	e.PutInt8(t.ResourceType)   // ResourceType
@@ -11121,7 +11065,7 @@ func (t AlterConfigsResourceResponse44) Encode(e *protocol.Encoder, version int1
 }
 
 // decode AlterConfigsResourceResponse44; Versions: 0-1
-func (t *AlterConfigsResourceResponse44) Decode(d *protocol.Decoder, version int16) error {
+func (t *AlterConfigsResourceResponse44) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -11160,7 +11104,7 @@ func (t AlterPartitionReassignmentsRequest) Size(version int16) int32 {
 }
 
 // encode AlterPartitionReassignmentsRequest; Versions: 0
-func (t AlterPartitionReassignmentsRequest) Encode(e *protocol.Encoder, version int16) {
+func (t AlterPartitionReassignmentsRequest) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.TimeoutMs) // TimeoutMs
 	// Topics
 	len1 := len(t.Topics)
@@ -11171,7 +11115,7 @@ func (t AlterPartitionReassignmentsRequest) Encode(e *protocol.Encoder, version 
 }
 
 // decode AlterPartitionReassignmentsRequest; Versions: 0
-func (t *AlterPartitionReassignmentsRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *AlterPartitionReassignmentsRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.TimeoutMs, err = d.Int32()
 	if err != nil {
@@ -11210,7 +11154,7 @@ func (t ReassignableTopic45) Size(version int16) int32 {
 }
 
 // encode ReassignableTopic45; Versions: 0
-func (t ReassignableTopic45) Encode(e *protocol.Encoder, version int16) {
+func (t ReassignableTopic45) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -11221,7 +11165,7 @@ func (t ReassignableTopic45) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode ReassignableTopic45; Versions: 0
-func (t *ReassignableTopic45) Decode(d *protocol.Decoder, version int16) error {
+func (t *ReassignableTopic45) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -11257,13 +11201,13 @@ func (t ReassignablePartition45) Size(version int16) int32 {
 }
 
 // encode ReassignablePartition45; Versions: 0
-func (t ReassignablePartition45) Encode(e *protocol.Encoder, version int16) {
+func (t ReassignablePartition45) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt32Array(t.Replicas)  // Replicas
 }
 
 // decode ReassignablePartition45; Versions: 0
-func (t *ReassignablePartition45) Decode(d *protocol.Decoder, version int16) error {
+func (t *ReassignablePartition45) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -11298,7 +11242,7 @@ func (t AlterPartitionReassignmentsResponse) Size(version int16) int32 {
 }
 
 // encode AlterPartitionReassignmentsResponse; Versions: 0
-func (t AlterPartitionReassignmentsResponse) Encode(e *protocol.Encoder, version int16) {
+func (t AlterPartitionReassignmentsResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	e.PutString(t.ErrorMessage)  // ErrorMessage
@@ -11311,7 +11255,7 @@ func (t AlterPartitionReassignmentsResponse) Encode(e *protocol.Encoder, version
 }
 
 // decode AlterPartitionReassignmentsResponse; Versions: 0
-func (t *AlterPartitionReassignmentsResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *AlterPartitionReassignmentsResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -11358,7 +11302,7 @@ func (t ReassignableTopicResponse45) Size(version int16) int32 {
 }
 
 // encode ReassignableTopicResponse45; Versions: 0
-func (t ReassignableTopicResponse45) Encode(e *protocol.Encoder, version int16) {
+func (t ReassignableTopicResponse45) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -11369,7 +11313,7 @@ func (t ReassignableTopicResponse45) Encode(e *protocol.Encoder, version int16) 
 }
 
 // decode ReassignableTopicResponse45; Versions: 0
-func (t *ReassignableTopicResponse45) Decode(d *protocol.Decoder, version int16) error {
+func (t *ReassignableTopicResponse45) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -11407,14 +11351,14 @@ func (t ReassignablePartitionResponse45) Size(version int16) int32 {
 }
 
 // encode ReassignablePartitionResponse45; Versions: 0
-func (t ReassignablePartitionResponse45) Encode(e *protocol.Encoder, version int16) {
+func (t ReassignablePartitionResponse45) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	e.PutString(t.ErrorMessage)  // ErrorMessage
 }
 
 // decode ReassignablePartitionResponse45; Versions: 0
-func (t *ReassignablePartitionResponse45) Decode(d *protocol.Decoder, version int16) error {
+func (t *ReassignablePartitionResponse45) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -11449,7 +11393,7 @@ func (t ListPartitionReassignmentsRequest) Size(version int16) int32 {
 }
 
 // encode ListPartitionReassignmentsRequest; Versions: 0
-func (t ListPartitionReassignmentsRequest) Encode(e *protocol.Encoder, version int16) {
+func (t ListPartitionReassignmentsRequest) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.TimeoutMs) // TimeoutMs
 	// Topics
 	len1 := len(t.Topics)
@@ -11460,7 +11404,7 @@ func (t ListPartitionReassignmentsRequest) Encode(e *protocol.Encoder, version i
 }
 
 // decode ListPartitionReassignmentsRequest; Versions: 0
-func (t *ListPartitionReassignmentsRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *ListPartitionReassignmentsRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.TimeoutMs, err = d.Int32()
 	if err != nil {
@@ -11496,13 +11440,13 @@ func (t ListPartitionReassignmentsTopics46) Size(version int16) int32 {
 }
 
 // encode ListPartitionReassignmentsTopics46; Versions: 0
-func (t ListPartitionReassignmentsTopics46) Encode(e *protocol.Encoder, version int16) {
+func (t ListPartitionReassignmentsTopics46) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name)                 // Name
 	e.PutInt32Array(t.PartitionIndexes) // PartitionIndexes
 }
 
 // decode ListPartitionReassignmentsTopics46; Versions: 0
-func (t *ListPartitionReassignmentsTopics46) Decode(d *protocol.Decoder, version int16) error {
+func (t *ListPartitionReassignmentsTopics46) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -11537,7 +11481,7 @@ func (t ListPartitionReassignmentsResponse) Size(version int16) int32 {
 }
 
 // encode ListPartitionReassignmentsResponse; Versions: 0
-func (t ListPartitionReassignmentsResponse) Encode(e *protocol.Encoder, version int16) {
+func (t ListPartitionReassignmentsResponse) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	e.PutString(t.ErrorMessage)  // ErrorMessage
@@ -11550,7 +11494,7 @@ func (t ListPartitionReassignmentsResponse) Encode(e *protocol.Encoder, version 
 }
 
 // decode ListPartitionReassignmentsResponse; Versions: 0
-func (t *ListPartitionReassignmentsResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *ListPartitionReassignmentsResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ThrottleTimeMs, err = d.Int32()
 	if err != nil {
@@ -11597,7 +11541,7 @@ func (t OngoingTopicReassignment46) Size(version int16) int32 {
 }
 
 // encode OngoingTopicReassignment46; Versions: 0
-func (t OngoingTopicReassignment46) Encode(e *protocol.Encoder, version int16) {
+func (t OngoingTopicReassignment46) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -11608,7 +11552,7 @@ func (t OngoingTopicReassignment46) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode OngoingTopicReassignment46; Versions: 0
-func (t *OngoingTopicReassignment46) Decode(d *protocol.Decoder, version int16) error {
+func (t *OngoingTopicReassignment46) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -11648,7 +11592,7 @@ func (t OngoingPartitionReassignment46) Size(version int16) int32 {
 }
 
 // encode OngoingPartitionReassignment46; Versions: 0
-func (t OngoingPartitionReassignment46) Encode(e *protocol.Encoder, version int16) {
+func (t OngoingPartitionReassignment46) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex)        // PartitionIndex
 	e.PutInt32Array(t.Replicas)         // Replicas
 	e.PutInt32Array(t.AddingReplicas)   // AddingReplicas
@@ -11656,7 +11600,7 @@ func (t OngoingPartitionReassignment46) Encode(e *protocol.Encoder, version int1
 }
 
 // decode OngoingPartitionReassignment46; Versions: 0
-func (t *OngoingPartitionReassignment46) Decode(d *protocol.Decoder, version int16) error {
+func (t *OngoingPartitionReassignment46) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -11695,7 +11639,7 @@ func (t OffsetDeleteRequest) Size(version int16) int32 {
 }
 
 // encode OffsetDeleteRequest; Versions: 0
-func (t OffsetDeleteRequest) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetDeleteRequest) Encode(e *Encoder, version int16) {
 	e.PutString(t.GroupId) // GroupId
 	// Topics
 	len1 := len(t.Topics)
@@ -11706,7 +11650,7 @@ func (t OffsetDeleteRequest) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode OffsetDeleteRequest; Versions: 0
-func (t *OffsetDeleteRequest) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetDeleteRequest) Decode(d *Decoder, version int16) error {
 	var err error
 	t.GroupId, err = d.String()
 	if err != nil {
@@ -11745,7 +11689,7 @@ func (t OffsetDeleteRequestTopic47) Size(version int16) int32 {
 }
 
 // encode OffsetDeleteRequestTopic47; Versions: 0
-func (t OffsetDeleteRequestTopic47) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetDeleteRequestTopic47) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -11756,7 +11700,7 @@ func (t OffsetDeleteRequestTopic47) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode OffsetDeleteRequestTopic47; Versions: 0
-func (t *OffsetDeleteRequestTopic47) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetDeleteRequestTopic47) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -11790,12 +11734,12 @@ func (t OffsetDeleteRequestPartition47) Size(version int16) int32 {
 }
 
 // encode OffsetDeleteRequestPartition47; Versions: 0
-func (t OffsetDeleteRequestPartition47) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetDeleteRequestPartition47) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 }
 
 // decode OffsetDeleteRequestPartition47; Versions: 0
-func (t *OffsetDeleteRequestPartition47) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetDeleteRequestPartition47) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -11824,7 +11768,7 @@ func (t OffsetDeleteResponse) Size(version int16) int32 {
 }
 
 // encode OffsetDeleteResponse; Versions: 0
-func (t OffsetDeleteResponse) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetDeleteResponse) Encode(e *Encoder, version int16) {
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 	e.PutInt32(t.ThrottleTimeMs) // ThrottleTimeMs
 	// Topics
@@ -11836,7 +11780,7 @@ func (t OffsetDeleteResponse) Encode(e *protocol.Encoder, version int16) {
 }
 
 // decode OffsetDeleteResponse; Versions: 0
-func (t *OffsetDeleteResponse) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetDeleteResponse) Decode(d *Decoder, version int16) error {
 	var err error
 	t.ErrorCode, err = d.Int16()
 	if err != nil {
@@ -11879,7 +11823,7 @@ func (t OffsetDeleteResponseTopic47) Size(version int16) int32 {
 }
 
 // encode OffsetDeleteResponseTopic47; Versions: 0
-func (t OffsetDeleteResponseTopic47) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetDeleteResponseTopic47) Encode(e *Encoder, version int16) {
 	e.PutString(t.Name) // Name
 	// Partitions
 	len1 := len(t.Partitions)
@@ -11890,7 +11834,7 @@ func (t OffsetDeleteResponseTopic47) Encode(e *protocol.Encoder, version int16) 
 }
 
 // decode OffsetDeleteResponseTopic47; Versions: 0
-func (t *OffsetDeleteResponseTopic47) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetDeleteResponseTopic47) Decode(d *Decoder, version int16) error {
 	var err error
 	t.Name, err = d.String()
 	if err != nil {
@@ -11926,13 +11870,13 @@ func (t OffsetDeleteResponsePartition47) Size(version int16) int32 {
 }
 
 // encode OffsetDeleteResponsePartition47; Versions: 0
-func (t OffsetDeleteResponsePartition47) Encode(e *protocol.Encoder, version int16) {
+func (t OffsetDeleteResponsePartition47) Encode(e *Encoder, version int16) {
 	e.PutInt32(t.PartitionIndex) // PartitionIndex
 	e.PutInt16(t.ErrorCode)      // ErrorCode
 }
 
 // decode OffsetDeleteResponsePartition47; Versions: 0
-func (t *OffsetDeleteResponsePartition47) Decode(d *protocol.Decoder, version int16) error {
+func (t *OffsetDeleteResponsePartition47) Decode(d *Decoder, version int16) error {
 	var err error
 	t.PartitionIndex, err = d.Int32()
 	if err != nil {
@@ -11943,269 +11887,4 @@ func (t *OffsetDeleteResponsePartition47) Decode(d *protocol.Decoder, version in
 		return err
 	}
 	return err
-}
-
-// negotiateApiVersions accepts the apiKeys from the broker and negotiates
-// acceptable versions for each api based on the versions supported by
-// this library.
-func negotiateApiVersions(apiKeys []ApiVersionsResponseKey18) (apiVersion, error) {
-	// Since this file is generated, there's no need to externalize the supported
-	// versions elsewhere.  We can simply inline the values into the call to matchVersion
-	var av apiVersion
-	var err error
-	for _, apiKey := range apiKeys {
-		switch apiKey.ApiKey {
-		case apikey.Produce:
-			av.Produce, err = matchVersion(apiKey, 0, 8)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.Fetch:
-			av.Fetch, err = matchVersion(apiKey, 0, 11)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.ListOffset:
-			av.ListOffset, err = matchVersion(apiKey, 0, 5)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.Metadata:
-			av.Metadata, err = matchVersion(apiKey, 0, 9)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.LeaderAndIsr:
-			av.LeaderAndIsr, err = matchVersion(apiKey, 0, 4)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.StopReplica:
-			av.StopReplica, err = matchVersion(apiKey, 0, 2)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.UpdateMetadata:
-			av.UpdateMetadata, err = matchVersion(apiKey, 0, 6)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.ControlledShutdown:
-			av.ControlledShutdown, err = matchVersion(apiKey, 0, 3)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.OffsetCommit:
-			av.OffsetCommit, err = matchVersion(apiKey, 0, 8)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.OffsetFetch:
-			av.OffsetFetch, err = matchVersion(apiKey, 0, 6)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.FindCoordinator:
-			av.FindCoordinator, err = matchVersion(apiKey, 0, 3)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.JoinGroup:
-			av.JoinGroup, err = matchVersion(apiKey, 0, 6)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.Heartbeat:
-			av.Heartbeat, err = matchVersion(apiKey, 0, 4)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.LeaveGroup:
-			av.LeaveGroup, err = matchVersion(apiKey, 0, 4)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.SyncGroup:
-			av.SyncGroup, err = matchVersion(apiKey, 0, 4)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.DescribeGroups:
-			av.DescribeGroups, err = matchVersion(apiKey, 0, 5)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.ListGroups:
-			av.ListGroups, err = matchVersion(apiKey, 0, 3)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.SaslHandshake:
-			av.SaslHandshake, err = matchVersion(apiKey, 0, 1)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.ApiVersions:
-			av.ApiVersions, err = matchVersion(apiKey, 0, 3)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.CreateTopics:
-			av.CreateTopics, err = matchVersion(apiKey, 0, 5)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.DeleteTopics:
-			av.DeleteTopics, err = matchVersion(apiKey, 0, 4)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.DeleteRecords:
-			av.DeleteRecords, err = matchVersion(apiKey, 0, 1)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.InitProducerId:
-			av.InitProducerId, err = matchVersion(apiKey, 0, 2)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.OffsetForLeaderEpoch:
-			av.OffsetForLeaderEpoch, err = matchVersion(apiKey, 0, 3)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.AddPartitionsToTxn:
-			av.AddPartitionsToTxn, err = matchVersion(apiKey, 0, 1)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.AddOffsetsToTxn:
-			av.AddOffsetsToTxn, err = matchVersion(apiKey, 0, 1)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.EndTxn:
-			av.EndTxn, err = matchVersion(apiKey, 0, 1)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.WriteTxnMarkers:
-			av.WriteTxnMarkers, err = matchVersion(apiKey, 0, 0)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.TxnOffsetCommit:
-			av.TxnOffsetCommit, err = matchVersion(apiKey, 0, 2)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.DescribeAcls:
-			av.DescribeAcls, err = matchVersion(apiKey, 0, 1)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.CreateAcls:
-			av.CreateAcls, err = matchVersion(apiKey, 0, 1)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.DeleteAcls:
-			av.DeleteAcls, err = matchVersion(apiKey, 0, 1)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.DescribeConfigs:
-			av.DescribeConfigs, err = matchVersion(apiKey, 0, 2)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.AlterConfigs:
-			av.AlterConfigs, err = matchVersion(apiKey, 0, 1)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.AlterReplicaLogDirs:
-			av.AlterReplicaLogDirs, err = matchVersion(apiKey, 0, 1)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.DescribeLogDirs:
-			av.DescribeLogDirs, err = matchVersion(apiKey, 0, 1)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.SaslAuthenticate:
-			av.SaslAuthenticate, err = matchVersion(apiKey, 0, 1)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.CreatePartitions:
-			av.CreatePartitions, err = matchVersion(apiKey, 0, 1)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.CreateDelegationToken:
-			av.CreateDelegationToken, err = matchVersion(apiKey, 0, 2)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.RenewDelegationToken:
-			av.RenewDelegationToken, err = matchVersion(apiKey, 0, 1)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.ExpireDelegationToken:
-			av.ExpireDelegationToken, err = matchVersion(apiKey, 0, 1)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.DescribeDelegationToken:
-			av.DescribeDelegationToken, err = matchVersion(apiKey, 0, 1)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.DeleteGroups:
-			av.DeleteGroups, err = matchVersion(apiKey, 0, 2)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.ElectLeaders:
-			av.ElectLeaders, err = matchVersion(apiKey, 0, 2)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.IncrementalAlterConfigs:
-			av.IncrementalAlterConfigs, err = matchVersion(apiKey, 0, 1)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.AlterPartitionReassignments:
-			av.AlterPartitionReassignments, err = matchVersion(apiKey, 0, 0)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.ListPartitionReassignments:
-			av.ListPartitionReassignments, err = matchVersion(apiKey, 0, 0)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		case apikey.OffsetDelete:
-			av.OffsetDelete, err = matchVersion(apiKey, 0, 0)
-			if err != nil {
-				return apiVersion{}, err
-			}
-		}
-	}
-	return av, nil
-}
-
-// matchVersion determines which version of the api to use
-func matchVersion(apiKey ApiVersionsResponseKey18, minVersion, maxVersion int16) (int16, error) {
-	for version := apiKey.MaxVersion; version >= apiKey.MinVersion; version-- {
-		if version := apiKey.MaxVersion; version >= minVersion && version <= maxVersion {
-			return version, nil
-		}
-	}
-	return 0, fmt.Errorf("unable to negotiate version for api key, %v", apiKey.ApiKey)
 }

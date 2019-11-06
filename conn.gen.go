@@ -14,52 +14,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package protocol
+package kafka
 
 import (
 	"bufio"
 	"context"
+	"crypto/tls"
 	"fmt"
 	"net"
 	"sync"
 	"sync/atomic"
+
+	"github.com/savaki/kafka/message"
+	"github.com/savaki/kafka/ring"
 )
-
-type config struct {
-	dialFunc func(network, addr string) (net.Conn, error)
-}
-
-type Option func(*config)
-
-func WithDialer(dialFunc func(network, addr string) (net.Conn, error)) Option {
-	return func(c *config) {
-		c.dialFunc = dialFunc
-		if c.dialFunc == nil {
-			c.dialFunc = net.Dial
-		}
-	}
-}
-
-func buildConfig(opts []Option) config {
-	c := config{
-		dialFunc: net.Dial,
-	}
-	for _, opt := range opts {
-		opt(&c)
-	}
-	return c
-}
 
 type Conn struct {
 	cancel      context.CancelFunc
 	ch          chan request
 	doneMessage chan struct{}
 	doneRead    chan struct{}
-	encoder     *Encoder
+	encoder     *message.Encoder
 	err         error
 	id          int32
 	raw         net.Conn
-	rb          *RingBuffer
+	rb          *ring.Buffer
 
 	writeLock sync.Mutex
 	readLock  sync.Mutex
@@ -67,22 +46,31 @@ type Conn struct {
 }
 
 type request struct {
-	decode func(*Decoder) error
+	decode func(*message.Decoder) error
 	reply  chan error
+}
+
+func dial(c config, addr string) (net.Conn, error) {
+	if c.tlsConfig == nil {
+		return c.dialer.Dial("tcp", addr)
+	}
+
+	return tls.DialWithDialer(c.dialer, "tcp", addr, c.tlsConfig)
 }
 
 func Connect(addr string, opts ...Option) (*Conn, error) {
 	config := buildConfig(opts)
-	raw, err := config.dialFunc("tcp", addr)
+
+	raw, err := dial(config, addr)
 	if err != nil {
 		return nil, fmt.Errorf("failed to dial broker, %v: %w", addr, err)
 	}
 
 	var (
 		ctx, cancel = context.WithCancel(context.Background())
-		rb          = NewRingBuffer(5e6)
+		rb          = ring.New(5e6)
 		ch          = make(chan request, 32)
-		e           = NewEncoder(bufio.NewWriter(raw))
+		e           = message.NewEncoder(bufio.NewWriter(raw))
 	)
 
 	c := &Conn{
@@ -101,7 +89,7 @@ func Connect(addr string, opts ...Option) (*Conn, error) {
 	return c, nil
 }
 
-func (c *Conn) readLoop(ctx context.Context, rb *RingBuffer, raw net.Conn) {
+func (c *Conn) readLoop(ctx context.Context, rb *ring.Buffer, raw net.Conn) {
 	defer close(c.doneRead)
 
 	buffer := make([]byte, 2e6) // 2MB
@@ -116,12 +104,12 @@ func (c *Conn) readLoop(ctx context.Context, rb *RingBuffer, raw net.Conn) {
 	}
 }
 
-func (c *Conn) messageLoop(ctx context.Context, rb *RingBuffer, ch <-chan request) {
+func (c *Conn) messageLoop(ctx context.Context, rb *ring.Buffer, ch <-chan request) {
 	defer close(c.doneMessage)
 
 	var (
 		buffer = make([]byte, 2e6) // 2MB
-		d      = NewDecoder(buffer, len(buffer))
+		d      = message.NewDecoder(buffer, len(buffer))
 	)
 
 	for {
@@ -142,8 +130,8 @@ func (c *Conn) messageLoop(ctx context.Context, rb *RingBuffer, ch <-chan reques
 		rb.ReadN(buffer, size)
 		d.Reset(size)
 
-		var resp ResponseHeader
-		if err := (&resp).decode(d, 1); err != nil {
+		var resp message.ResponseHeader
+		if err := (&resp).Decode(d, 1); err != nil {
 			fmt.Println(err)
 			continue
 		}
@@ -159,10 +147,10 @@ func (c *Conn) messageLoop(ctx context.Context, rb *RingBuffer, ch <-chan reques
 	}
 }
 
-type EncodeFunc func(e *Encoder, correlationID int32)
-type DecodeFunc func(d *Decoder) error
+type EncodeFunc func(e *message.Encoder, correlationID int32)
+type DecodeFunc func(d *message.Decoder) error
 
-func (c *Conn) Write(encode EncodeFunc, decode DecodeFunc) error {
+func (c *Conn) Do(encode EncodeFunc, decode DecodeFunc) error {
 	correlationID := atomic.AddInt32(&c.id, 1)
 	req := request{
 		decode: decode,
@@ -192,31 +180,4 @@ func (c *Conn) Close() error {
 	<-c.doneMessage
 	<-c.doneRead
 	return c.err
-}
-
-// ResponseHeader; ApiKey: 0, Versions: 0-1
-type ResponseHeader struct {
-	CorrelationId int32 // The correlation ID of this response. Versions: 0+
-}
-
-// size of ResponseHeader; Versions: 0-1
-func (t ResponseHeader) size(version int16) int32 {
-	var sz int32
-	sz += 4 // CorrelationId
-	return sz
-}
-
-// encode ResponseHeader; Versions: 0-1
-func (t ResponseHeader) encode(e *Encoder, version int16) {
-	e.PutInt32(t.CorrelationId) // CorrelationId
-}
-
-// decode ResponseHeader; Versions: 0-1
-func (t *ResponseHeader) decode(d *Decoder, version int16) error {
-	var err error
-	t.CorrelationId, err = d.Int32()
-	if err != nil {
-		return err
-	}
-	return err
 }
