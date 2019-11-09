@@ -10,3 +10,4 @@
 go.sum
 target
 gin-bin
+coverage.txt
