@@ -19,6 +19,7 @@ package message
 import (
 	"encoding/binary"
 	"io"
+	"unicode/utf8"
 )
 
 type flusher interface {
@@ -159,6 +160,16 @@ func (e *Encoder) PutNullableString(s *string) {
 	e.PutString(*s)
 }
 
+// PutRecordHeader puts a single record header element onto the stream
+func (e *Encoder) PutRecordHeader(key, value string) {
+	if e.err != nil {
+		return
+	}
+
+	e.PutVarString(key)
+	e.PutVarString(value)
+}
+
 // PutString encodes a string
 func (e *Encoder) PutString(s string) {
 	e.PutInt16(int16(len(s)))
@@ -185,6 +196,16 @@ func (e *Encoder) PutStringArray(ss []string) {
 	}
 }
 
+// PutRaw unlike PutBytes puts the bytes as is without first encoding the length
+func (e *Encoder) PutVarBytes(data []byte) {
+	if e.err != nil {
+		return
+	}
+
+	e.PutVarInt(int64(len(data)))
+	_, e.err = e.target.Write(data)
+}
+
 // PutVarInt encodes a var int
 func (e *Encoder) PutVarInt(i int64) {
 	if e.err != nil {
@@ -193,4 +214,20 @@ func (e *Encoder) PutVarInt(i int64) {
 
 	length := binary.PutVarint(e.buf[:], i)
 	_, e.err = e.target.Write(e.buf[0:length])
+}
+
+// PutRaw unlike PutBytes puts the bytes as is without first encoding the length
+func (e *Encoder) PutVarString(s string) {
+	if e.err != nil {
+		return
+	}
+
+	e.PutVarInt(int64(len(s)))
+	for _, i := range s {
+		length := utf8.EncodeRune(e.buf[:], rune(i))
+		_, e.err = e.target.Write(e.buf[0:length])
+		if e.err != nil {
+			return
+		}
+	}
 }

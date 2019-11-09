@@ -16,6 +16,8 @@
 
 package sizeof
 
+import "encoding/binary"
+
 const (
 	Bool        int32 = 1     // Bool bytes
 	Int8        int32 = 1     // Int8 bytes
@@ -53,4 +55,23 @@ func StringArray(ss []string) int32 {
 		sz += String(s)
 	}
 	return sz
+}
+
+// VarBytes returns the length of a var int
+func VarBytes(data []byte) int32 {
+	length := len(data)
+	return VarInt(int64(length)) + int32(length)
+}
+
+// VarInt returns the length of a var int
+func VarInt(i int64) int32 {
+	var buf [16]byte
+	length := binary.PutVarint(buf[:], i)
+	return int32(length)
+}
+
+// VarString returns the length of a var string
+func VarString(s string) int32 {
+	length := len(s)
+	return VarInt(int64(length)) + int32(length)
 }

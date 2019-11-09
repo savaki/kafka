@@ -94,14 +94,11 @@ func (r *Buffer) WriteN(data []byte, n int) {
 
 	for i := 0; i < n; i++ {
 		r.data[pos] = data[i]
-		pos++
-		if pos == r.size {
-			pos = 0
-		}
+		pos = incr(pos, r.size)
 
 		// whenever pos catches up to the starting position, wait for
 		// additional bytes to be written before continuing
-		if pos+1 == start {
+		if next := incr(pos, r.size); next == start {
 			atomic.StoreInt32(&r.next, pos)
 
 			// important to store pos prior to reading from lockMux
@@ -109,7 +106,7 @@ func (r *Buffer) WriteN(data []byte, n int) {
 			wrote = i
 
 			start = atomic.LoadInt32(&r.start)
-			if pos+1 == start {
+			if next := incr(pos, r.size); next == start {
 				r.writeLock.Wait()
 			}
 		}
@@ -147,10 +144,7 @@ func (r *Buffer) ReadN(data []byte, n int) {
 		}
 
 		data[i] = r.data[pos]
-		pos++
-		if pos == r.size {
-			pos = 0
-		}
+		pos = incr(pos, r.size)
 		read++
 	}
 
@@ -158,4 +152,12 @@ func (r *Buffer) ReadN(data []byte, n int) {
 	if read > 0 {
 		r.writeLock.Release()
 	}
+}
+
+func incr(pos, size int32) int32 {
+	pos++
+	if pos == size {
+		return 0
+	}
+	return pos
 }

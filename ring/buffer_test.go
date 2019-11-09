@@ -26,10 +26,16 @@ import (
 )
 
 func TestBuffer_WriteN(t *testing.T) {
-	ring := New(15)
-	content := []byte("hello world")
+	var (
+		ring    = New(15)
+		content = []byte("hello world")
+		length  = len(content)
+	)
+
 	ring.WriteN(content, len(content))
-	fmt.Println(string(ring.data))
+	if got, want := string(ring.data[0:length]), string(content); got != want {
+		t.Fatalf("got %v; want %v", got, want)
+	}
 }
 
 func BenchmarkAtomic(t *testing.B) {
@@ -86,19 +92,20 @@ func TestMutex(t *testing.T) {
 	}
 }
 
-func TestConcurrent(t *testing.T) {
-	const total = 1e4
+func TestStress(t *testing.T) {
+	const size = 1e2
 
-	buffer := New(1e2)
+	buffer := New(size)
 	go func() {
 		data := make([]byte, 10)
 		iter := &iterator{}
-		for i := 0; i < (total / 20); i++ {
-			for n := 1; n < 10; n++ {
+		max := int(size - 2)
+		for i := 0; i < max; i++ {
+			for n := 1; n <= i; n++ {
 				iter.ReadN(data, n)
 				buffer.WriteN(data, n)
 			}
-			for n := 10; n >= 1; n-- {
+			for n := i; n >= 1; n-- {
 				iter.ReadN(data, n)
 				buffer.WriteN(data, n)
 			}
@@ -106,7 +113,7 @@ func TestConcurrent(t *testing.T) {
 	}()
 
 	data := make([]byte, 10)
-	remain := int(total)
+	remain := int(size)
 	for remain > 0 {
 		buffer.ReadN(data, cap(data))
 		if got, want := string(data[0:cap(data)]), string(digits); got != want {

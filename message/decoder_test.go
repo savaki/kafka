@@ -18,6 +18,7 @@ package message
 
 import (
 	"bytes"
+	"io"
 	"math"
 	"reflect"
 	"testing"
@@ -482,6 +483,45 @@ func TestDecoder_PutStringArray(t *testing.T) {
 	}
 }
 
+func TestDecoder_PutVarBytes(t *testing.T) {
+	testCases := map[string]struct {
+		want []byte
+	}{
+		"none": {
+			want: []byte{},
+		},
+		"some": {
+			want: []byte("hello world"),
+		},
+	}
+
+	for label, tc := range testCases {
+		t.Run(label, func(t *testing.T) {
+			var (
+				buf = bytes.NewBuffer(nil)
+				got []byte
+			)
+
+			e := &Encoder{target: buf}
+			e.PutVarBytes(tc.want)
+			err := e.Flush()
+			if err != nil {
+				t.Fatalf("got %v; want nil", err)
+			}
+
+			decoder := makeTestDecoder(buf.Bytes())
+			got, err = decoder.VarBytes()
+			if err != nil {
+				t.Fatalf("got %v; want nil", err)
+			}
+
+			if !bytes.Equal(got, tc.want) {
+				t.Fatalf("got %v; want %v", string(got), string(tc.want))
+			}
+		})
+	}
+}
+
 func TestDecoder_PutVarInt(t *testing.T) {
 	testCases := map[string]struct {
 		want int64
@@ -530,6 +570,93 @@ func TestDecoder_PutVarInt(t *testing.T) {
 	}
 }
 
+func TestDecoder_PutVarString(t *testing.T) {
+	testCases := map[string]struct {
+		want string
+	}{
+		"none": {
+			want: "",
+		},
+		"some": {
+			want: "hello world",
+		},
+		"unicode": {
+			want: "你好",
+		},
+	}
+
+	for label, tc := range testCases {
+		t.Run(label, func(t *testing.T) {
+			var (
+				buf = bytes.NewBuffer(nil)
+				got string
+			)
+
+			e := &Encoder{target: buf}
+			e.PutVarString(tc.want)
+			err := e.Flush()
+			if err != nil {
+				t.Fatalf("got %v; want nil", err)
+			}
+
+			decoder := makeTestDecoder(buf.Bytes())
+			got, err = decoder.VarString()
+			if err != nil {
+				t.Fatalf("got %v; want nil", err)
+			}
+
+			if got != tc.want {
+				t.Fatalf("got %v; want %v", got, tc.want)
+			}
+		})
+	}
+}
+
+func BenchmarkDecoder_PutVarBytes(t *testing.B) {
+	buf := bytes.NewBuffer(nil)
+	encoder := NewEncoder(buf)
+	encoder.PutVarBytes([]byte("hello world"))
+
+	var (
+		length  = buf.Len()
+		decoder = NewDecoder(buf.Bytes(), length)
+	)
+
+	for i := 0; i < t.N; i++ {
+		decoder.Reset(length)
+		_, err := decoder.VarBytes()
+		if err != nil {
+			t.Fatalf("got %v; want nil", err)
+		}
+	}
+}
+
+func TestStringLength(t *testing.T) {
+	got := len("你好")
+	if want := 6; got != want {
+		t.Fatalf("got %v; want %v", got, want)
+	}
+}
+
+func BenchmarkDecoder_PutVarString(t *testing.B) {
+	buf := bytes.NewBuffer(nil)
+	encoder := NewEncoder(buf)
+	encoder.PutVarString("你好")
+
+	var (
+		length  = buf.Len()
+		decoder = NewDecoder(buf.Bytes(), length)
+	)
+
+	for i := 0; i < t.N; i++ {
+		decoder.Reset(length)
+		_, err := decoder.VarString()
+		if err != nil {
+			t.Fatalf("got %v; want nil", err)
+		}
+	}
+}
+
 func TestDecoder_remain(t *testing.T) {
 	var (
 		d   = &Decoder{}
@@ -538,56 +665,107 @@ func TestDecoder_remain(t *testing.T) {
 
 	_, err = d.Bool()
 	if !IsInsufficientDataError(err) {
-		t.Fatalf("got %v; want %v", err, errInsufficientData)
+		t.Fatalf("got %v; want %v", err, io.ErrShortBuffer)
 	}
 
 	_, err = d.Bytes()
 	if !IsInsufficientDataError(err) {
-		t.Fatalf("got %v; want %v", err, errInsufficientData)
+		t.Fatalf("got %v; want %v", err, io.ErrShortBuffer)
+	}
+
+	err = d.Discard(100)
+	if !IsInsufficientDataError(err) {
+		t.Fatalf("got %v; want %v", err, io.ErrShortBuffer)
 	}
 
 	_, err = d.Int8()
 	if !IsInsufficientDataError(err) {
-		t.Fatalf("got %v; want %v", err, errInsufficientData)
+		t.Fatalf("got %v; want %v", err, io.ErrShortBuffer)
 	}
 
 	_, err = d.Int16()
 	if !IsInsufficientDataError(err) {
-		t.Fatalf("got %v; want %v", err, errInsufficientData)
+		t.Fatalf("got %v; want %v", err, io.ErrShortBuffer)
 	}
 
 	_, err = d.Int32()
 	if !IsInsufficientDataError(err) {
-		t.Fatalf("got %v; want %v", err, errInsufficientData)
+		t.Fatalf("got %v; want %v", err, io.ErrShortBuffer)
 	}
 
 	_, err = d.Int32Array()
 	if !IsInsufficientDataError(err) {
-		t.Fatalf("got %v; want %v", err, errInsufficientData)
+		t.Fatalf("got %v; want %v", err, io.ErrShortBuffer)
 	}
 
 	_, err = d.Int64()
 	if !IsInsufficientDataError(err) {
-		t.Fatalf("got %v; want %v", err, errInsufficientData)
+		t.Fatalf("got %v; want %v", err, io.ErrShortBuffer)
 	}
 
 	_, err = d.Int64Array()
 	if !IsInsufficientDataError(err) {
-		t.Fatalf("got %v; want %v", err, errInsufficientData)
+		t.Fatalf("got %v; want %v", err, io.ErrShortBuffer)
 	}
 
 	_, err = d.NullableString()
 	if !IsInsufficientDataError(err) {
-		t.Fatalf("got %v; want %v", err, errInsufficientData)
+		t.Fatalf("got %v; want %v", err, io.ErrShortBuffer)
 	}
 
 	_, err = d.String()
 	if !IsInsufficientDataError(err) {
-		t.Fatalf("got %v; want %v", err, errInsufficientData)
+		t.Fatalf("got %v; want %v", err, io.ErrShortBuffer)
 	}
 
 	_, err = d.StringArray()
 	if !IsInsufficientDataError(err) {
-		t.Fatalf("got %v; want %v", err, errInsufficientData)
+		t.Fatalf("got %v; want %v", err, io.ErrShortBuffer)
+	}
+
+	_, err = d.VarBytes()
+	if !IsInsufficientDataError(err) {
+		t.Fatalf("got %v; want %v", err, io.ErrShortBuffer)
+	}
+
+	_, err = d.VarInt()
+	if !IsInsufficientDataError(err) {
+		t.Fatalf("got %v; want %v", err, io.ErrShortBuffer)
+	}
+
+	_, err = d.VarString()
+	if !IsInsufficientDataError(err) {
+		t.Fatalf("got %v; want %v", err, io.ErrShortBuffer)
+	}
+}
+
+func TestDecoder_Discard(t *testing.T) {
+	var (
+		length  = 100
+		decoder = NewDecoder(make([]byte, length), length)
+		want    = 10
+	)
+
+	decoder.Discard(want)
+	if got, want := decoder.offset, want; got != want {
+		t.Fatalf("got %v; want %v", got, want)
+	}
+	if got, want := decoder.length, length; got != want {
+		t.Fatalf("got %v; want %v", got, want)
+	}
+}
+
+func TestDecoder_Reset(t *testing.T) {
+	decoder := &Decoder{}
+	decoder.offset = 10
+	decoder.length = 20
+
+	want := 5
+	decoder.Reset(want)
+	if got, want := decoder.offset, 0; got != want {
+		t.Fatalf("got %v; want %v", got, want)
+	}
+	if got := decoder.length; got != want {
+		t.Fatalf("got %v; want %v", got, want)
 	}
 }

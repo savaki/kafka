@@ -19,18 +19,19 @@ package message
 import (
 	"encoding/binary"
 	"errors"
+	"io"
+	"unicode/utf8"
 )
 
 var (
-	errInsufficientData = errors.New("insufficient data to decode packet")
-	errNullString       = errors.New("null string")
-	errVarIntOverflow   = errors.New("var int overflow")
+	errNullString     = errors.New("null string")
+	errVarIntOverflow = errors.New("var int overflow")
 )
 
 // IsInsufficientDataError if the buffer has insufficient data to unmarshal
 // the message
 func IsInsufficientDataError(err error) bool {
-	return errors.Is(err, errInsufficientData)
+	return errors.Is(err, io.ErrShortBuffer)
 }
 
 // Decoder implements a generic protocol decoder
@@ -58,7 +59,7 @@ func (d *Decoder) Reset(length int) {
 // remains ensures that the buffer contains at least n more bytes
 func (d *Decoder) remains(n int) error {
 	if remain := d.length - d.offset; remain < n {
-		return errInsufficientData
+		return io.ErrShortBuffer
 	}
 	return nil
 }
@@ -249,13 +250,29 @@ func (d *Decoder) StringArray() ([]string, error) {
 	return items, nil
 }
 
+func (d *Decoder) VarBytes() ([]byte, error) {
+	n, err := d.VarInt()
+	if err != nil {
+		return nil, err
+	}
+	length := int(n)
+
+	if err := d.remains(length); err != nil {
+		return nil, err
+	}
+
+	v := d.raw[d.offset : d.offset+length]
+	d.offset += length
+	return v, nil
+}
+
 // VarInt returns the buffer head as an int64
 func (d *Decoder) VarInt() (int64, error) {
 	tmp, n := binary.Varint(d.raw[d.offset:])
 	switch n {
 	case 0:
 		d.offset = d.length // no further requests can be made
-		return 0, errInsufficientData
+		return 0, io.ErrShortBuffer
 
 	case -1:
 		d.offset = d.length // no further requests can be made
@@ -265,4 +282,31 @@ func (d *Decoder) VarInt() (int64, error) {
 		d.offset += n
 		return tmp, nil
 	}
+}
+
+func (d *Decoder) VarString() (string, error) {
+	n, err := d.VarInt()
+	if err != nil {
+		return "", err
+	}
+	length := int(n)
+
+	if err := d.remains(length); err != nil {
+		return "", err
+	}
+
+	var (
+		eom   = d.offset + length // end of message
+		som   = d.offset          // start of message
+		runes []rune
+	)
+
+	for som < eom {
+		r, size := utf8.DecodeRune(d.raw[som:eom])
+		som += size
+		runes = append(runes, r)
+	}
+
+	d.offset += length
+	return string(runes), nil
 }

@@ -1262,13 +1262,6 @@ func (b *Broker) OffsetDelete(req message.OffsetDeleteRequest) (message.OffsetDe
 	return resp, err
 }
 
-// Message defines the standard consumer and producer message
-type Message struct {
-	Topic string
-	Key   []byte
-	Value []byte
-}
-
 type MessageHandler func(*Message) error
 
 type Subscription struct {
