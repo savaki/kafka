@@ -16,15 +16,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v1
       - name: Echo
-        run: echo "${{ matrix.os }} ${{ matrix.node }}"
+        run: echo "${{ matrix.platform }} ${{ matrix.node }}"
       - name: Test
-        if: matrix.os != 'windows-latest'
+        if: matrix.platform != 'windows-latest'
         run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
       - name: Test - Windows
-        if: matrix.os == 'windows-latest'
+        if: matrix.platform == 'windows-latest'
         run: go test -race ./...
       - name: Codecov
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.platform == 'ubuntu-latest'
         run: bash <(curl -s https://codecov.io/bash)
