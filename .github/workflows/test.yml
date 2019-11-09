@@ -15,8 +15,14 @@ jobs:
           go-version: ${{ matrix.go-version }}
       - name: Checkout code
         uses: actions/checkout@v1
+      - name: Echo
+        run: echo "${{ matrix.os }} ${{ matrix.node }}"
       - name: Test
+        if: matrix.os != 'windows-latest'
         run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+      - name: Test - Windows
+        if: matrix.os == 'windows-latest'
+        run: go test -race ./...
       - name: Codecov
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
