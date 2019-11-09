@@ -40,6 +40,16 @@ Most of the `kafka` library is generated from the json protocol definition.  In 
 the library dynamically negotiates the version for each api key so it should (in theory)
 support any kafka broker that allows for protocol version negotiation.
 
+## Integration tests
+
+To run integration tests, first start the test containers using `docker-compose up` in its
+own shell.  Once docker-compose is running, using the `integration` tag to run the integration
+tests.  
+
+```bash
+go test -tags=integration ./...
+```
+
 ## Go version
 
 `kafka` - For now, `kafka` requires golang 1.13 or better as it makes use of the updated
