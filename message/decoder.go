@@ -94,7 +94,9 @@ func (d *Decoder) Bytes() ([]byte, error) {
 	if err := d.remains(length); err != nil {
 		return nil, err
 	}
-	v := d.raw[d.offset : d.offset+length]
+
+	a, b := d.offset, d.offset+length
+	v := d.raw[a:b:b] // limit capacity of returned slice
 	d.offset += length
 	return v, nil
 }
@@ -261,7 +263,8 @@ func (d *Decoder) VarBytes() ([]byte, error) {
 		return nil, err
 	}
 
-	v := d.raw[d.offset : d.offset+length]
+	a, b := d.offset, d.offset+length
+	v := d.raw[a:b:b] // limit capacity of returned slice
 	d.offset += length
 	return v, nil
 }
