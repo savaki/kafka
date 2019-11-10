@@ -1,4 +1,5 @@
 [![GoDoc](https://godoc.org/github.com/savaki/kafka?status.svg)](https://godoc.org/github.com/savaki/kafka)
+[![Go Report Card](https://goreportcard.com/badge/github.com/savaki/kafka)](https://goreportcard.com/report/github.com/savaki/kafka)
 
 # kafka
 
