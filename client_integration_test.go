@@ -33,7 +33,7 @@ func TestCreateTopic(t *testing.T) {
 	defer broker.Close()
 
 	topicName := "ack"
-	resp, err := broker.CreateTopics(message.CreateTopicsRequest{
+	req := message.CreateTopicsRequest{
 		Topics: []message.CreatableTopic19{
 			{
 				Name:              topicName,
@@ -43,7 +43,11 @@ func TestCreateTopic(t *testing.T) {
 				Configs:           []message.CreateableTopicConfig19{},
 			},
 		},
-	})
+	}
+	resp, err := broker.CreateTopics(req)
+	if err != nil {
+		t.Fatalf("got %v; want nil", err)
+	}
 	if got, want := len(resp.Topics), 1; got != want {
 		t.Fatalf("got %v; want %v", got, want)
 	}
@@ -52,8 +56,6 @@ func TestCreateTopic(t *testing.T) {
 			t.Fatalf("got %v; want either 7 or 36", code)
 		}
 	}
-
-	client.DialLeader()
 
 	leader, err := client.DialLeader(ctx, topicName, 0)
 	if err != nil {
