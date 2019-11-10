@@ -3,7 +3,8 @@
 
 # kafka
 
-`kafka` is a pure go Kafka library.
+`kafka` is a pure go Kafka library whose low level driver is automatically generated
+from the [kafka protocol definitions](https://github.com/apache/kafka/tree/trunk/clients/src/main/resources/common/message) 
 
 ***Warning*** - this library is under heavy construction right now.  Definitely NOT safe for use.
 
