@@ -24,17 +24,19 @@ import (
 )
 
 func TestCreateTopic(t *testing.T) {
+	ctx := context.Background()
 	client := NewClient([]string{"127.0.0.1:9092"})
-	broker, err := client.DialController(context.Background())
+	broker, err := client.DialController(ctx)
 	if err != nil {
 		t.Fatalf("got %v; want nil", err)
 	}
 	defer broker.Close()
 
+	topicName := "ack"
 	resp, err := broker.CreateTopics(message.CreateTopicsRequest{
 		Topics: []message.CreatableTopic19{
 			{
-				Name:              "ack",
+				Name:              topicName,
 				NumPartitions:     1,
 				ReplicationFactor: 1,
 				Assignments:       []message.CreatableReplicaAssignment19{},
@@ -50,4 +52,12 @@ func TestCreateTopic(t *testing.T) {
 			t.Fatalf("got %v; want either 7 or 36", code)
 		}
 	}
+
+	client.DialLeader()
+
+	leader, err := client.DialLeader(ctx, topicName, 0)
+	if err != nil {
+		t.Fatalf("got %v; want nil", err)
+	}
+	defer leader.Close()
 }
